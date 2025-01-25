@@ -221,7 +221,7 @@ public class RobotContainer {
 
     // X-Stop
     final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    joystick.rightStick().onTrue(drivetrain.applyRequest(() -> brake));
+    joystick.rightStick().toggleOnTrue(drivetrain.applyRequest(() -> brake));
 
     // Reset the field-centric heading on start press
     joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
