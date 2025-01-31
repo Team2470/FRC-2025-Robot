@@ -9,6 +9,9 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -285,4 +288,25 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     ) {
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     }
+
+    public Command createAutoPath(String pathFile, PathConstraints pathConstraints) {
+	AutoBuilder.configureHolonomic(
+	this::getPose, this::resetOdometry,
+	() -> DriveConstants.kDriveKinematics.toChassisSpeeds(getModuleStates()),
+	this::setChassisSpeeds,
+	new HolonomicPathFollowerConfig(
+		new PIDConstants(5d,0d,0d),
+		new PIDConstants(2d,0d,0d),
+		3.5, //: max speed (m/s)
+		0.4, //: distance between modules and center of robot
+		new ReplanningConfig()
+	), () -> {
+		var alliances = DriverStation.getAlliance();
+		if (alliances.isPresent()) {
+		return alliances.get() == DriverStation.Alliance.Red;
+		} return false;
+	}, this);
+
+	return AutoBuilder.buildAuto(pathFile);
+}
 }
