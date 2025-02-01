@@ -6,11 +6,14 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.HashMap;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import com.pathplanner.lib.auto.AutoBuilder;
-
+import com.pathplanner.lib.auto.NamedCommands;
+import com.kennedyrobotics.auto.AutoSelector;
+import com.kennedyrobotics.hardware.misc.RevDigit;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -19,10 +22,14 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
@@ -46,14 +53,34 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    private final SendableChooser<Command> autoChooser;
+
+    //Autos
+    private final RevDigit m_revDigit;
+	  private final AutoSelector m_autoSelector;
 
     public RobotContainer() { 
       
-        autoChooser = AutoBuilder.buildAutoChooser("Foo");
-        SmartDashboard.putData("Auto Mode", autoChooser);
-        
-        configureBindings();
+        // Auto Selector
+		m_revDigit = new RevDigit().display("2470");
+
+		m_autoSelector = new AutoSelector(
+		m_revDigit, "DFLT", new PrintCommand("!!! Invalid Auto Selected !!!")
+		);
+
+		NamedCommands.registerCommands(new HashMap<String, Command>() {{
+			//put("speaker-shoot", speakerShoot());
+		}});
+
+		registerAutos(new HashMap<String, String>() {{
+			//: basic autos - 2 note score
+			// put("2SRC", "2SRC");
+		}});
+
+		m_autoSelector.initialize();
+  
+
+
+		
     }
 
     private void configureBindings() {
@@ -240,7 +267,16 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-      return autoChooser.getSelected();
+      return Commands.print("No Autonomous Command Configured");
+    }
+
+    private void registerAutos(HashMap<String, String> autos) {
+      for (String name: autos.keySet()) {
+        m_autoSelector.registerCommand(
+           name, name, drivetrain.createAutoPath(autos.get(name),
+           //PUT SOMETHING HEERE
+        ));
+      }
     }
 
 }
