@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "straight"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.25
+            "pathName": "Forward"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Copy of straight"
+            "pathName": "Backward"
           }
         }
       ]

@@ -48,7 +48,6 @@ public class Constants {
 
 
     public static class DriveConstants {
-        public static final double robotOffset = 0;
     }
 
     public static class AutoConstants {
