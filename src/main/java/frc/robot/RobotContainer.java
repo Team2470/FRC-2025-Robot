@@ -48,7 +48,7 @@ public class RobotContainer {
                                                                                  // angular velocity
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
-  private final CommandPS4Controller joystick = new CommandPS4Controller(0);
+  private final CommandXboxController joystick = new CommandXboxController(0);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -102,11 +102,11 @@ public class RobotContainer {
     final var yFilter = new SlewRateLimiter(5);
     final var rotateFilter = new SlewRateLimiter(5);
 
-    BooleanSupplier slowModeSupplier = () -> joystick.getHID().getSquareButton();
+    BooleanSupplier slowModeSupplier = () -> joystick.getHID().getXButton();
 
     DoubleSupplier rotationSupplier = () -> {
-      double leftTrigger = (joystick.getHID().getL2Axis()+1.0)/2.0;
-      double rightTrigger = (joystick.getHID().getR2Axis()+1.0)/2.0;
+      double leftTrigger = joystick.getHID().getLeftTriggerAxis();
+      double rightTrigger = joystick.getHID().getRightTriggerAxis();
 
       SmartDashboard.putNumber("Left Trigger", leftTrigger);
       SmartDashboard.putNumber("Right Trigger", rightTrigger);
@@ -133,7 +133,7 @@ public class RobotContainer {
       // Y Move Velocity - Strafe
       double yMove = MathUtil.applyDeadband(yFilter.calculate(-joystick.getHID().getLeftX()), .05);
 
-      if (joystick.getHID().getL1Button()) {
+      if (joystick.getHID().getLeftBumperButton()) {
         yMove = 0;
       }
 
@@ -201,7 +201,7 @@ public class RobotContainer {
     // joystick.rightBumper().whileTrue(elevatorToPostitonCommandDash(35));
     // joystick.y().whileTrue(elevatorToPostitonCommandDash());
 
-    joystick.cross().whileTrue(drivetrain.applyRequest(() -> {
+    joystick.a().whileTrue(drivetrain.applyRequest(() -> {
       var translation = translationSupplier.get();
 
       double rotate = rotationSupplier.getAsDouble();
@@ -230,13 +230,13 @@ public class RobotContainer {
     }).withName("Robot Centric with GamePad"));
 
     final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    joystick.R3().toggleOnTrue(drivetrain.applyRequest(() -> brake));
+    joystick.rightStick().toggleOnTrue(drivetrain.applyRequest(() -> brake));
 
     // Reset the field-centric heading on start press
-    joystick.options().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     // Reset robot pose to 0,0, and 0 degrees
-    joystick.share().onTrue(drivetrain.runOnce(() -> drivetrain.resetPose(new Pose2d())));
+    joystick.back().onTrue(drivetrain.runOnce(() -> drivetrain.resetPose(new Pose2d())));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }
