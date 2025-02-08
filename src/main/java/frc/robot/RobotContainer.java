@@ -22,6 +22,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -34,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.AutoConstants;
@@ -42,11 +44,11 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-  private double MaxAngularRate = RotationsPerSecond.of(4).in(RadiansPerSecond); // 3/4 of a rotation per second max
+  private double MaxAngularRate = RotationsPerSecond.of(2).in(RadiansPerSecond); // 3/4 of a rotation per second max
                                                                                  // angular velocity
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
-  private final CommandXboxController joystick = new CommandXboxController(0);
+  private final CommandPS4Controller joystick = new CommandPS4Controller(0);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -86,6 +88,8 @@ public class RobotContainer {
 
     SmartDashboard.putData(CommandScheduler.getInstance());
     SmartDashboard.putData("Drive", drivetrain);
+
+    SmartDashboard.putNumber("MaxAngularRate", MaxAngularRate);
   }
 
   private void configureBindings() {
@@ -98,11 +102,14 @@ public class RobotContainer {
     final var yFilter = new SlewRateLimiter(5);
     final var rotateFilter = new SlewRateLimiter(5);
 
-    BooleanSupplier slowModeSupplier = () -> joystick.getHID().getXButton();
+    BooleanSupplier slowModeSupplier = () -> joystick.getHID().getSquareButton();
 
     DoubleSupplier rotationSupplier = () -> {
-      double leftTrigger = joystick.getHID().getLeftTriggerAxis();
-      double rightTrigger = joystick.getHID().getRightTriggerAxis();
+      double leftTrigger = (joystick.getHID().getL2Axis()+1.0)/2.0;
+      double rightTrigger = (joystick.getHID().getR2Axis()+1.0)/2.0;
+
+      SmartDashboard.putNumber("Left Trigger", leftTrigger);
+      SmartDashboard.putNumber("Right Trigger", rightTrigger);
 
       double rotate = 0.0;
       if (leftTrigger < rightTrigger) {
@@ -111,7 +118,10 @@ public class RobotContainer {
         rotate = leftTrigger;
       }
 
-      return rotateFilter.calculate(rotate) * MaxAngularRate;
+      rotate = Math.copySign(rotate*rotate, rotate);
+      rotate = rotateFilter.calculate(rotate) * MaxAngularRate;
+      SmartDashboard.putNumber("Rotate", rotate);
+      return rotate;
     };
 
     Supplier<Optional<Translation2d>> translationSupplier = () -> {
@@ -122,6 +132,10 @@ public class RobotContainer {
       
       // Y Move Velocity - Strafe
       double yMove = MathUtil.applyDeadband(yFilter.calculate(-joystick.getHID().getLeftX()), .05);
+
+      if (joystick.getHID().getL1Button()) {
+        yMove = 0;
+      }
 
       if (xMove == 0 && yMove == 0) {
         return Optional.empty();
@@ -140,7 +154,8 @@ public class RobotContainer {
 
     // Field-centric by default
     final var fieldCentric = new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+      // .withDeadband(MaxSpeed * 0.1)
+      .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
       .withSteerRequestType(SteerRequestType.MotionMagicExpo);
     final var fieldCentricIdle = new SwerveRequest.Idle();
@@ -186,7 +201,7 @@ public class RobotContainer {
     // joystick.rightBumper().whileTrue(elevatorToPostitonCommandDash(35));
     // joystick.y().whileTrue(elevatorToPostitonCommandDash());
 
-    joystick.a().whileTrue(drivetrain.applyRequest(() -> {
+    joystick.cross().whileTrue(drivetrain.applyRequest(() -> {
       var translation = translationSupplier.get();
 
       double rotate = rotationSupplier.getAsDouble();
@@ -215,10 +230,13 @@ public class RobotContainer {
     }).withName("Robot Centric with GamePad"));
 
     final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    joystick.rightStick().toggleOnTrue(drivetrain.applyRequest(() -> brake));
+    joystick.R3().toggleOnTrue(drivetrain.applyRequest(() -> brake));
 
     // Reset the field-centric heading on start press
-    joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    joystick.options().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+    // Reset robot pose to 0,0, and 0 degrees
+    joystick.share().onTrue(drivetrain.runOnce(() -> drivetrain.resetPose(new Pose2d())));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }
