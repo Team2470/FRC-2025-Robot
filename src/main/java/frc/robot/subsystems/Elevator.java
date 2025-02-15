@@ -84,7 +84,7 @@ public class Elevator extends SubsystemBase {
     // it may stop moving if their built in encoders are not in sync.
     //
     m_motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    m_motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 80;
+    m_motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 106;
     m_motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     m_motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1;
 

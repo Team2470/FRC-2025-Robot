@@ -16,7 +16,7 @@ public class Constants {
         public static final int kEncoderID = 41;
         public static final double kSensorToMechanismRatio = 1.0;
         public static final double kRotorToSensorRatio = 108;
-        public static final double kP = 0;
+        public static final double kP = 10;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kS = 0;
@@ -32,14 +32,14 @@ public class Constants {
         public static final boolean kMotorInverted = false;
         public static final int kCANdiID = 42;
         public static final double kSensorToMechanismRatio = 1.0;
-        public static final double kRotorToSensorRatio = 160;
-        public static final double kP = 0;
+        public static final double kRotorToSensorRatio = 90;
+        public static final double kP = 10;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kS = 0;
-        public static final double kG = 0;
-        public static final double kV = 0;
-        public static final double kA = 0;
+        public static final double kG = 0.49;
+        public static final double kV = 1.64;
+        public static final double kA = 0.02;
     
     } 
     public static class DriveConstants {

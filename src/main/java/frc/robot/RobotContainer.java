@@ -33,8 +33,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -61,6 +63,9 @@ public class RobotContainer {
   private final Elevator elevator1 = new Elevator();
   private final Wrist wrist = new Wrist();
   private final Arm arm = new Arm();
+  private final Intake algea = new Intake(0, 43, false);
+  private final Intake coral = new Intake(0, 44, false);
+
 
   // Autos
   private final RevDigit m_revDigit;
@@ -252,20 +257,78 @@ public class RobotContainer {
 
 
     testButtonPad.button(9).whileTrue(elevator1.elevatorHomeCommand());
+    // controller.leftBumper().whileTrue(new ParallelCommandGroup(algea.runMotorForwardsSpeedCommand(3), coral.runMotorForwardsSpeedCommand(3)));
+    controller.rightBumper().whileTrue(new ParallelCommandGroup(algea.runMotorBackwardsSpeedCommand(11), coral.runMotorBackwardsSpeedCommand(11)));
+    controller.leftBumper().whileTrue(new SequentialCommandGroup(
+      arm.pidCommand(15).until(()-> Math.abs(arm.getErrorAngle()) < 3),
+      arm.coastCommand()
 
-    // testButtonPad.button(1).whileTrue(elevator1.openLoopCommand(2));
-    // testButtonPad.button(5).whileTrue(elevator1.openLoopCommand(-2));
-    // testButtonPad.button(10).whileTrue(elevator1.pidCommand(0.5));
-    // testButtonPad.button(6).whileTrue(elevator1.pidCommand(24));
-    // testButtonPad.button(2).whileTrue(elevator1.pidCommand(48));
-    // testButtonPad.button(3).whileTrue(arm.openLoopCommand(1));
-    // testButtonPad.button(7).whileTrue(arm.openLoopCommand(-1));
-    testButtonPad.button(4).whileTrue(wrist.openLoopCommand(1));
-    testButtonPad.button(8).whileTrue(wrist.openLoopCommand(-1));
+
+
+    ));
+
+
+    
+    buttonPad.button(9).whileTrue(new SequentialCommandGroup(
+      
+      arm.pidCommand(85).until(()-> Math.abs(arm.getErrorAngle()) < 3),
+      new ParallelCommandGroup(
+        arm.pidCommand(85),
+        wrist.pidCommand(85)
+      )
+
+
+
+    ));
+    buttonPad.button(10).whileTrue(pickupCommand());
+    
+    arm.setDefaultCommand(drivePositiCommand());
+    testButtonPad.button(1).whileTrue(elevator1.openLoopCommand(2));
+    testButtonPad.button(5).whileTrue(elevator1.openLoopCommand(-2));
+    testButtonPad.button(10).whileTrue(elevator1.pidCommand(0.5));
+    testButtonPad.button(6).whileTrue(elevator1.pidCommand(24));
+    testButtonPad.button(2).whileTrue(elevator1.pidCommand(48));
+
+
+    testButtonPad.button(3).whileTrue(arm.openLoopCommand(1));
+    testButtonPad.button(7).whileTrue(arm.openLoopCommand(-1));
+    testButtonPad.button(11).whileTrue(arm.pidCommand(20));
+    testButtonPad.button(12).whileTrue(arm.pidCommand(65));
+    testButtonPad.button(4).whileTrue(wrist.pidCommand(90));
+    testButtonPad.button(8).whileTrue(wrist.pidCommand(0));
+    
   }
 
   public Command getAutonomousCommand() {
     return m_autoSelector.selected();
   }
+
+  private Command drivePositiCommand(){
+    return new SequentialCommandGroup(
+      arm.pidCommand(85).until(()-> Math.abs(arm.getErrorAngle()) < 3),
+      new ParallelCommandGroup(
+        arm.pidCommand(85),
+        wrist.pidCommand(85)
+    ));
+  }
+
+  private Command pickupCommand(){
+    return new SequentialCommandGroup(
+      arm.pidCommand(60).until(()-> Math.abs(arm.getErrorAngle()) < 3),
+      new ParallelCommandGroup(
+      wrist.pidCommand(0),
+      arm.coastCommand(),
+      new ParallelCommandGroup(algea.runMotorBackwardsSpeedCommand(11), coral.runMotorBackwardsSpeedCommand(11))
+
+      )
+
+      
+
+
+
+
+    );
+  }
+
 
 }

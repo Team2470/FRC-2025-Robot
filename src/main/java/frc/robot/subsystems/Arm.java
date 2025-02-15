@@ -42,7 +42,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 public class Arm extends SubsystemBase {
     private enum ControlMode {
-        kOpenLoop, kPID, kStop, kHoming
+        kOpenLoop, kPID, kStop, kHoming, kCoast
     }
     //
     // Hardware
@@ -50,6 +50,7 @@ public class Arm extends SubsystemBase {
     private final TalonFX m_motor;
     private final CANdi m_candi;
     private final MedianFilter m_absoluteEncoderFilter = new MedianFilter(5);
+    private final CoastOut m_CoastOut = new CoastOut();
     //
     // State
     //
@@ -75,8 +76,8 @@ public class Arm extends SubsystemBase {
         TalonFXConfiguration motorConfig = new TalonFXConfiguration();
         motorConfig.Feedback.FeedbackRemoteSensorID = m_candi.getDeviceID();
         motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-        motorConfig.Feedback.SensorToMechanismRatio = ArmConstants.kSensorToMechanismRatio;
-        motorConfig.Feedback.RotorToSensorRatio = ArmConstants.kRotorToSensorRatio;
+        // motorConfig.Feedback.SensorToMechanismRatio = ArmConstants.kSensorToMechanismRatio;
+        // motorConfig.Feedback.RotorToSensorRatio = ArmConstants.kRotorToSensorRatio;
         
         motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -88,9 +89,9 @@ public class Arm extends SubsystemBase {
         motorConfig.CurrentLimits.StatorCurrentLimit = 125;
 
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = .25;
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 21.36;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -.25;
+        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
 
         m_motor = new TalonFX(ArmConstants.kMotorID, "rio");
         m_motor.getConfigurator().apply(motorConfig);
@@ -115,7 +116,7 @@ public class Arm extends SubsystemBase {
      * @return Degrees
      */
     public double getPosition() {
-        return Units.rotationsToDegrees(m_motor.getPosition().getValueAsDouble());
+        return Units.rotationsToDegrees(m_motor.getPosition().getValueAsDouble()/ArmConstants.kRotorToSensorRatio);
     }
 
     public double getAbsolutePosition() {
@@ -133,7 +134,7 @@ public class Arm extends SubsystemBase {
         var absolutePositionFiltered = (m_absoluteEncoderFilter.calculate(getAbsolutePosition()));
         
         if (DriverStation.isDisabled()) {
-            m_motor.setPosition(Degrees.of(absolutePositionFiltered));
+            m_motor.setPosition(absolutePositionFiltered/360.0 * ArmConstants.kRotorToSensorRatio);
         }
 
         double outputVoltage = 0;
@@ -175,6 +176,11 @@ public class Arm extends SubsystemBase {
                 SmartDashboard.putNumber("Arm PID Profile Velocity",Units.radiansToDegrees(m_pidController.getSetpoint().velocity));
 
                 break;
+            case kCoast:
+
+
+                break;
+
         }
 
         SmartDashboard.putNumber("Arm Position", getPosition());
@@ -185,8 +191,12 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Arm Absolute Position Filtered", absolutePositionFiltered);
         SmartDashboard.putNumber("Arm Absolute Position Raw", m_candi.getPWM2Position().getValueAsDouble());
 
+        if (m_controlMode != ControlMode.kCoast) {
+            m_motor.setVoltage(outputVoltage);
 
-        m_motor.setVoltage(outputVoltage);
+        } else {
+            m_motor.setControl(m_CoastOut);
+        }
 
     }
     public void setOutputVoltage(double OutputVoltage) {
@@ -202,6 +212,15 @@ public class Arm extends SubsystemBase {
 
     public Command openLoopCommand(double OutputVoltage) {
         return openLoopCommand( () -> OutputVoltage);
+    }
+
+    public Command coastCommand() {
+        return Commands.runEnd(
+            () ->{
+                m_controlMode = ControlMode.kCoast;
+                m_demand = 0;
+            }, this::stop, this);
+
     }
 
     public void stop() {
@@ -238,6 +257,9 @@ public class Arm extends SubsystemBase {
       }
 
       public void setPIDSetpoint(double degrees) {
+        if (m_controlMode != ControlMode.kPID) {
+            m_pidController.reset(Units.degreesToRadians(getPosition()));
+        }
         m_controlMode = ControlMode.kPID;
         m_demand = degrees;
       }
@@ -250,5 +272,6 @@ public class Arm extends SubsystemBase {
       public Command pidCommand(double degrees) {
         return pidCommand(() -> degrees);
       }
+
 
 }

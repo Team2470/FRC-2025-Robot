@@ -53,7 +53,7 @@ public class Wrist extends SubsystemBase {
 
     private final ProfiledPIDController m_pidController = new ProfiledPIDController(WristConstants.kP,
       WristConstants.kI, WristConstants.kD,
-      new TrapezoidProfile.Constraints(0, 0));
+      new TrapezoidProfile.Constraints(Units.degreesToRadians(360), Units.degreesToRadians(360)));
 
     private ArmFeedforward m_feedforward = new ArmFeedforward(WristConstants.kS, WristConstants.kG,
       WristConstants.kV,
@@ -219,6 +219,9 @@ public class Wrist extends SubsystemBase {
       }
 
       public void setPIDSetpoint(double degrees) {
+        if (m_controlMode != ControlMode.kPID) {
+            m_pidController.reset(Units.degreesToRadians(getPosition()));
+        }
         m_controlMode = ControlMode.kPID;
         m_demand = degrees;
       }
