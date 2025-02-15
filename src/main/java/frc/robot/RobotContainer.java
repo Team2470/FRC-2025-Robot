@@ -35,12 +35,16 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.*;
+
 
 public class RobotContainer {
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -48,9 +52,15 @@ public class RobotContainer {
                                                                                  // angular velocity
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
-  private final CommandXboxController joystick = new CommandXboxController(0);
+  private final CommandXboxController controller = new CommandXboxController(0);
+  
+  private final CommandJoystick buttonPad = new CommandJoystick(1);
+  private final CommandJoystick testButtonPad = new CommandJoystick(2);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+  private final Elevator elevator1 = new Elevator();
+  private final Wrist wrist = new Wrist();
+  private final Arm arm = new Arm();
 
   // Autos
   private final RevDigit m_revDigit;
@@ -102,11 +112,11 @@ public class RobotContainer {
     final var yFilter = new SlewRateLimiter(5);
     final var rotateFilter = new SlewRateLimiter(5);
 
-    BooleanSupplier slowModeSupplier = () -> joystick.getHID().getXButton();
+    BooleanSupplier slowModeSupplier = () -> controller.getHID().getXButton();
 
     DoubleSupplier rotationSupplier = () -> {
-      double leftTrigger = joystick.getHID().getLeftTriggerAxis();
-      double rightTrigger = joystick.getHID().getRightTriggerAxis();
+      double leftTrigger = controller.getHID().getLeftTriggerAxis();
+      double rightTrigger = controller.getHID().getRightTriggerAxis();
 
       SmartDashboard.putNumber("Left Trigger", leftTrigger);
       SmartDashboard.putNumber("Right Trigger", rightTrigger);
@@ -128,12 +138,12 @@ public class RobotContainer {
       // Read gamepad joystick state, and apply slew rate limiters
 
       // X Move Velocity - Forward
-      double xMove = MathUtil.applyDeadband(xFilter.calculate(-joystick.getHID().getLeftY()), .05);
+      double xMove = MathUtil.applyDeadband(xFilter.calculate(-controller.getHID().getLeftY()), .05);
       
       // Y Move Velocity - Strafe
-      double yMove = MathUtil.applyDeadband(yFilter.calculate(-joystick.getHID().getLeftX()), .05);
+      double yMove = MathUtil.applyDeadband(yFilter.calculate(-controller.getHID().getLeftX()), .05);
 
-      if (joystick.getHID().getLeftBumperButton()) {
+      if (controller.getHID().getLeftBumperButton()) {
         yMove = 0;
       }
 
@@ -201,7 +211,7 @@ public class RobotContainer {
     // joystick.rightBumper().whileTrue(elevatorToPostitonCommandDash(35));
     // joystick.y().whileTrue(elevatorToPostitonCommandDash());
 
-    joystick.a().whileTrue(drivetrain.applyRequest(() -> {
+    controller.a().whileTrue(drivetrain.applyRequest(() -> {
       var translation = translationSupplier.get();
 
       double rotate = rotationSupplier.getAsDouble();
@@ -230,15 +240,28 @@ public class RobotContainer {
     }).withName("Robot Centric with GamePad"));
 
     final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    joystick.rightStick().toggleOnTrue(drivetrain.applyRequest(() -> brake));
+    controller.rightStick().toggleOnTrue(drivetrain.applyRequest(() -> brake));
 
     // Reset the field-centric heading on start press
-    joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    controller.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     // Reset robot pose to 0,0, and 0 degrees
-    joystick.back().onTrue(drivetrain.runOnce(() -> drivetrain.resetPose(new Pose2d())));
+    controller.back().onTrue(drivetrain.runOnce(() -> drivetrain.resetPose(new Pose2d())));
 
     drivetrain.registerTelemetry(logger::telemeterize);
+
+
+    testButtonPad.button(9).whileTrue(elevator1.elevatorHomeCommand());
+
+    // testButtonPad.button(1).whileTrue(elevator1.openLoopCommand(2));
+    // testButtonPad.button(5).whileTrue(elevator1.openLoopCommand(-2));
+    // testButtonPad.button(10).whileTrue(elevator1.pidCommand(0.5));
+    // testButtonPad.button(6).whileTrue(elevator1.pidCommand(24));
+    // testButtonPad.button(2).whileTrue(elevator1.pidCommand(48));
+    // testButtonPad.button(3).whileTrue(arm.openLoopCommand(1));
+    // testButtonPad.button(7).whileTrue(arm.openLoopCommand(-1));
+    testButtonPad.button(4).whileTrue(wrist.openLoopCommand(1));
+    testButtonPad.button(8).whileTrue(wrist.openLoopCommand(-1));
   }
 
   public Command getAutonomousCommand() {
