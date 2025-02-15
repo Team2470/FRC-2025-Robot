@@ -32,11 +32,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -297,7 +301,51 @@ public class RobotContainer {
 
 
     
-    arm.setDefaultCommand(drivePositiCommand());
+    // arm.setDefaultCommand(drivePositiCommand());
+
+
+    // wrist.setDefaultCommand(new SequentialCommandGroup(
+    //   new ConditionalCommand(
+    //     wrist.pidCommand(85).until(()-> Math.abs(wrist.getPosition() - 85) < 3), 
+    //     wrist.pidCommand(85).until(()-> Math.abs(wrist.getPosition() - 85) < 3), 
+    //     () -> arm.getPosition() < 30
+    //   ),
+    //   // wrist.pidCommand(85).until(()-> wrist.getPosition() > 80),
+    //   new WaitUntilCommand(()-> Math.abs(arm.getPosition() - 85) < 3),
+    //   new ParallelCommandGroup(
+    //     // arm.pidCommand(85),
+    //     // wrist.pidCommand(85),
+    //     // new WaitUntilCommand(()-> Math.abs(elevator1.getErrorPercent()) < 2)
+    //     new RunCommand(()->{}))
+    // )));
+
+    // arm.setDefaultCommand(new SequentialCommandGroup(
+    //   new ConditionalCommand(
+    //     new WaitUntilCommand(()-> Math.abs(wrist.getPosition() - 85) < 3), 
+    //     new WaitUntilCommand(()-> Math.abs(wrist.getPosition() - 85) < 3), 
+    //     () -> arm.getPosition() < 30
+    //   ),
+    //   // wrist.pidCommand(85).until(()-> wrist.getPosition() > 80),
+    //   arm.pidCommand(85).until(()-> Math.abs(arm.getPosition() - 85) < 3),
+    //   new ParallelCommandGroup(
+    //     arm.pidCommand(85),
+    //     // wrist.pidCommand(85),
+    //     // elevator1.pidCommand(1).until(()-> Math.abs(elevator1.getErrorPercent()) < 2)
+    // )));
+    // elevator1.setDefaultCommand(new SequentialCommandGroup(
+    //   new ConditionalCommand(
+    //     new WaitUntilCommand(()-> Math.abs(wrist.getPosition() - 85) < 3), 
+    //     new WaitUntilCommand(()-> Math.abs(wrist.getPosition() - 85) < 3), 
+    //     () -> arm.getPosition() < 30
+    //   ),
+    //   // wrist.pidCommand(85).until(()-> wrist.getPosition() > 80),
+    //   new WaitUntilCommand(()-> Math.abs(arm.getPosition() - 85) < 3),
+    //   new ParallelCommandGroup(
+    //     // arm.pidCommand(85),
+    //     // wrist.pidCommand(85),
+    //     elevator1.pidCommand(1).until(()-> Math.abs(elevator1.getErrorPercent()) < 2),
+    //     new RunCommand(()->{}))
+    // )));
     testButtonPad.button(1).whileTrue(elevator1.openLoopCommand(2));
     testButtonPad.button(5).whileTrue(elevator1.openLoopCommand(-2));
     testButtonPad.button(10).whileTrue(elevator1.pidCommand(0.5));
@@ -320,16 +368,27 @@ public class RobotContainer {
 
   private Command drivePositiCommand(){
     return new SequentialCommandGroup(
-      arm.pidCommand(85).until(()-> Math.abs(arm.getErrorAngle()) < 3),
+      new ConditionalCommand(
+        wrist.pidCommand(85).until(()-> Math.abs(wrist.getPosition() - 85) < 3), 
+        wrist.pidCommand(85).until(()-> Math.abs(wrist.getPosition() - 85) < 3), 
+        () -> arm.getPosition() < 30
+      ),
+      // wrist.pidCommand(85).until(()-> wrist.getPosition() > 80),
+      arm.pidCommand(85).until(()-> Math.abs(arm.getPosition() - 85) < 3),
       new ParallelCommandGroup(
         arm.pidCommand(85),
-        wrist.pidCommand(85)
+        wrist.pidCommand(85),
+        elevator1.pidCommand(1).until(()-> Math.abs(elevator1.getErrorPercent()) < 2)
+
     ));
   }
 
   private Command pickupCommand(){
     return new SequentialCommandGroup(
-      arm.pidCommand(60).until(()-> Math.abs(arm.getErrorAngle()) < 3),
+      new ParallelCommandGroup(
+      arm.pidCommand(120),
+      wrist.pidCommand(60)
+      ).until(()-> Math.abs(arm.getErrorAngle()) < 5),
       new ParallelCommandGroup(
       wrist.pidCommand(0),
       arm.coastCommand(),
@@ -350,7 +409,7 @@ public class RobotContainer {
       arm.pidCommand(60).until(()-> Math.abs(arm.getErrorAngle()) < 3),
 
       new ParallelCommandGroup(
-        elevator1.pidCommand(10),
+        elevator1.pidCommand(17),
         arm.pidCommand(60)
       ).until(()->Math.abs(elevator1.getErrorPercent()) < 2),
     new ParallelCommandGroup(
