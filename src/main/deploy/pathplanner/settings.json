@@ -3,10 +3,11 @@
   "robotLength": 0.930275,
   "holonomicMode": true,
   "pathFolders": [
-    "intakeToIntake",
+    "Trash",
     "autoStart",
     "farLeftIntakeToPost",
     "farRightIntakeToPost",
+    "intakeToIntake",
     "leftIntakeToPost",
     "postToFarLeftIntake",
     "postToFarRightIntake",
@@ -15,6 +16,7 @@
     "rightIntakeToPost"
   ],
   "autoFolders": [
+    "Trash",
     "cirAutos",
     "leftAuto",
     "midAuto",

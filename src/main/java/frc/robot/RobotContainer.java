@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -295,13 +296,15 @@ public class RobotContainer {
     buttonPad.button(4).whileTrue(runInTakeCommand(11));
     buttonPad.button(8).whileTrue(runInTakeCommand(-11));
     buttonPad.button(10).whileTrue(reefL2Command());
+    buttonPad.button(11).whileTrue(reefL3Command());
+    buttonPad.button(12).whileTrue(reefL4Command());
 
 
 
 
 
     
-    // arm.setDefaultCommand(drivePositiCommand());
+    arm.setDefaultCommand(drivePositiCommand());
 
 
     // wrist.setDefaultCommand(new SequentialCommandGroup(
@@ -378,7 +381,7 @@ public class RobotContainer {
       new ParallelCommandGroup(
         arm.pidCommand(85),
         wrist.pidCommand(85),
-        elevator1.pidCommand(1).until(()-> Math.abs(elevator1.getErrorPercent()) < 2)
+        new ScheduleCommand(elevator1.pidCommand(1).until(()-> Math.abs(elevator1.getErrorPercent()) < 2))
 
     ));
   }
@@ -413,12 +416,45 @@ public class RobotContainer {
         arm.pidCommand(60)
       ).until(()->Math.abs(elevator1.getErrorPercent()) < 2),
     new ParallelCommandGroup(
-      elevator1.pidCommand(10),
+      elevator1.pidCommand(17),
       arm.pidCommand(60),
       wrist.pidCommand(125)
     )
     );
   }
+
+  private Command reefL3Command(){
+    return new SequentialCommandGroup(
+      arm.pidCommand(60).until(()-> Math.abs(arm.getErrorAngle()) < 3),
+
+      new ParallelCommandGroup(
+        elevator1.pidCommand(30),
+        arm.pidCommand(60)
+      ).until(()->Math.abs(elevator1.getErrorPercent()) < 2),
+    new ParallelCommandGroup(
+      elevator1.pidCommand(30),
+      arm.pidCommand(60),
+      wrist.pidCommand(125)
+    )
+    );
+  }
+
+  private Command reefL4Command(){
+    return new SequentialCommandGroup(
+      arm.pidCommand(60).until(()-> Math.abs(arm.getErrorAngle()) < 3),
+
+      new ParallelCommandGroup(
+        elevator1.pidCommand(54.3),
+        arm.pidCommand(60)
+      ).until(()->Math.abs(elevator1.getPosition()- 54.3) < 2),
+    new ParallelCommandGroup(
+      elevator1.pidCommand(54.3),
+      arm.pidCommand(60),
+      wrist.pidCommand(125)
+    )
+    );
+  }
+
 
 
 
