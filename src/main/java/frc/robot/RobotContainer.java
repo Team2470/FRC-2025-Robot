@@ -280,7 +280,22 @@ public class RobotContainer {
 
 
     ));
-    buttonPad.button(10).whileTrue(pickupCommand());
+
+    buttonPad.button(9).whileTrue(pickupCommand());
+    buttonPad.button(3).and(buttonPad.button(2)).whileTrue(elevator1.openLoopCommand(2));
+    buttonPad.button(3).and(buttonPad.button(6)).whileTrue(elevator1.openLoopCommand(-2));
+    buttonPad.button(7).and(buttonPad.button(2)).whileTrue(arm.openLoopCommand(2));
+    buttonPad.button(7).and(buttonPad.button(6)).whileTrue(arm.openLoopCommand(-2));
+    buttonPad.button(10).and(buttonPad.button(2)).whileTrue(wrist.openLoopCommand(1));
+    buttonPad.button(10).and(buttonPad.button(6)).whileTrue(wrist.openLoopCommand(-1));
+    buttonPad.button(4).whileTrue(runInTakeCommand(11));
+    buttonPad.button(8).whileTrue(runInTakeCommand(-11));
+    buttonPad.button(10).whileTrue(reefL2Command());
+
+
+
+
+
     
     arm.setDefaultCommand(drivePositiCommand());
     testButtonPad.button(1).whileTrue(elevator1.openLoopCommand(2));
@@ -319,16 +334,34 @@ public class RobotContainer {
       wrist.pidCommand(0),
       arm.coastCommand(),
       new ParallelCommandGroup(algea.runMotorBackwardsSpeedCommand(11), coral.runMotorBackwardsSpeedCommand(11))
-
       )
-
-      
-
-
-
-
     );
   }
+
+  private Command runInTakeCommand(int voltage) {
+    return new ParallelCommandGroup(
+      algea.runMotorForwardsSpeedCommand(voltage), coral.runMotorForwardsSpeedCommand(voltage)
+    );
+
+  }
+
+  private Command reefL2Command(){
+    return new SequentialCommandGroup(
+      arm.pidCommand(60).until(()-> Math.abs(arm.getErrorAngle()) < 3),
+
+      new ParallelCommandGroup(
+        elevator1.pidCommand(10),
+        arm.pidCommand(60)
+      ).until(()->Math.abs(elevator1.getErrorPercent()) < 2),
+    new ParallelCommandGroup(
+      elevator1.pidCommand(10),
+      arm.pidCommand(60),
+      wrist.pidCommand(125)
+    )
+    );
+  }
+
+
 
 
 }
