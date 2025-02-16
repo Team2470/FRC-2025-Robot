@@ -11,9 +11,66 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "Drive2L2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Drive2L2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "HoldL2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OuttakeCoral"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "End Trash"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DrivePos"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "End End Trash"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DrivePos"
+                }
+              }
+            ]
           }
         }
       ]

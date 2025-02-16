@@ -88,6 +88,10 @@ public class RobotContainer {
     NamedCommands.registerCommands(new HashMap<String, Command>() {
       {
         // put("speaker-shoot", speakerShoot());
+        put("L2", autoReefCommand());
+        put("HoldL2", reefL2Command());
+        put("OuttakeCoral", runInTakeCommand(-8).withTimeout(2));
+        put("DrivePos", drivePositiCommand());
       }
     });
 
@@ -102,6 +106,8 @@ public class RobotContainer {
     m_autoSelector.registerCommand("NOBK", "NOBK", AutoBuilder.buildAuto("NOBK"));
     m_autoSelector.registerCommand("R1", "R1", AutoBuilder.buildAuto("R1"));
     m_autoSelector.registerCommand("R2", "R2", AutoBuilder.buildAuto("R2"));
+    m_autoSelector.registerCommand("Trsh", "Trsh", AutoBuilder.buildAuto("Trsh"));
+
 
     configureBindings();
     m_autoSelector.initialize();
@@ -263,7 +269,7 @@ public class RobotContainer {
 
     testButtonPad.button(9).whileTrue(elevator1.elevatorHomeCommand());
     // controller.leftBumper().whileTrue(new ParallelCommandGroup(algea.runMotorForwardsSpeedCommand(3), coral.runMotorForwardsSpeedCommand(3)));
-    controller.rightBumper().whileTrue(new ParallelCommandGroup(algea.runMotorBackwardsSpeedCommand(11), coral.runMotorBackwardsSpeedCommand(11)));
+    controller.rightBumper().whileTrue(new ParallelCommandGroup(algea.runMotorBackwardsSpeedCommand(8), coral.runMotorBackwardsSpeedCommand(8)));
     controller.leftBumper().whileTrue(new SequentialCommandGroup(
       arm.pidCommand(15).until(()-> Math.abs(arm.getErrorAngle()) < 3),
       arm.coastCommand()
@@ -293,8 +299,8 @@ public class RobotContainer {
     buttonPad.button(7).and(buttonPad.button(6)).whileTrue(arm.openLoopCommand(-2));
     buttonPad.button(10).and(buttonPad.button(2)).whileTrue(wrist.openLoopCommand(1));
     buttonPad.button(10).and(buttonPad.button(6)).whileTrue(wrist.openLoopCommand(-1));
-    buttonPad.button(4).whileTrue(runInTakeCommand(11));
-    buttonPad.button(8).whileTrue(runInTakeCommand(-11));
+    buttonPad.button(4).whileTrue(runInTakeCommand(6));
+    buttonPad.button(8).whileTrue(runInTakeCommand(-6));
     buttonPad.button(10).whileTrue(reefL2Command());
     buttonPad.button(11).whileTrue(reefL3Command());
     buttonPad.button(12).whileTrue(reefL4Command());
@@ -372,8 +378,8 @@ public class RobotContainer {
   private Command drivePositiCommand(){
     return new SequentialCommandGroup(
       new ConditionalCommand(
-        wrist.pidCommand(85).until(()-> Math.abs(wrist.getPosition() - 85) < 3), 
-        wrist.pidCommand(85).until(()-> Math.abs(wrist.getPosition() - 85) < 3), 
+        wrist.pidCommand(85).until(()-> Math.abs(wrist.getPosition() - 85) < 10), 
+        wrist.pidCommand(85).until(()-> Math.abs(wrist.getPosition() - 85) < 10), 
         () -> arm.getPosition() < 30
       ),
       // wrist.pidCommand(85).until(()-> wrist.getPosition() > 80),
@@ -395,7 +401,7 @@ public class RobotContainer {
       new ParallelCommandGroup(
       wrist.pidCommand(0),
       arm.coastCommand(),
-      new ParallelCommandGroup(algea.runMotorBackwardsSpeedCommand(11), coral.runMotorBackwardsSpeedCommand(11))
+      new ParallelCommandGroup(algea.runMotorBackwardsSpeedCommand(6), coral.runMotorBackwardsSpeedCommand(6))
       )
     );
   }
@@ -444,14 +450,20 @@ public class RobotContainer {
       arm.pidCommand(60).until(()-> Math.abs(arm.getErrorAngle()) < 3),
 
       new ParallelCommandGroup(
-        elevator1.pidCommand(54.3),
+        elevator1.pidCommand(54.77),
         arm.pidCommand(60)
-      ).until(()->Math.abs(elevator1.getPosition()- 54.3) < 2),
+      ).until(()->Math.abs(elevator1.getPosition()- 54.77) < 2),
     new ParallelCommandGroup(
-      elevator1.pidCommand(54.3),
+      elevator1.pidCommand(54.77),
       arm.pidCommand(60),
       wrist.pidCommand(125)
     )
+    );
+  }
+
+  private Command autoReefCommand(){
+    return new SequentialCommandGroup(
+      reefL2Command().until(()-> Math.abs(elevator1.getErrorPercent()) < 3)
     );
   }
 

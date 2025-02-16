@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.1489309210526315,
-        "y": 6.796052631578947
+        "x": 5.898108552631578,
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.811513157894736,
-        "y": 6.796052631578947
+        "x": 8.159210526315789,
+        "y": 3.370723684210526
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "EndDrive2L2"
     },
     {
       "anchor": {
-        "x": 5.8403782894736835,
-        "y": 6.796052631578947
+        "x": 3.8871710526315786,
+        "y": 1.388651315789474
       },
       "prevControl": {
-        "x": 7.331743421052631,
-        "y": 6.796052631578947
+        "x": 4.849342105263157,
+        "y": 1.4560032894736843
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "End End Trash"
     }
   ],
   "rotationTargets": [],
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 180.0
+    "velocity": 4.0,
+    "rotation": -179.53037298031035
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Trash",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -179.705
   },
   "useDefaultConstraints": true
 }

@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 5.830756578947367,
+        "x": 5.898108552631578,
         "y": 4.0
       },
       "prevControl": {
-        "x": 7.120065789473683,
+        "x": 7.187417763157894,
         "y": 4.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "EndDrive2L2"
     }
   ],
   "rotationTargets": [],
@@ -49,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -178.60281897270366
+    "rotation": -179.705
   },
   "reversed": false,
   "folder": "Trash",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -179.51445416999186
+    "rotation": 179.486
   },
   "useDefaultConstraints": true
 }
