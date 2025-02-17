@@ -25,12 +25,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Intake  extends SubsystemBase {
+public class OuterIntake  extends SubsystemBase {
     // private final CANdi algaeIntake;
     private TalonFXSConfiguration configs_FXS;
     private TalonFXS algaeTalonFXS1;
 
-    public Intake (int canDIid, int motorid, boolean isInverted) {
+    public OuterIntake (int canDIid, int motorid, boolean isInverted) {
         algaeTalonFXS1 = new TalonFXS(motorid, "rio");
         
         configs_FXS = new TalonFXSConfiguration();
@@ -38,9 +38,9 @@ public class Intake  extends SubsystemBase {
         configs_FXS.Slot0.kI = 0;
         configs_FXS.Slot0.kD = 10;
         configs_FXS.Slot0.kV = 2;
-        configs_FXS.CurrentLimits.SupplyCurrentLimitEnable = true;
-        configs_FXS.CurrentLimits.SupplyCurrentLimit = 20;
-        configs_FXS.Commutation.MotorArrangement = MotorArrangementValue.NEO550_JST;
+        configs_FXS.CurrentLimits.StatorCurrentLimitEnable = true;
+        configs_FXS.CurrentLimits.StatorCurrentLimit = 100;
+        configs_FXS.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
         configs_FXS.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         // algaeIntake = new CANdi(motorid, "Canivore");
@@ -80,8 +80,8 @@ public class Intake  extends SubsystemBase {
     public void periodic() {
         // SmartDashboard.putBoolean("S1_Closed", getS1Closed());
         // SmartDashboard.putBoolean("S2_Closed", getS2Closed());
-        SmartDashboard.putNumber("Algae position", getPos());
-        SmartDashboard.putNumber("Algae velocity", getVelo());
+        SmartDashboard.putNumber("OuterIntake position", getPos());
+        SmartDashboard.putNumber("OuterIntake velocity", getVelo());
     }
     public Command runMotorForwardsCommand() {
 	    return Commands.runEnd(
