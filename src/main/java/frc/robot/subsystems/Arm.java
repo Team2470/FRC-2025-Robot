@@ -59,7 +59,7 @@ public class Arm extends SubsystemBase {
 
     private final ProfiledPIDController m_pidController = new ProfiledPIDController(ArmConstants.kP,
       ArmConstants.kI, ArmConstants.kD,
-      new TrapezoidProfile.Constraints(0, 0));
+      new TrapezoidProfile.Constraints(Units.degreesToRadians(360), Units.degreesToRadians(360)));
 
     private ArmFeedforward m_feedforward = new ArmFeedforward(ArmConstants.kS, ArmConstants.kG,
       ArmConstants.kV,
