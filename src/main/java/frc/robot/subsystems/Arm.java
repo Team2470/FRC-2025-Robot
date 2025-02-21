@@ -69,7 +69,7 @@ public class Arm extends SubsystemBase {
         CANdiConfiguration candiconfig = new CANdiConfiguration();
         candiconfig.PWM2.AbsoluteSensorDiscontinuityPoint = 0.5;
         candiconfig.PWM2.SensorDirection = false;
-        candiconfig.PWM2.AbsoluteSensorOffset = Units.degreesToRotations(85);
+        candiconfig.PWM2.AbsoluteSensorOffset = Units.degreesToRotations(0);
         m_candi = new CANdi(ArmConstants.kCANdiID, "rio");
         m_candi.getConfigurator().apply(candiconfig);
     
