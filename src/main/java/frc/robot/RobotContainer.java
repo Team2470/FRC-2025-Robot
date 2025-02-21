@@ -70,7 +70,7 @@ public class RobotContainer {
   private final Arm arm = new Arm();
   private final OuterIntake algea = new OuterIntake(42, 44, false);
   private final InnerIntake coral = new InnerIntake(41, 43, false);
-  private final HuamnIntake intake = new HuamnIntake(45, 46, true);
+  private final HumanIntake intake = new HumanIntake(45, 46, true);
   private final IntakeServo intakeServoRight = new IntakeServo(0, false);
   private final IntakeServo intakeServoLeft = new IntakeServo(1, true);
   private final Superstructure superstructure = new Superstructure();
@@ -174,9 +174,9 @@ public class RobotContainer {
       // Y Move Velocity - Strafe
       double yMove = MathUtil.applyDeadband(yFilter.calculate(-controller.getHID().getLeftX()), .05);
 
-      if (controller.getHID().getLeftBumperButton()) {
-        yMove = 0;
-      }
+      // if (controller.getHID().getLeftBumperButton()) {
+      //   yMove = 0;
+      // }
 
       if (xMove == 0 && yMove == 0) {
         return Optional.empty();
@@ -272,6 +272,78 @@ public class RobotContainer {
     final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     controller.rightStick().toggleOnTrue(drivetrain.applyRequest(() -> brake));
 
+    final SwerveRequest.FieldCentricFacingAngle leftHuman = new SwerveRequest.FieldCentricFacingAngle()
+      .withHeadingPID(5, 0, 0)
+      .withTargetDirection(Rotation2d.fromDegrees(-36))
+      .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+      .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+
+
+    //Robot aligns with left human player station
+    controller.leftBumper().whileTrue( // Drivetrain will execute this command periodically
+      drivetrain.applyRequest(() -> {
+        var translation = translationSupplier.get();
+
+      
+        double xMove = 0;
+        double yMove = 0;
+
+        if (translation.isPresent()) {
+          xMove = translation.get().getX();
+          yMove = translation.get().getY();
+        }
+
+        if (slowModeSupplier.getAsBoolean()) {
+          xMove *= 0.5;
+          yMove *= 0.5;
+        
+        } else {
+          xMove *= 1.0;
+          yMove *= 1.0;
+         
+        }
+
+        return leftHuman
+            .withVelocityX(xMove)
+            .withVelocityY(yMove);
+    }).withName("leftHuman"));
+
+    // Robot aligns with right human player station
+    final SwerveRequest.FieldCentricFacingAngle rightHuman = new SwerveRequest.FieldCentricFacingAngle()
+      .withHeadingPID(5, 0, 0)
+      .withTargetDirection(Rotation2d.fromDegrees(54))
+      .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+      .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+
+    controller.rightBumper().whileTrue( // Drivetrain will execute this command periodically
+      drivetrain.applyRequest(() -> {
+        var translation = translationSupplier.get();
+
+      
+        double xMove = 0;
+        double yMove = 0;
+
+        if (translation.isPresent()) {
+          xMove = translation.get().getX();
+          yMove = translation.get().getY();
+        }
+
+        if (slowModeSupplier.getAsBoolean()) {
+          xMove *= 0.5;
+          yMove *= 0.5;
+        
+        } else {
+          xMove *= 1.0;
+          yMove *= 1.0;
+         
+        }
+
+        return rightHuman
+            .withVelocityX(xMove)
+            .withVelocityY(yMove);
+    }).withName("rightHuman"));
     // Reset the field-centric heading on start press
     controller.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 

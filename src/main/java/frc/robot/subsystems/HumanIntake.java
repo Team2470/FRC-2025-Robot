@@ -25,12 +25,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class HuamnIntake  extends SubsystemBase {
+public class HumanIntake  extends SubsystemBase {
     private final CANdi caNdi;
     private TalonFXSConfiguration configs_FXS;
     private TalonFXS algaeTalonFXS1;
 
-    public HuamnIntake (int canDIid, int motorid, boolean isInverted) {
+    public HumanIntake (int canDIid, int motorid, boolean isInverted) {
         algaeTalonFXS1 = new TalonFXS(motorid, "rio");
         
         configs_FXS = new TalonFXSConfiguration();
