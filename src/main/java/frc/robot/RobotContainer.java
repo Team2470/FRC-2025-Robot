@@ -68,9 +68,9 @@ public class RobotContainer {
   private final Elevator elevator1 = new Elevator();
   private final Wrist wrist = new Wrist();
   private final Arm arm = new Arm();
-  private final OuterIntake algea = new OuterIntake(0, 43, false);
-  private final InnerIntake coral = new InnerIntake(41, 44, false);
-  private final HuamnIntake intake = new HuamnIntake(42, 45, false);
+  private final OuterIntake algea = new OuterIntake(42, 44, false);
+  private final InnerIntake coral = new InnerIntake(41, 43, false);
+  private final HuamnIntake intake = new HuamnIntake(45, 46, true);
   private final IntakeServo intakeServoRight = new IntakeServo(0, false);
   private final IntakeServo intakeServoLeft = new IntakeServo(1, true);
   private final Superstructure superstructure = new Superstructure();
@@ -102,7 +102,7 @@ public class RobotContainer {
         put("L2", reefL2Command());
         put("L3", reefL3Command());
         put("L4", reefL4Command());
-        put("HumanPlayerIntake", HumanPlayerIntakeCommand().until(coral::haveCoral));
+        put("HpIntake", HumanPlayerIntakeCommand().until(coral::haveCoral));
       }
     });
 
@@ -353,7 +353,7 @@ public class RobotContainer {
         new ParallelCommandGroup(
             arm.pidCommand(77),
             wrist.pidCommand(85),
-            new ScheduleCommand(elevator1.pidCommand(1).until(() -> Math.abs(elevator1.getErrorPercent()) < 2))
+            new ScheduleCommand(elevator1.pidCommand(0.33).until(() -> Math.abs(elevator1.getErrorPercent()) < 2))
         )).withName("TeleOp Drive Position");
   }
 
@@ -475,20 +475,25 @@ public class RobotContainer {
     return new SequentialCommandGroup(
         new ParallelCommandGroup(
             arm.pidCommand(45), // arm goes down for the wrist rotate
-            wrist.pidCommand(145)).until(() -> Math.abs(arm.getPosition() - 45) < 5), // wrist rotates towards the human
+            elevator1.pidCommand(2),
+            wrist.pidCommand(165)).until(() -> Math.abs(wrist.getPosition() - 165) < 5), // wrist rotates towards the human
                                                                                       // player intake
         new ParallelCommandGroup(
-            wrist.pidCommand(145), // hold wrist position
-            arm.pidCommand(75)).until(() -> Math.abs(arm.getPosition() - 75) < 5), // arm goes up to intake from human
+            elevator1.pidCommand(2),
+            wrist.pidCommand(165), // hold wrist position
+            arm.pidCommand(53)).until(() -> Math.abs(arm.getPosition() - 53) < 5), // arm goes up to intake from human
                                                                                    // player position
         new ParallelCommandGroup(
-            wrist.pidCommand(145), // hold wrist position
-            arm.pidCommand(75), // hold arm position
+            elevator1.pidCommand(2),
+            wrist.pidCommand(165), // hold wrist position
+            arm.pidCommand(53), // hold arm position
             new SequentialCommandGroup(// runs the human player intake and then slows down after beam break sensor is
                                        // triggered
                 intake.runMotorForwardsSpeedCommand(4).until(intake::haveCoral),
-                intake.runMotorBackwardsSpeedCommand(2)),
-            coral.runMotorBackwardsSpeedCommand(2)).until(coral::haveCoral))
+                new ParallelCommandGroup(
+                  intake.runMotorForwardsSpeedCommand(2),
+                coral.runMotorBackwardsSpeedCommand(2)).until(coral::haveCoral)
+         )))
         .withName("Human Player Intake Command");
   }
 

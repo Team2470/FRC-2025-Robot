@@ -60,7 +60,7 @@ public class HuamnIntake  extends SubsystemBase {
         
     }
     public boolean haveCoral() {
-        return caNdi.getS1Closed().getValue(); 
+        return caNdi.getS2Closed().getValue(); 
     }
     // public boolean getS2Closed() {
     //     return algaeIntake.getS2Closed().getValue();
@@ -78,10 +78,10 @@ public class HuamnIntake  extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("InnerIntake Have Coral", haveCoral());
+        SmartDashboard.putBoolean("Human Intake Have Coral", haveCoral());
         // SmartDashboard.putBoolean("S2_Closed", getS2Closed());
-        SmartDashboard.putNumber("InnerIntake position", getPos());
-        SmartDashboard.putNumber("InnerIntake velocity", getVelo());
+        SmartDashboard.putNumber("Human Intake position", getPos());
+        SmartDashboard.putNumber("Human Intake velocity", getVelo());
     }
     public Command runMotorForwardsCommand() {
 	    return Commands.runEnd(
