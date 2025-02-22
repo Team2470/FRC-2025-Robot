@@ -85,7 +85,7 @@ public class Wrist extends SubsystemBase {
         motorConfig.CurrentLimits.StatorCurrentLimit = 125;
 
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = .384;
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = .5;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
 

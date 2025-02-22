@@ -48,9 +48,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Superstructure.m_State;
 
 
 public class RobotContainer {
@@ -68,8 +67,12 @@ public class RobotContainer {
   private final Elevator elevator1 = new Elevator();
   private final Wrist wrist = new Wrist();
   private final Arm arm = new Arm();
-  private final OuterIntake algea = new OuterIntake(0, 43, false);
-  private final InnerIntake coral = new InnerIntake(41, 44, false);
+  private final OuterIntake algea = new OuterIntake(42, 44, false);
+  private final InnerIntake coral = new InnerIntake(41, 43, false);
+  private final HumanIntake intake = new HumanIntake(45, 46, true);
+  private final IntakeServo intakeServoRight = new IntakeServo(0, false);
+  private final IntakeServo intakeServoLeft = new IntakeServo(1, true);
+  private final Superstructure superstructure = new Superstructure();
 
 
   // Autos
@@ -97,6 +100,10 @@ public class RobotContainer {
         put("OuttakeCoral", runInTakeCommand(8).withTimeout(1).withName("Auto Run Intkae"));
         put("DrivePos", autoDrivePositiCommand());
         put("L1", reefL1Command());
+        put("L2", reefL2Command());
+        put("L3", reefL3Command());
+        put("L4", reefL4Command());
+        put("HpIntake", HumanPlayerIntakeCommand().until(coral::haveCoral));
       }
     });
 
@@ -271,6 +278,79 @@ public class RobotContainer {
           .withRotationalRate(rotate);
     }).withName("Robot Centric with GamePad"));
 
+    final SwerveRequest.FieldCentricFacingAngle leftHuman = new SwerveRequest.FieldCentricFacingAngle()
+      .withHeadingPID(5, 0, 0)
+      .withTargetDirection(Rotation2d.fromDegrees(-36))
+      .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+      .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+
+
+    //Robot aligns with left human player station
+    controller.leftBumper().whileTrue( // Drivetrain will execute this command periodically
+      drivetrain.applyRequest(() -> {
+        var translation = translationSupplier.get();
+
+      
+        double xMove = 0;
+        double yMove = 0;
+
+        if (translation.isPresent()) {
+          xMove = translation.get().getX();
+          yMove = translation.get().getY();
+        }
+
+        if (slowModeSupplier.getAsBoolean()) {
+          xMove *= 0.5;
+          yMove *= 0.5;
+        
+        } else {
+          xMove *= 1.0;
+          yMove *= 1.0;
+         
+        }
+
+        return leftHuman
+            .withVelocityX(xMove)
+            .withVelocityY(yMove);
+    }).withName("leftHuman"));
+
+    // Robot aligns with right human player station
+    final SwerveRequest.FieldCentricFacingAngle rightHuman = new SwerveRequest.FieldCentricFacingAngle()
+      .withHeadingPID(5, 0, 0)
+      .withTargetDirection(Rotation2d.fromDegrees(54))
+      .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+      .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+
+    controller.rightBumper().whileTrue( // Drivetrain will execute this command periodically
+      drivetrain.applyRequest(() -> {
+        var translation = translationSupplier.get();
+
+      
+        double xMove = 0;
+        double yMove = 0;
+
+        if (translation.isPresent()) {
+          xMove = translation.get().getX();
+          yMove = translation.get().getY();
+        }
+
+        if (slowModeSupplier.getAsBoolean()) {
+          xMove *= 0.5;
+          yMove *= 0.5;
+        
+        } else {
+          xMove *= 1.0;
+          yMove *= 1.0;
+         
+        }
+
+        return rightHuman
+            .withVelocityX(xMove)
+            .withVelocityY(yMove);
+    }).withName("rightHuman"));
+
     final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     controller.rightStick().toggleOnTrue(drivetrain.applyRequest(() -> brake));
 
@@ -306,7 +386,8 @@ public class RobotContainer {
     ));
 
     buttonPad.button(9).whileTrue(pickupCommand());
-    buttonPad.button(5).whileTrue(pickupAlgaeCommand());
+    // buttonPad.button(5).whileTrue(pickupAlgaeCommand());
+    buttonPad.button(5).whileTrue(HumanPlayerIntakeCommand());
     buttonPad.button(3).and(buttonPad.button(2)).whileTrue(elevator1.openLoopCommand(2));
     buttonPad.button(3).and(buttonPad.button(6)).whileTrue(elevator1.openLoopCommand(-2));
     buttonPad.button(7).and(buttonPad.button(2)).whileTrue(arm.openLoopCommand(2));
@@ -390,21 +471,22 @@ public class RobotContainer {
     return m_autoSelector.selected();
   }
 
-  private Command drivePositiCommand(){
+  private Command drivePositiCommand() {
+    superstructure.setRobotState(m_State.Drive);
     return new SequentialCommandGroup(
-      new ConditionalCommand(
-        wrist.pidCommand(85).until(()-> Math.abs(wrist.getPosition() - 85) < 10), 
-        wrist.pidCommand(85).until(()-> Math.abs(wrist.getPosition() - 85) < 10), 
-        () -> arm.getPosition() < 30
-      ),
-      // wrist.pidCommand(85).until(()-> wrist.getPosition() > 80),
-      arm.pidCommand(77).until(()-> Math.abs(arm.getPosition() - 77) < 3),
-      new ParallelCommandGroup(
-        arm.pidCommand(77),
-        wrist.pidCommand(85),
-        new ScheduleCommand(elevator1.pidCommand(1).until(()-> Math.abs(elevator1.getErrorPercent()) < 2))
-
-    )).withName("TeleOp Drive Position");
+        new ConditionalCommand(
+            new SequentialCommandGroup(
+                arm.pidCommand(60).until(() -> Math.abs(arm.getPosition() - 60) < 3),
+                wrist.pidCommand(75).until(() -> Math.abs(wrist.getPosition() - 85) < 10)),
+            wrist.pidCommand(85).until(() -> Math.abs(wrist.getPosition() - 85) < 10),
+            () -> superstructure.getRobotState() == m_State.HpIntake),
+        // wrist.pidCommand(85).until(()-> wrist.getPosition() > 80),
+        arm.pidCommand(77).until(() -> Math.abs(arm.getPosition() - 77) < 3),
+        new ParallelCommandGroup(
+            arm.pidCommand(77),
+            wrist.pidCommand(85),
+            new ScheduleCommand(elevator1.pidCommand(0.33).until(() -> Math.abs(elevator1.getErrorPercent()) < 2))
+        )).withName("TeleOp Drive Position");
   }
 
 
@@ -448,22 +530,8 @@ public class RobotContainer {
     );
 
   }
-
-  private Command pickupAlgaeCommand(){
-    return new SequentialCommandGroup(
-      new ParallelCommandGroup(
-      arm.pidCommand(120),
-      wrist.pidCommand(60)
-      ).until(()-> Math.abs(arm.getErrorAngle()) < 5),
-      new ParallelCommandGroup(
-      wrist.pidCommand(20),
-      arm.coastCommand(),
-      new ParallelCommandGroup(algea.runMotorBackwardsSpeedCommand(8), coral.runMotorBackwardsSpeedCommand(4))
-      )
-    );
-  }
-
-  private Command reefL1Command(){
+  private Command reefL1Command() {
+    superstructure.setRobotState(m_State.L1);
     return new SequentialCommandGroup(
       arm.pidCommand(78).until(()-> Math.abs(arm.getErrorAngle()) < 3),
 
@@ -479,9 +547,10 @@ public class RobotContainer {
     ).withName("L1 Reef Command");
   }
 
-  private Command reefL2Command(){
+  private Command reefL2Command() {
+    superstructure.setRobotState(m_State.L2);
     return new SequentialCommandGroup(
-      arm.pidCommand(60).until(()-> Math.abs(arm.getErrorAngle()) < 3),
+        arm.pidCommand(60).until(() -> Math.abs(arm.getErrorAngle()) < 3),
 
       new ParallelCommandGroup(
         elevator1.pidCommand(17),
@@ -496,6 +565,7 @@ public class RobotContainer {
   }
 
   private Command reefL3Command(){
+    superstructure.setRobotState(m_State.L3);
     return new SequentialCommandGroup(
       arm.pidCommand(60).until(()-> Math.abs(arm.getErrorAngle()) < 3),
 
@@ -512,6 +582,7 @@ public class RobotContainer {
   }
 
   private Command reefL4Command(){
+    superstructure.setRobotState(m_State.L4);
     return new SequentialCommandGroup(
       arm.pidCommand(60).until(()-> Math.abs(arm.getErrorAngle()) < 3),
 
@@ -551,4 +622,43 @@ public class RobotContainer {
     ).withName("Auto L4 Reef Command");
   }
 
+
+
+
+  private Command HumanPlayerIntakeCommand() {
+    superstructure.setRobotState(m_State.HpIntake);
+    return new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            arm.pidCommand(45), // arm goes down for the wrist rotate
+            elevator1.pidCommand(2),
+            wrist.pidCommand(165)).until(() -> Math.abs(wrist.getPosition() - 165) < 5), // wrist rotates towards the human
+                                                                                      // player intake
+        new ParallelCommandGroup(
+            elevator1.pidCommand(2),
+            wrist.pidCommand(165), // hold wrist position
+            arm.pidCommand(53)).until(() -> Math.abs(arm.getPosition() - 53) < 5), // arm goes up to intake from human
+                                                                                   // player position
+        new ParallelCommandGroup(
+            elevator1.pidCommand(2),
+            wrist.pidCommand(165), // hold wrist position
+            arm.pidCommand(53), // hold arm position
+            new SequentialCommandGroup(// runs the human player intake and then slows down after beam break sensor is
+                                       // triggered
+                intake.runMotorForwardsSpeedCommand(4).until(intake::haveCoral),
+                new ParallelCommandGroup(
+                  intake.runMotorForwardsSpeedCommand(2),
+                coral.runMotorBackwardsSpeedCommand(2)).until(coral::haveCoral)
+         )))
+        .withName("Human Player Intake Command");
+  }
+
+  private Command dropIntake() {
+    return new ParallelCommandGroup(
+        intakeServoRight.disengageServo(),
+        intakeServoLeft.disengageServo());
+  }
+
+
+
 }
+
