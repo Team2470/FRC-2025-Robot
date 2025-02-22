@@ -88,7 +88,10 @@ public class RobotContainer {
     NamedCommands.registerCommands(new HashMap<String, Command>() {
       {
         // put("speaker-shoot", speakerShoot());
-        put("L2", autoReefCommand());
+        put("L1Auto", autoL1ReefCommand());
+        put("L2Auto", autoL2ReefCommand());
+        put("L3Auto", autoL3ReefCommand());
+        put("L4Auto", autoL4ReefCommand());
         put("HoldL2", reefL2Command());
         put("OuttakeCoral", runInTakeCommand(-8).withTimeout(1).withName("Auto Run Outtake"));
         put("OuttakeCoral", runInTakeCommand(8).withTimeout(1).withName("Auto Run Intkae"));
@@ -110,6 +113,11 @@ public class RobotContainer {
     m_autoSelector.registerCommand("R2", "R2", AutoBuilder.buildAuto("R2"));
     m_autoSelector.registerCommand("Trsh", "Trsh", AutoBuilder.buildAuto("Trsh"));
     m_autoSelector.registerCommand("TRH2", "TRH2", AutoBuilder.buildAuto("TRH2"));
+
+    // Placeholder for CIR autos
+    m_autoSelector.registerCommand("LIKL", "LIKL", AutoBuilder.buildAuto("LIKL"));
+    m_autoSelector.registerCommand("MG", "MG", AutoBuilder.buildAuto("MG"));
+    m_autoSelector.registerCommand("RFDC", "RFDC", AutoBuilder.buildAuto("RFDC"));
 
 
     configureBindings();
@@ -441,6 +449,36 @@ public class RobotContainer {
 
   }
 
+  private Command pickupAlgaeCommand(){
+    return new SequentialCommandGroup(
+      new ParallelCommandGroup(
+      arm.pidCommand(120),
+      wrist.pidCommand(60)
+      ).until(()-> Math.abs(arm.getErrorAngle()) < 5),
+      new ParallelCommandGroup(
+      wrist.pidCommand(20),
+      arm.coastCommand(),
+      new ParallelCommandGroup(algea.runMotorBackwardsSpeedCommand(8), coral.runMotorBackwardsSpeedCommand(4))
+      )
+    );
+  }
+
+  private Command reefL1Command(){
+    return new SequentialCommandGroup(
+      arm.pidCommand(78).until(()-> Math.abs(arm.getErrorAngle()) < 3),
+
+      new ParallelCommandGroup(
+        elevator1.pidCommand(5),
+        arm.pidCommand(78)
+      ).until(()->Math.abs(elevator1.getErrorPercent()) < 2),
+    new ParallelCommandGroup(
+      elevator1.pidCommand(5),
+      arm.pidCommand(78),
+      wrist.pidCommand(33)
+    )
+    ).withName("L1 Reef Command");
+  }
+
   private Command reefL2Command(){
     return new SequentialCommandGroup(
       arm.pidCommand(60).until(()-> Math.abs(arm.getErrorAngle()) < 3),
@@ -489,43 +527,28 @@ public class RobotContainer {
     );
   }
 
-  private Command autoReefCommand(){
+  private Command autoL1ReefCommand(){
+    return new SequentialCommandGroup(
+      reefL1Command().until(()-> Math.abs(elevator1.getErrorPercent()) < 3)
+    ).withName("Auto L1 Reef Command");
+  }
+  
+  private Command autoL2ReefCommand(){
     return new SequentialCommandGroup(
       reefL2Command().until(()-> Math.abs(elevator1.getErrorPercent()) < 3)
-    ).withName("Auto Reef Command");
+    ).withName("Auto L2 Reef Command");
   }
 
-  private Command pickupAlgaeCommand(){
+  private Command autoL3ReefCommand(){
     return new SequentialCommandGroup(
-      new ParallelCommandGroup(
-      arm.pidCommand(120),
-      wrist.pidCommand(60)
-      ).until(()-> Math.abs(arm.getErrorAngle()) < 5),
-      new ParallelCommandGroup(
-      wrist.pidCommand(20),
-      arm.coastCommand(),
-      new ParallelCommandGroup(algea.runMotorBackwardsSpeedCommand(8), coral.runMotorBackwardsSpeedCommand(4))
-      )
-    );
+      reefL3Command().until(()-> Math.abs(elevator1.getErrorPercent()) < 3)
+    ).withName("Auto L3 Reef Command");
   }
-
-  private Command reefL1Command(){
+  
+  private Command autoL4ReefCommand(){
     return new SequentialCommandGroup(
-      arm.pidCommand(78).until(()-> Math.abs(arm.getErrorAngle()) < 3),
-
-      new ParallelCommandGroup(
-        elevator1.pidCommand(5),
-        arm.pidCommand(78)
-      ).until(()->Math.abs(elevator1.getErrorPercent()) < 2),
-    new ParallelCommandGroup(
-      elevator1.pidCommand(5),
-      arm.pidCommand(78),
-      wrist.pidCommand(33)
-    )
-    ).withName("L1 Reef Command");
+      reefL4Command().until(()-> Math.abs(elevator1.getErrorPercent()) < 3)
+    ).withName("Auto L4 Reef Command");
   }
-
-
-
 
 }

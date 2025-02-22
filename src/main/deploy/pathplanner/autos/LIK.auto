@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "MHAutoStart"
+                  "pathName": "LIAutoStart"
                 }
               },
               {
@@ -36,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "hToFarRight"
+                  "pathName": "iToFarLeft"
                 }
               },
               {
@@ -61,57 +61,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "farRightToG"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4Auto"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "OuttakeCoral"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "gToFarRight"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DrivePos"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "farRightToF"
+                  "pathName": "farLeftToK"
                 }
               },
               {
@@ -133,6 +83,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "midAuto",
+  "folder": "leftAuto",
   "choreoAuto": false
 }

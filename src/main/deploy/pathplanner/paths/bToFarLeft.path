@@ -3,32 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.6,
-        "y": 7.3
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 1.7801717239506694,
-        "y": 6.878749959843417
-      },
-      "isLocked": false,
-      "linkedName": "farLeftStation"
-    },
-    {
-      "anchor": {
         "x": 3.2,
         "y": 3.85
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.3219564428450306,
+        "y": 4.068235253908682
+      },
+      "isLocked": false,
+      "linkedName": "postB"
+    },
+    {
+      "anchor": {
+        "x": 1.6,
+        "y": 7.3
+      },
       "prevControl": {
-        "x": 3.099675704650736,
-        "y": 4.078986977277473
+        "x": 1.6458049020427217,
+        "y": 7.054231997711548
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "postB"
+      "linkedName": "farLeftStation"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5067497403946,
+      "rotationDegrees": -54.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -54.0
   },
   "reversed": false,
   "folder": "postToFarLeftIntake",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -54.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

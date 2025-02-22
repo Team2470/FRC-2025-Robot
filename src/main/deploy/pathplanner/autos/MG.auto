@@ -5,15 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "MGAutoStart"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "MGAutoStart"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Auto"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L4"
+            "name": "OuttakeCoral"
           }
         }
       ]
