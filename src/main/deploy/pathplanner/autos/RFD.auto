@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LIAutoStart"
+                  "pathName": "RFAutoStart"
                 }
               },
               {
@@ -36,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "iToFarLeft"
+                  "pathName": "fToFarRight"
                 }
               },
               {
@@ -61,57 +61,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "farLeftToK"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4Auto"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "OuttakeCoral"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "kToFarLeft"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "autoHumanPlayerIntakeCommand"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "farLeftToL"
+                  "pathName": "farRightToD"
                 }
               },
               {
@@ -132,7 +82,7 @@
       ]
     }
   },
-  "resetOdom": false,
-  "folder": "cirAutos",
+  "resetOdom": true,
+  "folder": "rightAuto",
   "choreoAuto": false
 }

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.7,
-        "y": 3.0
+        "x": 3.69,
+        "y": 2.96
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.158137175324675,
-        "y": 3.3341112012987004
+        "x": 2.148137175324675,
+        "y": 3.2941112012987004
       },
       "isLocked": false,
       "linkedName": "postC"
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5212876427829699,
+      "waypointRelativePos": 0.5410176531671863,
       "rotationDegrees": -54.0
     }
   ],

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.12478070685071,
-        "y": 1.5336370100929522
+        "x": 1.763852836230995,
+        "y": 1.2065589579155476
       },
       "isLocked": false,
       "linkedName": "farRightStation"
@@ -20,15 +20,20 @@
         "y": 4.2
       },
       "prevControl": {
-        "x": 3.2887979103210023,
-        "y": 2.4005538035489664
+        "x": 3.0479981486790435,
+        "y": 3.9876900585280097
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "postA"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.41225337487019725,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],

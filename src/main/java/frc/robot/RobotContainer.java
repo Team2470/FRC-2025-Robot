@@ -95,6 +95,7 @@ public class RobotContainer {
         put("L2Auto", autoL2ReefCommand());
         put("L3Auto", autoL3ReefCommand());
         put("L4Auto", autoL4ReefCommand());
+        put("autoHumanPlayerIntakeCommand", autoHumanPlayerIntakeCommand());
         put("HoldL2", reefL2Command());
         put("OuttakeCoral", runInTakeCommand(-8).withTimeout(1).withName("Auto Run Outtake"));
         put("OuttakeCoral", runInTakeCommand(8).withTimeout(1).withName("Auto Run Intkae"));
@@ -489,6 +490,32 @@ public class RobotContainer {
         )).withName("TeleOp Drive Position");
   }
 
+  private Command HumanPlayerIntakeCommand() {
+    superstructure.setRobotState(m_State.HpIntake);
+    return new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            arm.pidCommand(45), // arm goes down for the wrist rotate
+            elevator1.pidCommand(2),
+            wrist.pidCommand(165)).until(() -> Math.abs(wrist.getPosition() - 165) < 5), // wrist rotates towards the human
+                                                                                      // player intake
+        new ParallelCommandGroup(
+            elevator1.pidCommand(2),
+            wrist.pidCommand(165), // hold wrist position
+            arm.pidCommand(53)).until(() -> Math.abs(arm.getPosition() - 53) < 5), // arm goes up to intake from human
+                                                                                   // player position
+        new ParallelCommandGroup(
+            elevator1.pidCommand(2),
+            wrist.pidCommand(165), // hold wrist position
+            arm.pidCommand(53), // hold arm position
+            new SequentialCommandGroup(// runs the human player intake and then slows down after beam break sensor is
+                                       // triggered
+                intake.runMotorForwardsSpeedCommand(4).until(intake::haveCoral),
+                new ParallelCommandGroup(
+                  intake.runMotorForwardsSpeedCommand(2),
+                coral.runMotorBackwardsSpeedCommand(2)).until(coral::haveCoral)
+         )))
+        .withName("Human Player Intake Command");
+  }
 
   
   private Command autoDrivePositiCommand(){
@@ -507,6 +534,7 @@ public class RobotContainer {
 
     )).withName("Auto Drive Position");
   }
+
   private Command pickupCommand(){
     return new SequentialCommandGroup(
       new ParallelCommandGroup(
@@ -622,34 +650,10 @@ public class RobotContainer {
     ).withName("Auto L4 Reef Command");
   }
 
-
-
-
-  private Command HumanPlayerIntakeCommand() {
-    superstructure.setRobotState(m_State.HpIntake);
+  private Command autoHumanPlayerIntakeCommand(){
     return new SequentialCommandGroup(
-        new ParallelCommandGroup(
-            arm.pidCommand(45), // arm goes down for the wrist rotate
-            elevator1.pidCommand(2),
-            wrist.pidCommand(165)).until(() -> Math.abs(wrist.getPosition() - 165) < 5), // wrist rotates towards the human
-                                                                                      // player intake
-        new ParallelCommandGroup(
-            elevator1.pidCommand(2),
-            wrist.pidCommand(165), // hold wrist position
-            arm.pidCommand(53)).until(() -> Math.abs(arm.getPosition() - 53) < 5), // arm goes up to intake from human
-                                                                                   // player position
-        new ParallelCommandGroup(
-            elevator1.pidCommand(2),
-            wrist.pidCommand(165), // hold wrist position
-            arm.pidCommand(53), // hold arm position
-            new SequentialCommandGroup(// runs the human player intake and then slows down after beam break sensor is
-                                       // triggered
-                intake.runMotorForwardsSpeedCommand(4).until(intake::haveCoral),
-                new ParallelCommandGroup(
-                  intake.runMotorForwardsSpeedCommand(2),
-                coral.runMotorBackwardsSpeedCommand(2)).until(coral::haveCoral)
-         )))
-        .withName("Human Player Intake Command");
+      HumanPlayerIntakeCommand().until(()-> Math.abs(elevator1.getErrorPercent()) < 3)
+    ).withName("Auto Human Player Intake Command");
   }
 
   private Command dropIntake() {
@@ -657,8 +661,6 @@ public class RobotContainer {
         intakeServoRight.disengageServo(),
         intakeServoLeft.disengageServo());
   }
-
-
 
 }
 

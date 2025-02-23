@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9722478655268714,
-        "y": 3.746903126900309
+        "x": 2.9551202230749505,
+        "y": 3.7996621926069696
       },
       "isLocked": false,
       "linkedName": "postB"
@@ -20,8 +20,8 @@
         "y": 1.32
       },
       "prevControl": {
-        "x": 1.0177702673471887,
-        "y": 1.5167931278549314
+        "x": 1.0665423141081847,
+        "y": 1.570507141317611
       },
       "nextControl": null,
       "isLocked": false,
@@ -36,7 +36,14 @@
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "intake",
+      "waypointRelativePos": 0.7522624434389146,
+      "endWaypointRelativePos": 1.0,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 1.4,

@@ -42,7 +42,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "DrivePos"
+                  "name": "autoHumanPlayerIntakeCommand"
                 }
               }
             ]
@@ -92,7 +92,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "DrivePos"
+                  "name": "autoHumanPlayerIntakeCommand"
                 }
               }
             ]
@@ -142,7 +142,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "DrivePos"
+                  "name": "autoHumanPlayerIntakeCommand"
                 }
               }
             ]
