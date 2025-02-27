@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 8.274671052631577,
-        "y": 3.370723684210526
+        "y": 3.3707236842105255
       },
       "isLocked": false,
       "linkedName": "EndDrive2L2"
