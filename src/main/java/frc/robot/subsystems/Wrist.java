@@ -37,7 +37,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 public class Wrist extends SubsystemBase {
     private enum ControlMode {
-        kOpenLoop, kPID, kStop, kHoming
+        kOpenLoop, kPID, kStop, kHoming, kCoast
     }
     //
     // Hardware
@@ -45,6 +45,7 @@ public class Wrist extends SubsystemBase {
     private final TalonFX m_motor;
     private final CANcoder m_encoder;
 
+    private final CoastOut m_CoastOut = new CoastOut();
     //
     // State
     //
@@ -64,7 +65,7 @@ public class Wrist extends SubsystemBase {
         CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
         encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
         encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-        encoderConfig.MagnetSensor.MagnetOffset = Units.degreesToRotations(92.8125);
+        encoderConfig.MagnetSensor.MagnetOffset = Units.degreesToRotations(92.8125 + 17+43.5);
 
         m_encoder = new CANcoder(WristConstants.kEncoderID, "rio");
         m_encoder.getConfigurator().apply(encoderConfig);
@@ -87,7 +88,7 @@ public class Wrist extends SubsystemBase {
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = .5;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
+        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -0.1;
 
         m_motor = new TalonFX(WristConstants.kMotorID, "rio");
         m_motor.getConfigurator().apply(motorConfig);
@@ -169,7 +170,25 @@ public class Wrist extends SubsystemBase {
 
         m_motor.setVoltage(outputVoltage);
 
+        if (m_controlMode != ControlMode.kCoast) {
+            m_motor.setVoltage(outputVoltage);
+
+        } else {
+            m_motor.setControl(m_CoastOut);
+        }
+
     }
+
+
+    public Command coastCommand() {
+        return Commands.runEnd(
+            () ->{
+                m_controlMode = ControlMode.kCoast;
+                m_demand = 0;
+            }, this::stop, this);
+
+    }
+
     public void setOutputVoltage(double OutputVoltage) {
         m_controlMode = ControlMode.kOpenLoop;
         m_demand = OutputVoltage;

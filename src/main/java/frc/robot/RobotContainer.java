@@ -26,11 +26,15 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -42,11 +46,13 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.generated.TunerConstants;
@@ -73,8 +79,11 @@ public class RobotContainer {
   private final HumanIntake intake = new HumanIntake(45, 46, true);
   private final IntakeServo intakeServoRight = new IntakeServo(0, false);
   private final IntakeServo intakeServoLeft = new IntakeServo(1, true);
-  private final Superstructure superstructure = new Superstructure();
-
+  private final Superstructure superstructure = new Superstructure(arm, elevator1, wrist);
+  private final DigitalInput m_brakeButton = new DigitalInput(3);
+  private final AddressableLED m_brakeLed = new AddressableLED(3);
+  private final AddressableLEDBuffer m_brakeLedBuffer = new AddressableLEDBuffer(60);
+  private final Climber m_climber = new Climber(47, 48);
 
 
 
@@ -84,6 +93,11 @@ public class RobotContainer {
   private final AutoSelector m_autoSelector;
 
   public RobotContainer() {
+
+
+    m_brakeLed.setLength(m_brakeLedBuffer.getLength());
+    m_brakeLed.setData(m_brakeLedBuffer);
+    m_brakeLed.start();
     // Auto Selector
     m_revDigit = new RevDigit().display("2470");
 
@@ -376,12 +390,15 @@ public class RobotContainer {
     buttonPad.button(9).whileTrue(pickupCommand());
     // buttonPad.button(5).whileTrue(pickupAlgaeCommand());
     buttonPad.button(5).whileTrue(HumanPlayerIntakeCommand());
-    buttonPad.button(3).and(buttonPad.button(2)).whileTrue(elevator1.openLoopCommand(2));
-    buttonPad.button(3).and(buttonPad.button(6)).whileTrue(elevator1.openLoopCommand(-2));
-    buttonPad.button(7).and(buttonPad.button(2)).whileTrue(arm.openLoopCommand(2));
-    buttonPad.button(7).and(buttonPad.button(6)).whileTrue(arm.openLoopCommand(-2));
-    buttonPad.button(11).and(buttonPad.button(2)).whileTrue(wrist.openLoopCommand(1));
-    buttonPad.button(11).and(buttonPad.button(6)).whileTrue(wrist.openLoopCommand(-1));
+
+    buttonPad.button(3).whileTrue(aLgaeL2Command());
+    buttonPad.button(6).whileTrue(aLgaeL3Command());
+    // buttonPad.button(3).and(buttonPad.button(2)).whileTrue(elevator1.openLoopCommand(2));
+    // buttonPad.button(3).and(buttonPad.button(6)).whileTrue(elevator1.openLoopCommand(-2));
+    // buttonPad.button(7).and(buttonPad.button(2)).whileTrue(arm.openLoopCommand(2));
+    // buttonPad.button(7).and(buttonPad.button(6)).whileTrue(arm.openLoopCommand(-2));
+    // buttonPad.button(11).and(buttonPad.button(2)).whileTrue(wrist.openLoopCommand(1));
+    // buttonPad.button(11).and(buttonPad.button(6)).whileTrue(wrist.openLoopCommand(-1));
     buttonPad.button(4).whileTrue(runInTakeCommand(4));
     buttonPad.button(8).whileTrue(runInTakeCommand(-4));
     buttonPad.button(10).whileTrue(reefL2Command());
@@ -404,6 +421,27 @@ public class RobotContainer {
     testButtonPad.button(12).whileTrue(arm.pidCommand(65));
     testButtonPad.button(4).whileTrue(wrist.pidCommand(90));
     testButtonPad.button(8).whileTrue(wrist.pidCommand(0));
+
+
+    	new Trigger(() -> !m_brakeButton.get() && DriverStation.isDisabled()).whileTrue(new StartEndCommand(
+			()-> {
+        LEDPattern red = LEDPattern.solid(Color.kGreen);
+        red.applyTo(m_brakeLedBuffer);
+        m_brakeLed.setData(m_brakeLedBuffer);
+
+
+			},
+			() -> {
+        LEDPattern red = LEDPattern.solid(Color.kRed);
+        red.applyTo(m_brakeLedBuffer);
+        m_brakeLed.setData(m_brakeLedBuffer);
+
+        arm.coastCommand();
+        elevator1.coastCommand();
+        wrist.coastCommand();
+
+			}
+		).ignoringDisable(true));
 
   }
 
@@ -469,6 +507,7 @@ public class RobotContainer {
   private Command reefL2Command() {
     superstructure.setRobotState(m_State.L2);
     return new SequentialCommandGroup(
+        new WaitUntilCommand(()-> wrist.getPosition() < 90),
         arm.pidCommand(60).until(() -> Math.abs(arm.getErrorAngle()) < 3),
 
         new ParallelCommandGroup(
@@ -484,6 +523,7 @@ public class RobotContainer {
   private Command reefL3Command() {
     superstructure.setRobotState(m_State.L3);
     return new SequentialCommandGroup(
+        new WaitUntilCommand(()-> wrist.getPosition() < 90),
         arm.pidCommand(60).until(() -> Math.abs(arm.getErrorAngle()) < 3),
 
         new ParallelCommandGroup(
@@ -498,6 +538,7 @@ public class RobotContainer {
   private Command reefL4Command() {
     superstructure.setRobotState(m_State.L4);
     return new SequentialCommandGroup(
+        new WaitUntilCommand(()-> wrist.getPosition() < 90),
         arm.pidCommand(60).until(() -> Math.abs(arm.getErrorAngle()) < 3),
 
         new ParallelCommandGroup(
@@ -530,6 +571,7 @@ public class RobotContainer {
   private Command reefL1Command() {
     superstructure.setRobotState(m_State.L1);
     return new SequentialCommandGroup(
+        new WaitUntilCommand(()-> wrist.getPosition() < 90),
         arm.pidCommand(78).until(() -> Math.abs(arm.getErrorAngle()) < 3),
 
         new ParallelCommandGroup(
@@ -548,25 +590,57 @@ public class RobotContainer {
         new ParallelCommandGroup(
             arm.pidCommand(45), // arm goes down for the wrist rotate
             elevator1.pidCommand(2),
-            wrist.pidCommand(165)).until(() -> Math.abs(wrist.getPosition() - 165) < 5), // wrist rotates towards the human
+            wrist.pidCommand(173)).until(() -> Math.abs(wrist.getPosition() - 173) < 5), // wrist rotates towards the human
                                                                                       // player intake
         new ParallelCommandGroup(
             elevator1.pidCommand(2),
-            wrist.pidCommand(165), // hold wrist position
+            wrist.pidCommand(173), // hold wrist position
             arm.pidCommand(53)).until(() -> Math.abs(arm.getPosition() - 53) < 5), // arm goes up to intake from human
                                                                                    // player position
         new ParallelCommandGroup(
-            elevator1.pidCommand(2),
-            wrist.pidCommand(165), // hold wrist position
+            elevator1.pidCommand(0),
+            wrist.pidCommand(172), // hold wrist position
             arm.pidCommand(53), // hold arm position
             new SequentialCommandGroup(// runs the human player intake and then slows down after beam break sensor is
                                        // triggered
-                intake.runMotorForwardsSpeedCommand(4).until(intake::haveCoral),
+                intake.runMotorForwardsSpeedCommand(8).until(intake::haveCoral),
                 new ParallelCommandGroup(
-                  intake.runMotorForwardsSpeedCommand(2),
-                coral.runMotorBackwardsSpeedCommand(2)).until(coral::haveCoral)
+                  intake.runMotorForwardsSpeedCommand(4),
+                coral.runMotorBackwardsSpeedCommand(4)).until(coral::haveCoral)
          )))
         .withName("Human Player Intake Command");
+  }
+
+  private Command aLgaeL2Command(){
+    superstructure.setRobotState(m_State.L4);
+    return new SequentialCommandGroup(
+        new WaitUntilCommand(()-> wrist.getPosition() < 90),
+        arm.pidCommand(40).until(() -> Math.abs(arm.getPosition() - 40) < 3),
+
+        new ParallelCommandGroup(
+            elevator1.pidCommand(30),
+            arm.pidCommand(40)).until(() -> Math.abs(elevator1.getPosition() - 18) < 3),
+        new ParallelCommandGroup(
+            elevator1.pidCommand(30),
+            arm.pidCommand(40),
+            wrist.pidCommand(-23)));
+
+  }
+
+  private Command aLgaeL3Command(){
+    superstructure.setRobotState(m_State.L4);
+    return new SequentialCommandGroup(
+        new WaitUntilCommand(()-> wrist.getPosition() < 90),
+        arm.pidCommand(40).until(() -> Math.abs(arm.getPosition() - 40) < 3),
+
+        new ParallelCommandGroup(
+            elevator1.pidCommand(47),
+            arm.pidCommand(40)).until(() -> Math.abs(elevator1.getPosition() - 47) < 3),
+        new ParallelCommandGroup(
+            elevator1.pidCommand(47),
+            arm.pidCommand(40),
+            wrist.pidCommand(-23)));
+
   }
 
   private Command dropIntake() {

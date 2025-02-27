@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -29,7 +30,7 @@ public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
 
   private enum ControlMode {
-    kOpenLoop, kPID, kStop, kHoming
+    kOpenLoop, kPID, kStop, kHoming, kCoast
   }
 
   //
@@ -39,6 +40,7 @@ public class Elevator extends SubsystemBase {
   private final TalonFX m_motorFollower;
   private final DigitalInput m_retractLimit;
   private final TalonFXConfiguration m_motorConfig = new TalonFXConfiguration();
+  private final CoastOut m_CoastOut = new CoastOut();
 
   //
   // State
@@ -208,7 +210,24 @@ public class Elevator extends SubsystemBase {
 
     m_motor.setVoltage(outputVoltage);
 
+    if (m_controlMode != ControlMode.kCoast) {
+      m_motor.setVoltage(outputVoltage);
+
+  } else {
+      m_motor.setControl(m_CoastOut);
   }
+
+  }
+  
+
+  public Command coastCommand() {
+    return Commands.runEnd(
+        () ->{
+            m_controlMode = ControlMode.kCoast;
+            m_demand = 0;
+        }, this::stop, this);
+
+}
 
   public void setOutputVoltage(double OutputVoltage) {
     m_controlMode = ControlMode.kOpenLoop;

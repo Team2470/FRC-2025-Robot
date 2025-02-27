@@ -16,9 +16,9 @@ public class Superstructure extends SubsystemBase{
     
 
     private double elevatorLength;
-    private double armLength;
+    private double armLength = 16;
     private double wristLength;
-    private double elevatorAngle;
+    private double elevatorAngle = 0.174533;
     private double armAngle;
     private double wristAngle;
     private double heightLimit;
@@ -30,8 +30,21 @@ public class Superstructure extends SubsystemBase{
     private double wristX;
     private double wristY;
 
-    public Superstructure(){
+
+    private final Arm m_arm;
+    private final Elevator m_elevator;
+    private final Wrist m_wrist;
+
+    public Superstructure(Arm arm, Elevator elevator, Wrist wrist) {
         currentState = m_State.Drive;
+        
+        m_arm = arm;
+        m_elevator = elevator;
+        m_wrist = wrist;
+
+        
+        
+
     }
 
     public void setRobotState(m_State state) {
@@ -44,7 +57,20 @@ public class Superstructure extends SubsystemBase{
 
     @Override
     public void periodic() {
+
+
+
+        armAngle = m_arm.getPosition();
+        wristAngle = m_wrist.getPosition();
+        elevatorLength = m_elevator.getPosition();
+        updatePositions();
+
+
         SmartDashboard.putString("Super Structure State", currentState.toString());
+        SmartDashboard.putNumber("Elevator Height", elevatorLength);
+        SmartDashboard.putNumber("Arm Angle", armAngle);
+        SmartDashboard.putNumber("Wrist Angle", wristAngle);
+        SmartDashboard.putNumber("Wrist X", wristX);
     }
 
     public void updateElevatorPosition(){
