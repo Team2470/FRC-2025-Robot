@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4331668126699046,
-        "y": 6.776812529076316
+        "x": 2.2204879534370243,
+        "y": 6.650460453653218
       },
       "isLocked": false,
       "linkedName": "farLeftStation"
@@ -20,8 +20,8 @@
         "y": 5.06
       },
       "prevControl": {
-        "x": 3.2906205192932783,
-        "y": 5.172235509103189
+        "x": 3.445937501183733,
+        "y": 5.267498943122814
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0.37798546209761125,
       "rotationDegrees": -59.99999999999999
     }
   ],
@@ -39,7 +39,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 1.4,
+    "maxAcceleration": 8.0,
     "maxAngularVelocity": 229.0,
     "maxAngularAcceleration": 600.0,
     "nominalVoltage": 12.0,

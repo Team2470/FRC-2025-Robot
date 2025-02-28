@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.1727615014401715,
-        "y": 5.275112214822813
+        "x": 6.144467999795303,
+        "y": 5.253381033538571
       },
       "isLocked": false,
       "linkedName": "leftAutoStart"
@@ -20,8 +20,8 @@
         "y": 5.05
       },
       "prevControl": {
-        "x": 5.61575016843605,
-        "y": 5.145281994736983
+        "x": 5.623829122239867,
+        "y": 5.150815508430393
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,7 +39,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 1.4,
+    "maxAcceleration": 8.0,
     "maxAngularVelocity": 229.0,
     "maxAngularAcceleration": 600.0,
     "nominalVoltage": 12.0,
