@@ -1,12 +1,9 @@
 import ntcore
 import time
 
-
-print("Hello world")
-
 inst = ntcore.NetworkTableInstance.getDefault()
 inst.startClient4("encoderLog")
-inst.setServer("localhost")
+inst.setServer("10.24.70.2")
 sd = inst.getTable("SmartDashboard")
 
 with open("encoderLog.csv", "w") as f:
