@@ -85,15 +85,11 @@ public class RobotContainer {
   private final AddressableLEDBuffer m_brakeLedBuffer = new AddressableLEDBuffer(60);
   // private final Climber m_climber = new Climber(, 9);
 
-
-
-
   // Autos
   private final RevDigit m_revDigit;
   private final AutoSelector m_autoSelector;
 
   public RobotContainer() {
-
 
     m_brakeLed.setLength(m_brakeLedBuffer.getLength());
     m_brakeLed.setData(m_brakeLedBuffer);
@@ -189,7 +185,7 @@ public class RobotContainer {
       double yMove = MathUtil.applyDeadband(yFilter.calculate(-controller.getHID().getLeftX()), .05);
 
       // if (controller.getHID().getLeftBumperButton()) {
-      //   yMove = 0;
+      // yMove = 0;
       // }
 
       if (xMove == 0 && yMove == 0) {
@@ -287,77 +283,74 @@ public class RobotContainer {
     controller.rightStick().toggleOnTrue(drivetrain.applyRequest(() -> brake));
 
     final SwerveRequest.FieldCentricFacingAngle leftHuman = new SwerveRequest.FieldCentricFacingAngle()
-      .withHeadingPID(5, 0, 0)
-      .withTargetDirection(Rotation2d.fromDegrees(-36))
-      .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
-      .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+        .withHeadingPID(5, 0, 0)
+        .withTargetDirection(Rotation2d.fromDegrees(-36))
+        .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+        .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
-
-    //Robot aligns with left human player station
+    // Robot aligns with left human player station
     controller.leftBumper().whileTrue( // Drivetrain will execute this command periodically
-      drivetrain.applyRequest(() -> {
-        var translation = translationSupplier.get();
+        drivetrain.applyRequest(() -> {
+          var translation = translationSupplier.get();
 
-      
-        double xMove = 0;
-        double yMove = 0;
+          double xMove = 0;
+          double yMove = 0;
 
-        if (translation.isPresent()) {
-          xMove = translation.get().getX();
-          yMove = translation.get().getY();
-        }
+          if (translation.isPresent()) {
+            xMove = translation.get().getX();
+            yMove = translation.get().getY();
+          }
 
-        if (slowModeSupplier.getAsBoolean()) {
-          xMove *= 0.5;
-          yMove *= 0.5;
-        
-        } else {
-          xMove *= 1.0;
-          yMove *= 1.0;
-         
-        }
+          if (slowModeSupplier.getAsBoolean()) {
+            xMove *= 0.5;
+            yMove *= 0.5;
 
-        return leftHuman
-            .withVelocityX(xMove)
-            .withVelocityY(yMove);
-    }).withName("leftHuman"));
+          } else {
+            xMove *= 1.0;
+            yMove *= 1.0;
+
+          }
+
+          return leftHuman
+              .withVelocityX(xMove)
+              .withVelocityY(yMove);
+        }).withName("leftHuman"));
 
     // Robot aligns with right human player station
     final SwerveRequest.FieldCentricFacingAngle rightHuman = new SwerveRequest.FieldCentricFacingAngle()
-      .withHeadingPID(5, 0, 0)
-      .withTargetDirection(Rotation2d.fromDegrees(54))
-      .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
-      .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+        .withHeadingPID(5, 0, 0)
+        .withTargetDirection(Rotation2d.fromDegrees(54))
+        .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+        .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
     controller.rightBumper().whileTrue( // Drivetrain will execute this command periodically
-      drivetrain.applyRequest(() -> {
-        var translation = translationSupplier.get();
+        drivetrain.applyRequest(() -> {
+          var translation = translationSupplier.get();
 
-      
-        double xMove = 0;
-        double yMove = 0;
+          double xMove = 0;
+          double yMove = 0;
 
-        if (translation.isPresent()) {
-          xMove = translation.get().getX();
-          yMove = translation.get().getY();
-        }
+          if (translation.isPresent()) {
+            xMove = translation.get().getX();
+            yMove = translation.get().getY();
+          }
 
-        if (slowModeSupplier.getAsBoolean()) {
-          xMove *= 0.5;
-          yMove *= 0.5;
-        
-        } else {
-          xMove *= 1.0;
-          yMove *= 1.0;
-         
-        }
+          if (slowModeSupplier.getAsBoolean()) {
+            xMove *= 0.5;
+            yMove *= 0.5;
 
-        return rightHuman
-            .withVelocityX(xMove)
-            .withVelocityY(yMove);
-    }).withName("rightHuman"));
+          } else {
+            xMove *= 1.0;
+            yMove *= 1.0;
+
+          }
+
+          return rightHuman
+              .withVelocityX(xMove)
+              .withVelocityY(yMove);
+        }).withName("rightHuman"));
     // Reset the field-centric heading on start press
     controller.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
@@ -408,7 +401,7 @@ public class RobotContainer {
 
     arm.setDefaultCommand(drivePositiCommand());
 
-    //testbuttonpad
+    // testbuttonpad
     testButtonPad.button(1).whileTrue(elevator1.openLoopCommand(2));
     testButtonPad.button(5).whileTrue(elevator1.openLoopCommand(-2));
     testButtonPad.button(10).whileTrue(elevator1.pidCommand(0.5));
@@ -422,26 +415,23 @@ public class RobotContainer {
     testButtonPad.button(4).whileTrue(wrist.pidCommand(90));
     testButtonPad.button(8).whileTrue(wrist.pidCommand(0));
 
+    new Trigger(() -> !m_brakeButton.get() && DriverStation.isDisabled()).whileTrue(new StartEndCommand(
+        () -> {
+          LEDPattern red = LEDPattern.solid(Color.kGreen);
+          red.applyTo(m_brakeLedBuffer);
+          m_brakeLed.setData(m_brakeLedBuffer);
 
-    	new Trigger(() -> !m_brakeButton.get() && DriverStation.isDisabled()).whileTrue(new StartEndCommand(
-			()-> {
-        LEDPattern red = LEDPattern.solid(Color.kGreen);
-        red.applyTo(m_brakeLedBuffer);
-        m_brakeLed.setData(m_brakeLedBuffer);
+        },
+        () -> {
+          LEDPattern red = LEDPattern.solid(Color.kRed);
+          red.applyTo(m_brakeLedBuffer);
+          m_brakeLed.setData(m_brakeLedBuffer);
 
+          arm.coastCommand();
+          elevator1.coastCommand();
+          wrist.coastCommand();
 
-			},
-			() -> {
-        LEDPattern red = LEDPattern.solid(Color.kRed);
-        red.applyTo(m_brakeLedBuffer);
-        m_brakeLed.setData(m_brakeLedBuffer);
-
-        arm.coastCommand();
-        elevator1.coastCommand();
-        wrist.coastCommand();
-
-			}
-		).ignoringDisable(true));
+        }).ignoringDisable(true));
 
   }
 
@@ -463,8 +453,8 @@ public class RobotContainer {
         new ParallelCommandGroup(
             arm.pidCommand(77),
             wrist.pidCommand(85),
-            new ScheduleCommand(elevator1.pidCommand(0.33).until(() -> Math.abs(elevator1.getErrorPercent()) < 2))
-        )).withName("TeleOp Drive Position");
+            new ScheduleCommand(elevator1.pidCommand(0.33).until(() -> Math.abs(elevator1.getErrorPercent()) < 2))))
+        .withName("TeleOp Drive Position");
   }
 
   private Command autoDrivePositiCommand() {
@@ -507,7 +497,7 @@ public class RobotContainer {
   private Command reefL2Command() {
     superstructure.setRobotState(m_State.L2);
     return new SequentialCommandGroup(
-        new WaitUntilCommand(()-> wrist.getPosition() < 90),
+        new WaitUntilCommand(() -> wrist.getPosition() < 90),
         arm.pidCommand(60).until(() -> Math.abs(arm.getErrorAngle()) < 3),
 
         new ParallelCommandGroup(
@@ -523,7 +513,7 @@ public class RobotContainer {
   private Command reefL3Command() {
     superstructure.setRobotState(m_State.L3);
     return new SequentialCommandGroup(
-        new WaitUntilCommand(()-> wrist.getPosition() < 90),
+        new WaitUntilCommand(() -> wrist.getPosition() < 90),
         arm.pidCommand(60).until(() -> Math.abs(arm.getErrorAngle()) < 3),
 
         new ParallelCommandGroup(
@@ -538,7 +528,7 @@ public class RobotContainer {
   private Command reefL4Command() {
     superstructure.setRobotState(m_State.L4);
     return new SequentialCommandGroup(
-        new WaitUntilCommand(()-> wrist.getPosition() < 90),
+        new WaitUntilCommand(() -> wrist.getPosition() < 90),
         arm.pidCommand(60).until(() -> Math.abs(arm.getErrorAngle()) < 3),
 
         new ParallelCommandGroup(
@@ -571,7 +561,7 @@ public class RobotContainer {
   private Command reefL1Command() {
     superstructure.setRobotState(m_State.L1);
     return new SequentialCommandGroup(
-        new WaitUntilCommand(()-> wrist.getPosition() < 90),
+        new WaitUntilCommand(() -> wrist.getPosition() < 90),
         arm.pidCommand(78).until(() -> Math.abs(arm.getErrorAngle()) < 3),
 
         new ParallelCommandGroup(
@@ -590,8 +580,9 @@ public class RobotContainer {
         new ParallelCommandGroup(
             arm.pidCommand(45), // arm goes down for the wrist rotate
             elevator1.pidCommand(2),
-            wrist.pidCommand(173)).until(() -> Math.abs(wrist.getPosition() - 173) < 5), // wrist rotates towards the human
-                                                                                      // player intake
+            wrist.pidCommand(173)).until(() -> Math.abs(wrist.getPosition() - 173) < 5), // wrist rotates towards the
+                                                                                         // human
+        // player intake
         new ParallelCommandGroup(
             elevator1.pidCommand(2),
             wrist.pidCommand(173), // hold wrist position
@@ -605,18 +596,16 @@ public class RobotContainer {
                                        // triggered
                 intake.runMotorForwardsSpeedCommand(8).until(intake::haveCoral),
                 new ParallelCommandGroup(
-                intake.runMotorForwardsSpeedCommand(4),
-                coral.runMotorBackwardsSpeedCommand(4)).until(coral::haveCoral),
-                coral.runMotorBackwardsSpeedCommand(4)).until(algea::notHaveAlgea)
-                
-         ))
+                    intake.runMotorForwardsSpeedCommand(4),
+                    coral.runMotorBackwardsSpeedCommand(4)).until(coral::haveCoral),
+                coral.runMotorBackwardsSpeedCommand(4).until(algea::notHaveAlgea))))
         .withName("Human Player Intake Command");
   }
 
-  private Command aLgaeL2Command(){
+  private Command aLgaeL2Command() {
     superstructure.setRobotState(m_State.L4);
     return new SequentialCommandGroup(
-        new WaitUntilCommand(()-> wrist.getPosition() < 90),
+        new WaitUntilCommand(() -> wrist.getPosition() < 90),
         arm.pidCommand(40).until(() -> Math.abs(arm.getPosition() - 40) < 3),
 
         new ParallelCommandGroup(
@@ -629,10 +618,10 @@ public class RobotContainer {
 
   }
 
-  private Command aLgaeL3Command(){
+  private Command aLgaeL3Command() {
     superstructure.setRobotState(m_State.L4);
     return new SequentialCommandGroup(
-        new WaitUntilCommand(()-> wrist.getPosition() < 90),
+        new WaitUntilCommand(() -> wrist.getPosition() < 90),
         arm.pidCommand(40).until(() -> Math.abs(arm.getPosition() - 40) < 3),
 
         new ParallelCommandGroup(
@@ -650,7 +639,5 @@ public class RobotContainer {
         intakeServoRight.disengageServo(),
         intakeServoLeft.disengageServo());
   }
-
-
 
 }
