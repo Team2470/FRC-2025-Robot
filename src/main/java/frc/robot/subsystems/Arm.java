@@ -120,8 +120,10 @@ public class Arm extends SubsystemBase {
     }
 
     public double getAbsolutePosition() {
-        return Units.rotationsToDegrees(Math.IEEEremainder(m_candi.getPWM2Position().getValueAsDouble(),1));
-    }
+        double angle = Units.rotationsToDegrees(Math.IEEEremainder(m_candi.getPWM2Position().getValueAsDouble(),1));
+        angle = (-7E-11 *  Math.pow(angle,6))+ (1E-08 * Math.pow(angle,5)) - (6E-07 * Math.pow(angle,4)) - (0.00004 * Math.pow(angle,3)) + (0.0054 * Math.pow(angle,2)) + (1.0262 * angle) - 2.019;
+        return angle;
+    } 
 
     public double getVelocity() {
         return Units.rotationsToDegrees(m_motor.getVelocity().getValueAsDouble());
