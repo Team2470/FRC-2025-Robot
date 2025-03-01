@@ -69,7 +69,7 @@ public class Arm extends SubsystemBase {
         CANdiConfiguration candiconfig = new CANdiConfiguration();
         candiconfig.PWM2.AbsoluteSensorDiscontinuityPoint = 0.5;
         candiconfig.PWM2.SensorDirection = false;
-        candiconfig.PWM2.AbsoluteSensorOffset = Units.degreesToRotations(85);
+        candiconfig.PWM2.AbsoluteSensorOffset = Units.degreesToRotations(0);
         m_candi = new CANdi(ArmConstants.kCANdiID, "rio");
         m_candi.getConfigurator().apply(candiconfig);
     
@@ -89,7 +89,7 @@ public class Arm extends SubsystemBase {
         motorConfig.CurrentLimits.StatorCurrentLimit = 125;
 
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 21.36;
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 37.9733333;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
 
@@ -133,9 +133,9 @@ public class Arm extends SubsystemBase {
         // Calculates the next value of the output
         var absolutePositionFiltered = (m_absoluteEncoderFilter.calculate(getAbsolutePosition()));
         
-        if (DriverStation.isDisabled()) {
-            m_motor.setPosition(absolutePositionFiltered/360.0 * ArmConstants.kRotorToSensorRatio);
-        }
+        // if (DriverStation.isDisabled()) {
+        //     m_motor.setPosition(absolutePositionFiltered/360.0 * ArmConstants.kRotorToSensorRatio);
+        // }
 
         double outputVoltage = 0;
         switch (m_controlMode) {
