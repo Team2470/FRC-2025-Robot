@@ -598,7 +598,7 @@ public class RobotContainer {
             arm.pidCommand(53)).until(() -> Math.abs(arm.getPosition() - 53) < 5), // arm goes up to intake from human
                                                                                    // player position
         new ParallelCommandGroup(
-            elevator1.pidCommand(0),
+            elevator1.pidCommand(2),
             wrist.pidCommand(172), // hold wrist position
             arm.pidCommand(53), // hold arm position
             new SequentialCommandGroup(// runs the human player intake and then slows down after beam break sensor is

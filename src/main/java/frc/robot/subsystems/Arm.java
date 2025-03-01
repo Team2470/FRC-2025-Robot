@@ -133,9 +133,9 @@ public class Arm extends SubsystemBase {
         // Calculates the next value of the output
         var absolutePositionFiltered = (m_absoluteEncoderFilter.calculate(getAbsolutePosition()));
         
-        // if (DriverStation.isDisabled()) {
-        //     m_motor.setPosition(absolutePositionFiltered/360.0 * ArmConstants.kRotorToSensorRatio);
-        // }
+        if (DriverStation.isDisabled()) {
+            m_motor.setPosition(absolutePositionFiltered/360.0 * ArmConstants.kRotorToSensorRatio);
+        }
 
         double outputVoltage = 0;
         switch (m_controlMode) {
