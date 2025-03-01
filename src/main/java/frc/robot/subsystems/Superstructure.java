@@ -17,7 +17,7 @@ public class Superstructure extends SubsystemBase{
 
     private double elevatorLength;
     private double armLength = 16;
-    private double wristLength;
+    private double wristLength = 12.9;
     private double elevatorAngle = 0.174533;
     private double armAngle;
     private double wristAngle;

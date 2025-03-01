@@ -83,7 +83,7 @@ public class RobotContainer {
   private final DigitalInput m_brakeButton = new DigitalInput(3);
   private final AddressableLED m_brakeLed = new AddressableLED(3);
   private final AddressableLEDBuffer m_brakeLedBuffer = new AddressableLEDBuffer(60);
-  private final Climber m_climber = new Climber(47, 48);
+  // private final Climber m_climber = new Climber(, 9);
 
 
 
