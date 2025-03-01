@@ -73,10 +73,10 @@ public class RobotContainer {
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
   private final Elevator elevator1 = new Elevator();
   private final Wrist wrist = new Wrist();
-  private final Arm arm = new Arm();
   private final OuterIntake algea = new OuterIntake(42, 44, false);
   private final InnerIntake coral = new InnerIntake(41, 43, false);
   private final HumanIntake intake = new HumanIntake(45, 46, true);
+  private final Arm arm = new Arm(algea.getCANDI());
   private final IntakeServo intakeServoRight = new IntakeServo(0, false);
   private final IntakeServo intakeServoLeft = new IntakeServo(1, true);
   private final Superstructure superstructure = new Superstructure(arm, elevator1, wrist);
@@ -605,9 +605,11 @@ public class RobotContainer {
                                        // triggered
                 intake.runMotorForwardsSpeedCommand(8).until(intake::haveCoral),
                 new ParallelCommandGroup(
-                  intake.runMotorForwardsSpeedCommand(4),
-                coral.runMotorBackwardsSpeedCommand(4)).until(coral::haveCoral)
-         )))
+                intake.runMotorForwardsSpeedCommand(4),
+                coral.runMotorBackwardsSpeedCommand(4)).until(coral::haveCoral),
+                coral.runMotorBackwardsSpeedCommand(4)).until(algea::notHaveAlgea)
+                
+         ))
         .withName("Human Player Intake Command");
   }
 
