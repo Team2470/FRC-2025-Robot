@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 7.0,
-        "y": 5.5
+        "y": 5.49
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.144467999795303,
-        "y": 5.253381033538571
+        "x": 6.114121621448083,
+        "y": 5.231685094744542
       },
       "isLocked": false,
       "linkedName": "leftAutoStart"
@@ -20,8 +20,8 @@
         "y": 5.05
       },
       "prevControl": {
-        "x": 5.623829122239867,
-        "y": 5.150815508430393
+        "x": 5.6207456600454515,
+        "y": 5.139405637857755
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,7 +39,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 8.0,
+    "maxAcceleration": 1.5,
     "maxAngularVelocity": 229.0,
     "maxAngularAcceleration": 600.0,
     "nominalVoltage": 12.0,
@@ -53,7 +53,7 @@
   "folder": "autoStart",
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": -119.99999999999999
+    "rotation": -122.0
   },
   "useDefaultConstraints": true
 }
