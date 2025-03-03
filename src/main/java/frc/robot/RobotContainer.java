@@ -698,7 +698,6 @@ public class RobotContainer {
 
   }
 
-
   private Command autoL1ReefCommand(){
     return new SequentialCommandGroup(
       reefL1Command().until(()-> Math.abs(elevator1.getErrorPercent()) < 3)
@@ -736,4 +735,3 @@ public class RobotContainer {
   }
 
 }
-
