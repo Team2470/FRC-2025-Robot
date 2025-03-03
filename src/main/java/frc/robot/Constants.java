@@ -65,7 +65,7 @@ public class Constants {
         public static final double kA = 0.0015;
         public static final double kUpLimit = 0;
         public static final double kDownLimit = 0;
-        public static final int kRetractLimitChannel = 0;
+        public static final int kRetractLimitChannel = 1;
 
         public static final double kRotationToInches = 2.0 * 1.0/20.0 * 1.751 * Math.PI;//TODO: Find the correct value
     }

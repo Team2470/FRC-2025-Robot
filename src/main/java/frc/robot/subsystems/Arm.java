@@ -65,13 +65,8 @@ public class Arm extends SubsystemBase {
       ArmConstants.kV,
       ArmConstants.kA);
 
-    public Arm () {
-        CANdiConfiguration candiconfig = new CANdiConfiguration();
-        candiconfig.PWM2.AbsoluteSensorDiscontinuityPoint = 0.5;
-        candiconfig.PWM2.SensorDirection = false;
-        candiconfig.PWM2.AbsoluteSensorOffset = Units.degreesToRotations(0);
-        m_candi = new CANdi(ArmConstants.kCANdiID, "rio");
-        m_candi.getConfigurator().apply(candiconfig);
+    public Arm (CANdi candi) {
+       m_candi = candi;
     
         TalonFXConfiguration motorConfig = new TalonFXConfiguration();
         motorConfig.Feedback.FeedbackRemoteSensorID = m_candi.getDeviceID();
@@ -135,9 +130,9 @@ public class Arm extends SubsystemBase {
         // Calculates the next value of the output
         var absolutePositionFiltered = (m_absoluteEncoderFilter.calculate(getAbsolutePosition()));
         
-        // if (DriverStation.isDisabled()) {
-        //     m_motor.setPosition(absolutePositionFiltered/360.0 * ArmConstants.kRotorToSensorRatio);
-        // }
+        if (DriverStation.isDisabled()) {
+            m_motor.setPosition(absolutePositionFiltered/360.0 * ArmConstants.kRotorToSensorRatio);
+        }
 
         double outputVoltage = 0;
         switch (m_controlMode) {

@@ -46,7 +46,7 @@ public class InnerIntake  extends SubsystemBase {
         caNdi = new CANdi(canDIid, "rio");
 
         CANdiConfiguration configs_CANdi = new CANdiConfiguration();
-        
+        // S1 = Algae intake, S2 = lamprey
         configs_CANdi.DigitalInputs.S1CloseState = S1CloseStateValue.CloseWhenLow;
         configs_CANdi.DigitalInputs.S1FloatState = S1FloatStateValue.PullHigh;
         configs_CANdi.DigitalInputs.S2CloseState = S2CloseStateValue.CloseWhenLow;

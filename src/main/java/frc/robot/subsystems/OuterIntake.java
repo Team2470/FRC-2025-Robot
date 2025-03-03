@@ -24,11 +24,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ArmConstants;
 
 public class OuterIntake  extends SubsystemBase {
     // private final CANdi algaeIntake;
     private TalonFXSConfiguration configs_FXS;
     private TalonFXS algaeTalonFXS1;
+    private final CANdi caNdi;
+    public CANdi getCANDI() {return caNdi;}
 
     public OuterIntake (int canDIid, int motorid, boolean isInverted) {
         algaeTalonFXS1 = new TalonFXS(motorid, "rio");
@@ -43,17 +46,37 @@ public class OuterIntake  extends SubsystemBase {
         configs_FXS.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
         configs_FXS.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-        // algaeIntake = new CANdi(motorid, "Canivore");
+        caNdi = new CANdi(canDIid, "rio");
 
         CANdiConfiguration configs_CANdi = new CANdiConfiguration();
         
+        // Beam break
         configs_CANdi.DigitalInputs.S1CloseState = S1CloseStateValue.CloseWhenLow;
         configs_CANdi.DigitalInputs.S1FloatState = S1FloatStateValue.PullHigh;
+
+        // Lamprey Encoder
         configs_CANdi.DigitalInputs.S2CloseState = S2CloseStateValue.CloseWhenLow;
-        configs_CANdi.DigitalInputs.S2FloatState = S2FloatStateValue.PullLow;
-        // algaeIntake.getConfigurator().apply(configs_CANdi);
-        // algaeIntake.getS1Closed().setUpdateFrequency(100);
-        // algaeIntake.getS2Closed().setUpdateFrequency(100);
+        configs_CANdi.DigitalInputs.S2FloatState = S2FloatStateValue.PullHigh;
+        configs_CANdi.PWM2.AbsoluteSensorDiscontinuityPoint = 0.5;
+        configs_CANdi.PWM2.SensorDirection = false;
+        configs_CANdi.PWM2.AbsoluteSensorOffset =0;
+        
+
+        caNdi.getConfigurator().apply(configs_CANdi);
+        caNdi.getS1Closed().setUpdateFrequency(100);
+        caNdi.getS2Closed().setUpdateFrequency(100);
+
+        // algaeIntake = new CANdi(motorid, "Canivore");
+
+        // CANdiConfiguration configs_CANdi = new CANdiConfiguration();
+        
+        // configs_CANdi.DigitalInputs.S1CloseState = S1CloseStateValue.CloseWhenLow;
+        // configs_CANdi.DigitalInputs.S1FloatState = S1FloatStateValue.PullHigh;
+        // configs_CANdi.DigitalInputs.S2CloseState = S2CloseStateValue.CloseWhenLow;
+        // configs_CANdi.DigitalInputs.S2FloatState = S2FloatStateValue.PullLow;
+        // // algaeIntake.getConfigurator().apply(configs_CANdi);
+        // // algaeIntake.getS1Closed().setUpdateFrequency(100);
+        // // algaeIntake.getS2Closed().setUpdateFrequency(100);
 
         algaeTalonFXS1.getConfigurator().apply(configs_FXS);
 
@@ -118,4 +141,10 @@ public class OuterIntake  extends SubsystemBase {
     public Command stopMotorCommand() {
         return Commands.runEnd(() -> algaeTalonFXS1.setVoltage(0), this::stop, this);
     }
+
+    public boolean notHaveAlgea() {
+        return !caNdi.getS1Closed().getValue(); 
+    }
+
+    
 }
