@@ -59,7 +59,7 @@ public class Arm extends SubsystemBase {
 
     private final ProfiledPIDController m_pidController = new ProfiledPIDController(ArmConstants.kP,
       ArmConstants.kI, ArmConstants.kD,
-      new TrapezoidProfile.Constraints(0, 0));
+      new TrapezoidProfile.Constraints(Units.degreesToRadians(360), Units.degreesToRadians(360)));
 
     private ArmFeedforward m_feedforward = new ArmFeedforward(ArmConstants.kS, ArmConstants.kG,
       ArmConstants.kV,
@@ -89,7 +89,7 @@ public class Arm extends SubsystemBase {
         motorConfig.CurrentLimits.StatorCurrentLimit = 125;
 
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 21.36;
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 37.9733333;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
 
@@ -120,8 +120,10 @@ public class Arm extends SubsystemBase {
     }
 
     public double getAbsolutePosition() {
-        return Units.rotationsToDegrees(Math.IEEEremainder(m_candi.getPWM2Position().getValueAsDouble(),1));
-    }
+        double angle = Units.rotationsToDegrees(Math.IEEEremainder(m_candi.getPWM2Position().getValueAsDouble(),1));
+        angle = (-7E-11 *  Math.pow(angle,6))+ (1E-08 * Math.pow(angle,5)) - (6E-07 * Math.pow(angle,4)) - (0.00004 * Math.pow(angle,3)) + (0.0054 * Math.pow(angle,2)) + (1.0262 * angle) - 2.019;
+        return angle;
+    } 
 
     public double getVelocity() {
         return Units.rotationsToDegrees(m_motor.getVelocity().getValueAsDouble());
@@ -133,9 +135,9 @@ public class Arm extends SubsystemBase {
         // Calculates the next value of the output
         var absolutePositionFiltered = (m_absoluteEncoderFilter.calculate(getAbsolutePosition()));
         
-        if (DriverStation.isDisabled()) {
-            m_motor.setPosition(absolutePositionFiltered/360.0 * ArmConstants.kRotorToSensorRatio);
-        }
+        // if (DriverStation.isDisabled()) {
+        //     m_motor.setPosition(absolutePositionFiltered/360.0 * ArmConstants.kRotorToSensorRatio);
+        // }
 
         double outputVoltage = 0;
         switch (m_controlMode) {
