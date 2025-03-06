@@ -90,14 +90,14 @@ public class InnerIntake  extends SubsystemBase {
         
 
     }
-    public Command runMotorForwardsSpeedCommand(int motorVoltage) {
+    public Command runMotorForwardsSpeedCommand(double motorVoltage) {
 	    return Commands.runEnd(
             
 	        () -> algaeTalonFXS1.setVoltage(motorVoltage), this::stop, this);
         
 
     }
-    public Command runMotorBackwardsSpeedCommand(int motorVoltage) {
+    public Command runMotorBackwardsSpeedCommand(double motorVoltage) {
 	    return Commands.runEnd(
             
 	        () -> algaeTalonFXS1.setVoltage(-motorVoltage), this::stop, this);

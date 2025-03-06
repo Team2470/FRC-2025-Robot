@@ -48,7 +48,7 @@ public class Elevator extends SubsystemBase {
   private ControlMode m_controlMode = ControlMode.kStop;
   private final ProfiledPIDController m_pidController = new ProfiledPIDController(ElevatorConstants.kP,
       ElevatorConstants.kI, ElevatorConstants.kD,
-      new TrapezoidProfile.Constraints(50, 70));
+      new TrapezoidProfile.Constraints(50, 150));
 
   private ElevatorFeedforward m_feedforward = new ElevatorFeedforward(ElevatorConstants.kS, ElevatorConstants.kG,
       ElevatorConstants.kV,
@@ -86,7 +86,7 @@ public class Elevator extends SubsystemBase {
     // it may stop moving if their built in encoders are not in sync.
     //
     m_motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    m_motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 106;
+    m_motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 111;
     m_motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     m_motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1;
 
