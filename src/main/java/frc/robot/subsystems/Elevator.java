@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -59,11 +60,15 @@ public class Elevator extends SubsystemBase {
 
   private double m_demand;
   private boolean m_isHomed;
+  private final CANdi m_candi;
 
-  public Elevator() {
+
+  public Elevator(CANdi candi) {
+    m_candi = candi;
 
     m_motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     m_motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    m_motorConfig.Feedback.FeedbackRemoteSensorID = m_candi.getDeviceID();
 
     m_motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     m_motorConfig.CurrentLimits.SupplyCurrentLimit = 40;
@@ -165,6 +170,8 @@ public class Elevator extends SubsystemBase {
 
       case kPID:
 
+      if (!m_candi.getS2Closed().getValue()) {
+
         m_feedforward = new ElevatorFeedforward(
             SmartDashboard.getNumber("Elevator kS", ElevatorConstants.kS),
             SmartDashboard.getNumber("Elevator kG", ElevatorConstants.kG),
@@ -192,6 +199,10 @@ public class Elevator extends SubsystemBase {
         m_pidLastTime = Timer.getFPGATimestamp();
 
         break;
+      } else if (m_candi.getS2Closed().getValue() && m_demand > 10) {
+        stop();
+        break;
+      }
       default:
         // What happened!?
         break;
