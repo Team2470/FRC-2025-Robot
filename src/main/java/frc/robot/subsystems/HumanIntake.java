@@ -66,6 +66,8 @@ public class HumanIntake  extends SubsystemBase {
     //     return algaeIntake.getS2Closed().getValue();
     // }
     
+    public CANdi getCANDI() {return caNdi;}
+    
     public void stop() {
         algaeTalonFXS1.stopMotor();
     }

@@ -39,14 +39,14 @@ public class InnerIntake  extends SubsystemBase {
         configs_FXS.Slot0.kD = 10;
         configs_FXS.Slot0.kV = 2;
         configs_FXS.CurrentLimits.StatorCurrentLimitEnable = true;
-        configs_FXS.CurrentLimits.StatorCurrentLimit = 100;
+        configs_FXS.CurrentLimits.StatorCurrentLimit = 120;
         configs_FXS.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
         configs_FXS.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         caNdi = new CANdi(canDIid, "rio");
 
         CANdiConfiguration configs_CANdi = new CANdiConfiguration();
-        
+        // S1 = Algae intake, S2 = lamprey
         configs_CANdi.DigitalInputs.S1CloseState = S1CloseStateValue.CloseWhenLow;
         configs_CANdi.DigitalInputs.S1FloatState = S1FloatStateValue.PullHigh;
         configs_CANdi.DigitalInputs.S2CloseState = S2CloseStateValue.CloseWhenLow;
@@ -90,14 +90,14 @@ public class InnerIntake  extends SubsystemBase {
         
 
     }
-    public Command runMotorForwardsSpeedCommand(int motorVoltage) {
+    public Command runMotorForwardsSpeedCommand(double motorVoltage) {
 	    return Commands.runEnd(
             
 	        () -> algaeTalonFXS1.setVoltage(motorVoltage), this::stop, this);
         
 
     }
-    public Command runMotorBackwardsSpeedCommand(int motorVoltage) {
+    public Command runMotorBackwardsSpeedCommand(double motorVoltage) {
 	    return Commands.runEnd(
             
 	        () -> algaeTalonFXS1.setVoltage(-motorVoltage), this::stop, this);

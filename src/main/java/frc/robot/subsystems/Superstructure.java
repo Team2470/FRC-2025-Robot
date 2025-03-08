@@ -11,7 +11,7 @@ public class Superstructure extends SubsystemBase{
         Drive, HpIntake, gIntake, algaeIntake, L1, L2, L3, L4
     }
 
-    private m_State currentState;
+    public m_State currentState;
 
     
 
@@ -71,6 +71,7 @@ public class Superstructure extends SubsystemBase{
         SmartDashboard.putNumber("Arm Angle", armAngle);
         SmartDashboard.putNumber("Wrist Angle", wristAngle);
         SmartDashboard.putNumber("Wrist X", wristX);
+        SmartDashboard.putString("RobotState", currentState.toString());
     }
 
     public void updateElevatorPosition(){
