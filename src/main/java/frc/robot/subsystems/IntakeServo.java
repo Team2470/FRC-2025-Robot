@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -23,21 +24,22 @@ public class IntakeServo extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("servo pos" + m_isLeft , m_servo.getPosition());
   }
 
   private void engage() {
     if (m_isLeft) {
-      m_servo.setPosition(0.0);
+      m_servo.setPosition(0.4);
     } else {
-    m_servo.setPosition(0.8);
+    m_servo.setPosition(0.6);
   }
 }
 
   private void disengage() {
     if (m_isLeft) {
-      m_servo.setPosition(0.8);
+      m_servo.setPosition(0.6);
     } else {
-    m_servo.setPosition(0.0);
+    m_servo.setPosition(0.4);
   }
   }
 

@@ -78,7 +78,7 @@ public class RobotContainer {
   private final Elevator elevator1 = new Elevator(intake.getCANDI());
   private final Arm arm = new Arm(algea.getCANDI());
   private final IntakeServo intakeServoRight = new IntakeServo(0, false);
-  private final IntakeServo intakeServoLeft = new IntakeServo(1, true);
+  private final IntakeServo intakeServoLeft = new IntakeServo(2, true);
   private final Superstructure superstructure = new Superstructure(arm, elevator1, wrist);
   private final DigitalInput m_brakeButton = new DigitalInput(3);
   private final AddressableLED m_brakeLed = new AddressableLED(3);
@@ -409,9 +409,10 @@ public class RobotContainer {
     buttonPad.button(1).whileTrue(reefL1Command());
     buttonPad.button(3).whileTrue(netCommand());
     controller.povDown().whileTrue(pickupAlgaeCommand());
-    
+    controller.povLeft().whileTrue(testUndropIntake());
     controller.povUp().whileTrue(processorCommand());
     controller.y().whileTrue(netCommand());
+    controller.povRight().whileTrue(dropIntake());
 
     arm.setDefaultCommand(drivePositiCommand());
 
@@ -685,6 +686,11 @@ public class RobotContainer {
   }
 
   private Command dropIntake() {
+    return new ParallelCommandGroup(
+        intakeServoRight.engageServo(),
+        intakeServoLeft.engageServo());
+  }
+  private Command testUndropIntake() {
     return new ParallelCommandGroup(
         intakeServoRight.disengageServo(),
         intakeServoLeft.disengageServo());
