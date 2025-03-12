@@ -82,13 +82,13 @@ public void periodic() {
 
 public void engageRatchet(){
 
-	m_Servo.setPosition(0.475);
+	m_Servo.setPosition(0.1);
 
 
 }
 public void disengageRatchet(){
 
-	m_Servo.setPosition(0.35);
+	m_Servo.setPosition(0.9);
 }
 
 public void setVoltage(double voltage){
@@ -104,17 +104,16 @@ public void stop(){
 
 public Command retractCommand(){
 	return new ParallelCommandGroup(
-	Commands.run(() -> engageRatchet()),
-	Commands.runEnd(() -> this.setVoltage(-3), this::stop, this));
+	Commands.run(() -> engageRatchet()));
+	// Commands.runEnd(() -> this.setVoltage(-3), this::stop, this));
 }
 
 	public Command extendCommand(){
 	return new ParallelCommandGroup(
-	Commands.run(() -> disengageRatchet()),
-	new SequentialCommandGroup(
-		new WaitCommand(0.2),
-		Commands.runEnd(() -> this.setVoltage(4), this::stop, this)
-	)
+	Commands.run(() -> disengageRatchet())
+	// new SequentialCommandGroup(
+	// 	new WaitCommand(0.2)
+		// Commands.runEnd(() -> this.setVoltage(4), this::stop, this)
 	);
 }
 

@@ -29,17 +29,17 @@ public class IntakeServo extends SubsystemBase {
 
   private void engage() {
     if (m_isLeft) {
-      m_servo.setPosition(0.4);
+      m_servo.setPosition(0.8);
     } else {
-    m_servo.setPosition(0.6);
+    m_servo.setPosition(0.0);
   }
 }
 
   private void disengage() {
     if (m_isLeft) {
-      m_servo.setPosition(0.6);
+      m_servo.setPosition(0.2);
     } else {
-    m_servo.setPosition(0.4);
+    m_servo.setPosition(0.9);
   }
   }
 
@@ -49,6 +49,9 @@ public class IntakeServo extends SubsystemBase {
 
   public Command disengageServo(){
     return Commands.run(() -> disengage());
+  }
+  public Command setPositionCommand(double position){
+    return Commands.run(() ->  m_servo.setPosition(position));
   }
 }
 
