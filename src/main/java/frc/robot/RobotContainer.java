@@ -58,6 +58,8 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Superstructure.m_State;
+import frc.robot.commands.Aligntoreef;
+
 
 public class RobotContainer {
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -156,7 +158,7 @@ public class RobotContainer {
 
     BooleanSupplier slowModeSupplier = () -> {
 
-      return controller.getHID().getXButton() || elevator1.getPosition() > 20;
+      return  elevator1.getPosition() > 20;
     };
 
     DoubleSupplier rotationSupplier = () -> {
@@ -410,10 +412,12 @@ public class RobotContainer {
     buttonPad.button(1).whileTrue(reefL1Command());
     buttonPad.button(3).whileTrue(netCommand());
     controller.povDown().whileTrue(m_Climber.extendCommand());
-    controller.povLeft().whileTrue(testUndropIntake());
+    // controller.povLeft().whileTrue(testUndropIntake());
     controller.povUp().whileTrue(m_Climber.retractCommand());
     controller.y().whileTrue(netCommand());
-    controller.povRight().whileTrue(dropServoCommand());
+    // controller.povRight().whileTrue(dropServoCommand());
+    controller.povLeft().whileTrue(new Aligntoreef(drivetrain, Aligntoreef.Side.Left, Aligntoreef.Score.Coral));
+    controller.povRight().whileTrue(new Aligntoreef(drivetrain, Aligntoreef.Side.Right, Aligntoreef.Score.Coral));
     controller.x().whileTrue(dropServoCommand());
 
     arm.setDefaultCommand(drivePositiCommand());

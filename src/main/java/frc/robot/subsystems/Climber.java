@@ -104,13 +104,13 @@ public void stop(){
 
 public Command retractCommand(){
 	return new ParallelCommandGroup(
-	Commands.run(() -> engageRatchet()));
-	// Commands.runEnd(() -> this.setVoltage(-3), this::stop, this));
+	// Commands.run(() -> engageRatchet(),));
+	Commands.runEnd(() -> engageRatchet(), this::stop, this));
 }
 
 	public Command extendCommand(){
 	return new ParallelCommandGroup(
-	Commands.run(() -> disengageRatchet())
+	Commands.runEnd(() -> disengageRatchet(), this::stop, this)
 	// new SequentialCommandGroup(
 	// 	new WaitCommand(0.2)
 		// Commands.runEnd(() -> this.setVoltage(4), this::stop, this)

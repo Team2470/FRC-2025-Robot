@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.pheonix6.swerve.ModifiedRobotCentricFacingAngle;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -58,7 +59,8 @@ public class Aligntoreef extends SequentialCommandGroup {
     .withHeadingPID(10, 0, 0)
     .withRotationalDeadband(RobotContainer.MaxAngularRate * 0.1) // Add a 10% deadband
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
-    .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+    .withSteerRequestType(SteerRequestType.MotionMagicExpo)
+    .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance);
 
   /** Creates a new Aligntoreef. */
   public Aligntoreef(CommandSwerveDrivetrain drive, Side side, Score score) {
@@ -99,14 +101,36 @@ public class Aligntoreef extends SequentialCommandGroup {
 
 
         switch (tagID) {
+
+
+          // Coordinate System
+          //         0
+          //         ^
+          //         |
+          // +90 <---
+          //         TAGS
+          //          21 7
+          //         ____
+          //  20 8  /    \ 22  6
+          //  19 9  \____/ 17 11
+          //         18 10
+
+
           case 10: heading = 0; break;
           case 18: heading = 0; break;
+          
           case 11: heading = 60; break;
           case 17: heading = 60; break;
+                  
+          case 6: heading = 120; break;
+          case 22: heading = 120; break;
+
           case 7: heading = 180; break;
           case 21: heading = 180; break;
-          case 8: heading = 60; break;
+
+          case 8: heading = 240; break;
           case 20: heading = 240; break;
+
           case 9: heading = 300; break;
           case 19: heading = 300; break;
 
@@ -233,8 +257,10 @@ public class Aligntoreef extends SequentialCommandGroup {
               case 17: return true; 
               case 7: return false; 
               case 21: return false; 
-              case 8:  return false; 
+              case 8:  return false;
+              case 6: return false;
               case 20: return false; 
+              case 22: return false;
               case 9: return true; 
               case 19: return true; 
     
@@ -252,7 +278,9 @@ public class Aligntoreef extends SequentialCommandGroup {
               case 7: return true; 
               case 21: return true; 
               case 8: return true; 
+              case 6: return true;
               case 20: return true; 
+              case 22: return true;
               case 9: return false; 
               case 19: return false; 
     
