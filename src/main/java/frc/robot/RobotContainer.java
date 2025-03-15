@@ -86,6 +86,7 @@ public class RobotContainer {
   private final AddressableLED m_brakeLed = new AddressableLED(5);
   private final AddressableLEDBuffer m_brakeLedBuffer = new AddressableLEDBuffer(60);
   private final Climber m_Climber = new Climber(47, 3);
+  private final Limelights m_limelights = new Limelights();
   // private final Climber m_climber = new Climber(, 9);
 
   // Autos
@@ -143,6 +144,7 @@ public class RobotContainer {
     SmartDashboard.putData("Wrist", wrist);
     SmartDashboard.putData("InnerIntake", coral);
     SmartDashboard.putData("OuterIntake", algea);
+    SmartDashboard.putData("Limelights", m_limelights);
     SmartDashboard.putNumber("MaxAngularRate", MaxAngularRate);
   }
 
