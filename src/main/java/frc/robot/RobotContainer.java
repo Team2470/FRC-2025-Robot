@@ -416,8 +416,29 @@ public class RobotContainer {
     controller.povUp().whileTrue(m_Climber.retractCommand());
     controller.y().whileTrue(netCommand());
     // controller.povRight().whileTrue(dropServoCommand());
-    controller.povLeft().whileTrue(new Aligntoreef(drivetrain, Aligntoreef.Side.Left, Aligntoreef.Score.Coral));
-    controller.povRight().whileTrue(new Aligntoreef(drivetrain, Aligntoreef.Side.Right, Aligntoreef.Score.Coral));
+    controller.povLeft().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, () -> {
+      var translation = translationSupplier.get();
+
+      double xMove = 0;
+
+      if (translation.isPresent()) {
+          xMove = translation.get().getX();
+      }
+
+      return xMove * 0.2;
+    }));
+    controller.povRight().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, () -> {
+      var translation = translationSupplier.get();
+
+      double xMove = 0;
+
+      if (translation.isPresent()) {
+          xMove = translation.get().getX();
+      }
+
+      return xMove * 0.2;
+    }));
+    // controller.povRight().whileTrue(new Aligntoreef(drivetrain, Aligntoreef.Side.Right, Aligntoreef.Score.Coral));
     controller.x().whileTrue(dropServoCommand());
 
     arm.setDefaultCommand(drivePositiCommand());
