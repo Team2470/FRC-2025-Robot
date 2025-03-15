@@ -214,7 +214,7 @@ public class Aligntoreef extends SequentialCommandGroup {
           .withVelocityX(xMove)
           .withVelocityY(yMove)
           .withTargetDirection(Rotation2d.fromDegrees(heading));
-      }).until(() -> heading != null || m_tyPID.atSetpoint() || !LimelightHelpers.getTV(side.name)),
+      }).until(() -> heading == null || m_tyPID.atSetpoint() || !LimelightHelpers.getTV(side.name)),
       Commands.runOnce(() -> {
         m_txPID.setP(0.1);
         m_txPID.setI(0);
@@ -262,7 +262,7 @@ public class Aligntoreef extends SequentialCommandGroup {
           .withVelocityY(yMove)
           .withTargetDirection(Rotation2d.fromDegrees(heading));
 
-      }).until(() -> heading != null || m_txPID.atSetpoint() && m_tyPID.atSetpoint() || !LimelightHelpers.getTV(side.name)),
+      }).until(() -> heading == null || (m_txPID.atSetpoint() && m_tyPID.atSetpoint()) || !LimelightHelpers.getTV(side.name)),
       // Finally let the drive drive back and forth, and keep heading and disable side to side movement
       drive.applyRequest(() -> {
         double yMove = moveSupplier.getAsDouble();
@@ -288,7 +288,7 @@ public class Aligntoreef extends SequentialCommandGroup {
           .withVelocityY(yMove)
           .withTargetDirection(Rotation2d.fromDegrees(heading));
 
-      }).until(() -> heading != null || !enableMove)
+      }).until(() -> heading == null || !enableMove)
     );
   }
   // public static Command autoCoralSide(CommandSwerveDrivetrain drive, Side userSide) {
