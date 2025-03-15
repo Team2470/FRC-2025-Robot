@@ -108,9 +108,9 @@ public class RobotContainer {
         // put("speaker-shoot", speakerShoot());
         put("L2", autoReefCommand());
         put("HoldL2", reefL2Command());
-        put("OuttakeCoral", runInTakeCommand(-8).withTimeout(1).withName("Auto Run Outtake"));
-        put("OuttakeCoral", runInTakeCommand(8).withTimeout(1).withName("Auto Run Intkae"));
-        put("DrivePos", autoDrivePositiCommand());
+        put("OuttakeCoral", runInTakeCommand(-8).until(()-> !coral.haveCoral()).withName("Auto Run Outtake"));
+        // put("OuttakeCoral", runInTakeCommand(8).withTimeout(1).withName("Auto Run Intkae"));
+        put("DrivePos", drivePositiCommand());
         put("L1", reefL1Command());
         put("L2", reefL2Command());
         put("L3", reefL3Command());
@@ -125,13 +125,14 @@ public class RobotContainer {
     // put("Foo", "foo");
     // }
     // });
-    m_autoSelector.registerCommand("FOO", "FOO", AutoBuilder.buildAuto("Foo"));
-    m_autoSelector.registerCommand("STRT", "STRT", AutoBuilder.buildAuto("STRT"));
-    m_autoSelector.registerCommand("NOBK", "NOBK", AutoBuilder.buildAuto("NOBK"));
-    m_autoSelector.registerCommand("R1", "R1", AutoBuilder.buildAuto("R1"));
-    m_autoSelector.registerCommand("R2", "R2", AutoBuilder.buildAuto("R2"));
-    m_autoSelector.registerCommand("Trsh", "Trsh", AutoBuilder.buildAuto("Trsh"));
-    m_autoSelector.registerCommand("TRH2", "TRH2", AutoBuilder.buildAuto("TRH2"));
+    // m_autoSelector.registerCommand("FOO", "FOO", AutoBuilder.buildAuto("Foo"));
+    // m_autoSelector.registerCommand("STRT", "STRT", AutoBuilder.buildAuto("STRT"));
+    // m_autoSelector.registerCommand("NOBK", "NOBK", AutoBuilder.buildAuto("NOBK"));
+    // m_autoSelector.registerCommand("R1", "R1", AutoBuilder.buildAuto("R1"));
+    // m_autoSelector.registerCommand("R2", "R2", AutoBuilder.buildAuto("R2"));
+    // m_autoSelector.registerCommand("Trsh", "Trsh", AutoBuilder.buildAuto("Trsh"));
+    // m_autoSelector.registerCommand("TRH2", "TRH2", AutoBuilder.buildAuto("TRH2"));
+      m_autoSelector.registerCommand("MG", "MGMG", AutoBuilder.buildAuto("MG"));
 
     configureBindings();
     m_autoSelector.initialize();
