@@ -17,7 +17,45 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "L4Auto"
+                  "name": "L4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "OuttakeCoral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "MGAutoBackup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4"
                 }
               }
             ]
@@ -26,7 +64,7 @@
         {
           "type": "named",
           "data": {
-            "name": "OuttakeCoral"
+            "name": "DrivePos"
           }
         }
       ]

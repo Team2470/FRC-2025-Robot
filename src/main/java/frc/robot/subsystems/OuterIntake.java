@@ -42,7 +42,7 @@ public class OuterIntake  extends SubsystemBase {
         configs_FXS.Slot0.kD = 10;
         configs_FXS.Slot0.kV = 2;
         configs_FXS.CurrentLimits.StatorCurrentLimitEnable = true;
-        configs_FXS.CurrentLimits.StatorCurrentLimit = 100;
+        configs_FXS.CurrentLimits.StatorCurrentLimit = 30;
         configs_FXS.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
         configs_FXS.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
@@ -113,14 +113,14 @@ public class OuterIntake  extends SubsystemBase {
         
 
     }
-    public Command runMotorForwardsSpeedCommand(int motorVoltage) {
+    public Command runMotorForwardsSpeedCommand(double motorVoltage) {
 	    return Commands.runEnd(
             
 	        () -> algaeTalonFXS1.setVoltage(motorVoltage), this::stop, this);
         
 
     }
-    public Command runMotorBackwardsSpeedCommand(int motorVoltage) {
+    public Command runMotorBackwardsSpeedCommand(double motorVoltage) {
 	    return Commands.runEnd(
             
 	        () -> algaeTalonFXS1.setVoltage(-motorVoltage), this::stop, this);
