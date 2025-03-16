@@ -16,24 +16,19 @@
     },
     {
       "anchor": {
-        "x": 5.0,
-        "y": 5.225
+        "x": 5.1,
+        "y": 5.398
       },
       "prevControl": {
-        "x": 4.259293831168831,
-        "y": 6.311343344155843
+        "x": 4.359293831168831,
+        "y": 6.484343344155843
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "postJ"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.36240913811007275,
-      "rotationDegrees": -119.99999999999999
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],

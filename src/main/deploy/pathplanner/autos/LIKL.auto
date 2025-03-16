@@ -5,7 +5,7 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -24,13 +24,45 @@
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "OuttakeCoral"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "OuttakeCoral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "iBackUp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoHumanPlayerIntakeCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -49,13 +81,26 @@
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "intake"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoHumanPlayerIntakeCommand"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -67,20 +112,52 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "L4Auto"
+                  "name": "L4"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "OuttakeCoral"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "OuttakeCoral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "kBackUp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoHumanPlayerIntakeCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -99,13 +176,26 @@
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "intake"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoHumanPlayerIntakeCommand"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -117,16 +207,29 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "L4Auto"
+                  "name": "L4"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "OuttakeCoral"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "OuttakeCoral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4"
+                }
+              }
+            ]
           }
         }
       ]

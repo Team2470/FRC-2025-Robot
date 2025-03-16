@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.0,
-        "y": 5.225
+        "x": 5.2,
+        "y": 5.498
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.364539984782603,
-        "y": 5.778893359076054
+        "x": 4.41683387959505,
+        "y": 6.008420065401139
       },
       "isLocked": false,
-      "linkedName": "postJ"
+      "linkedName": "jBack"
     },
     {
       "anchor": {
@@ -20,20 +20,15 @@
         "y": 7.3
       },
       "prevControl": {
-        "x": 1.8169163522522458,
-        "y": 7.175712848107378
+        "x": 2.233691761716556,
+        "y": 6.875115375953143
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "farLeftStation"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.4132917964693664,
-      "rotationDegrees": -54.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],

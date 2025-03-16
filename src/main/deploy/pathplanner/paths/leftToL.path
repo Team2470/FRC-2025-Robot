@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4864793064295658,
-        "y": 6.122251925234099
+        "x": 1.517017942933513,
+        "y": 6.233524348935692
       },
       "isLocked": false,
       "linkedName": "leftStation"
     },
     {
       "anchor": {
-        "x": 3.68,
-        "y": 5.06
+        "x": 3.58,
+        "y": 5.223
       },
       "prevControl": {
-        "x": 3.0324593306327756,
-        "y": 5.479881620085147
+        "x": 2.9872334039648143,
+        "y": 5.515224238129564
       },
       "nextControl": null,
       "isLocked": false,

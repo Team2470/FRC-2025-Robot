@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.0,
-        "y": 5.225
+        "x": 5.2,
+        "y": 5.498
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.1268060064935064,
-        "y": 6.7030844155844145
+        "x": 3.3268060064935066,
+        "y": 6.976084415584415
       },
       "isLocked": false,
-      "linkedName": "postJ"
+      "linkedName": "jBack"
     },
     {
       "anchor": {
@@ -28,12 +28,7 @@
       "linkedName": "farRightStation"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.546209761163033,
-      "rotationDegrees": 54.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],

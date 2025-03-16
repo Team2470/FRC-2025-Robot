@@ -28,12 +28,7 @@
       "linkedName": "postG"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5098650051921066,
-      "rotationDegrees": 135.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
