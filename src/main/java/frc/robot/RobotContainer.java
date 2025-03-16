@@ -273,7 +273,7 @@ public class RobotContainer {
 
       if (translation.isPresent()) {
         xMove = translation.get().getX();
-        yMove = translation.get().getY();
+        // yMove = translation.get().getY();
       }
 
       if (slowModeSupplier.getAsBoolean()) {
@@ -407,17 +407,17 @@ public class RobotContainer {
     // buttonPad.button(7).and(buttonPad.button(6)).whileTrue(arm.openLoopCommand(-2));
     // buttonPad.button(11).and(buttonPad.button(2)).whileTrue(wrist.openLoopCommand(1));
     // buttonPad.button(11).and(buttonPad.button(6)).whileTrue(wrist.openLoopCommand(-1));
-    buttonPad.button(4).whileTrue(runInTakeCommand(4));
-    buttonPad.button(8).whileTrue(runInTakeCommand(-4));
+    buttonPad.button(4).whileTrue(runInTakeCommand(8));
+    buttonPad.button(8).whileTrue(runInTakeCommand(-8));
     buttonPad.button(10).whileTrue(reefL2Command());
     buttonPad.button(11).whileTrue(reefL3Command());
     buttonPad.button(12).whileTrue(reefL4Command());
     buttonPad.button(1).whileTrue(reefL1Command());
     buttonPad.button(3).whileTrue(netCommand());
     controller.povDown().whileTrue(m_Climber.extendCommand());
-    // controller.povLeft().whileTrue(testUndropIntake());
+    controller.b().whileTrue(testUndropIntake());
     controller.povUp().whileTrue(m_Climber.retractCommand());
-    controller.y().whileTrue(netCommand());
+    controller.y().whileTrue(dropServoCommand());
     // controller.povRight().whileTrue(dropServoCommand());
     controller.povLeft().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, () -> {
       var translation = translationSupplier.get();
@@ -651,7 +651,7 @@ public class RobotContainer {
                 intake.runMotorForwardsSpeedCommand(8).until(intake::haveCoral),
                 new ParallelCommandGroup(
                     intake.runMotorForwardsSpeedCommand(6),
-                    coral.runMotorBackwardsSpeedCommand(4)).until(coral::haveCoral)
+                    coral.runMotorBackwardsSpeedCommand(8)).until(coral::haveCoral)
                 )))
         .withName("Human Player Intake Command");
   }
@@ -722,14 +722,14 @@ public class RobotContainer {
   }
   private Command testUndropIntake() {
     return new ParallelCommandGroup(
-      intakeServoRight.setPositionCommand(0.25),
+      intakeServoRight.setPositionCommand(0.24),
       intakeServoLeft.setPositionCommand(0.75)
     ); 
   }
   private Command dropServoCommand ()
   {
     return new ParallelCommandGroup(
-      intakeServoRight.setPositionCommand(0.1),
+      intakeServoRight.setPositionCommand(0.0),
       intakeServoLeft.setPositionCommand(0.9)
     );
   }
