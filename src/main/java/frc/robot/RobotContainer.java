@@ -107,11 +107,6 @@ public class RobotContainer {
     NamedCommands.registerCommands(new HashMap<String, Command>() {
       {
         // put("speaker-shoot", speakerShoot());
-        put("L1Auto", autoL1ReefCommand());
-        put("L2Auto", autoL2ReefCommand());
-        put("L3Auto", autoL3ReefCommand());
-        put("L4Auto", autoL4ReefCommand());
-        put("autoHumanPlayerIntakeCommand", autoHumanPlayerIntakeCommand());
         put("HoldL2", reefL2Command());
         put("OuttakeCoral", runInTakeCommand(-8).until(()-> !coral.haveCoral()).withName("Auto Run Outtake"));
         // put("OuttakeCoral", runInTakeCommand(8).withTimeout(1).withName("Auto Run Intkae"));
@@ -509,7 +504,7 @@ public class RobotContainer {
     testButtonPad.button(6).whileTrue(elevator1.pidCommand(24));
     testButtonPad.button(2).whileTrue(elevator1.pidCommand(48));
 
-    
+
     testButtonPad.button(3).whileTrue(arm.openLoopCommand(1));
     testButtonPad.button(7).whileTrue(arm.openLoopCommand(-1));
     testButtonPad.button(11).whileTrue(arm.pidCommand(20));
