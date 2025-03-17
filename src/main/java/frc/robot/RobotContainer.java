@@ -58,6 +58,8 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Superstructure.m_State;
+import frc.robot.commands.Aligntoreef;
+
 
 public class RobotContainer {
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -78,11 +80,13 @@ public class RobotContainer {
   private final Elevator elevator1 = new Elevator(intake.getCANDI());
   private final Arm arm = new Arm(algea.getCANDI());
   private final IntakeServo intakeServoRight = new IntakeServo(0, false);
-  private final IntakeServo intakeServoLeft = new IntakeServo(1, true);
+  private final IntakeServo intakeServoLeft = new IntakeServo(2, true);
   private final Superstructure superstructure = new Superstructure(arm, elevator1, wrist);
-  private final DigitalInput m_brakeButton = new DigitalInput(3);
-  private final AddressableLED m_brakeLed = new AddressableLED(3);
+  private final DigitalInput m_brakeButton = new DigitalInput(6);
+  private final AddressableLED m_brakeLed = new AddressableLED(5);
   private final AddressableLEDBuffer m_brakeLedBuffer = new AddressableLEDBuffer(60);
+  private final Climber m_Climber = new Climber(47, 3);
+  private final Limelights m_limelights = new Limelights();
   // private final Climber m_climber = new Climber(, 9);
 
   // Autos
@@ -105,9 +109,9 @@ public class RobotContainer {
         // put("speaker-shoot", speakerShoot());
         put("L2", autoReefCommand());
         put("HoldL2", reefL2Command());
-        put("OuttakeCoral", runInTakeCommand(-8).withTimeout(1).withName("Auto Run Outtake"));
-        put("OuttakeCoral", runInTakeCommand(8).withTimeout(1).withName("Auto Run Intkae"));
-        put("DrivePos", autoDrivePositiCommand());
+        put("OuttakeCoral", runInTakeCommand(-8).until(()-> !coral.haveCoral()).withName("Auto Run Outtake"));
+        // put("OuttakeCoral", runInTakeCommand(8).withTimeout(1).withName("Auto Run Intkae"));
+        put("DrivePos", drivePositiCommand());
         put("L1", reefL1Command());
         put("L2", reefL2Command());
         put("L3", reefL3Command());
@@ -122,13 +126,14 @@ public class RobotContainer {
     // put("Foo", "foo");
     // }
     // });
-    m_autoSelector.registerCommand("FOO", "FOO", AutoBuilder.buildAuto("Foo"));
-    m_autoSelector.registerCommand("STRT", "STRT", AutoBuilder.buildAuto("STRT"));
-    m_autoSelector.registerCommand("NOBK", "NOBK", AutoBuilder.buildAuto("NOBK"));
-    m_autoSelector.registerCommand("R1", "R1", AutoBuilder.buildAuto("R1"));
-    m_autoSelector.registerCommand("R2", "R2", AutoBuilder.buildAuto("R2"));
-    m_autoSelector.registerCommand("Trsh", "Trsh", AutoBuilder.buildAuto("Trsh"));
-    m_autoSelector.registerCommand("TRH2", "TRH2", AutoBuilder.buildAuto("TRH2"));
+    // m_autoSelector.registerCommand("FOO", "FOO", AutoBuilder.buildAuto("Foo"));
+    // m_autoSelector.registerCommand("STRT", "STRT", AutoBuilder.buildAuto("STRT"));
+    // m_autoSelector.registerCommand("NOBK", "NOBK", AutoBuilder.buildAuto("NOBK"));
+    // m_autoSelector.registerCommand("R1", "R1", AutoBuilder.buildAuto("R1"));
+    // m_autoSelector.registerCommand("R2", "R2", AutoBuilder.buildAuto("R2"));
+    // m_autoSelector.registerCommand("Trsh", "Trsh", AutoBuilder.buildAuto("Trsh"));
+    // m_autoSelector.registerCommand("TRH2", "TRH2", AutoBuilder.buildAuto("TRH2"));
+      m_autoSelector.registerCommand("MG", "MGMG", AutoBuilder.buildAuto("MG"));
 
     configureBindings();
     m_autoSelector.initialize();
@@ -140,6 +145,7 @@ public class RobotContainer {
     SmartDashboard.putData("Wrist", wrist);
     SmartDashboard.putData("InnerIntake", coral);
     SmartDashboard.putData("OuterIntake", algea);
+    SmartDashboard.putData("Limelights", m_limelights);
     SmartDashboard.putNumber("MaxAngularRate", MaxAngularRate);
   }
 
@@ -155,7 +161,7 @@ public class RobotContainer {
 
     BooleanSupplier slowModeSupplier = () -> {
 
-      return controller.getHID().getXButton() || elevator1.getPosition() > 20;
+      return  elevator1.getPosition() > 20;
     };
 
     DoubleSupplier rotationSupplier = () -> {
@@ -267,7 +273,7 @@ public class RobotContainer {
 
       if (translation.isPresent()) {
         xMove = translation.get().getX();
-        yMove = translation.get().getY();
+        // yMove = translation.get().getY();
       }
 
       if (slowModeSupplier.getAsBoolean()) {
@@ -401,17 +407,42 @@ public class RobotContainer {
     // buttonPad.button(7).and(buttonPad.button(6)).whileTrue(arm.openLoopCommand(-2));
     // buttonPad.button(11).and(buttonPad.button(2)).whileTrue(wrist.openLoopCommand(1));
     // buttonPad.button(11).and(buttonPad.button(6)).whileTrue(wrist.openLoopCommand(-1));
-    buttonPad.button(4).whileTrue(runInTakeCommand(4));
-    buttonPad.button(8).whileTrue(runInTakeCommand(-4));
+    buttonPad.button(4).whileTrue(runInTakeCommand(8));
+    buttonPad.button(8).whileTrue(runInTakeCommand(-8));
     buttonPad.button(10).whileTrue(reefL2Command());
     buttonPad.button(11).whileTrue(reefL3Command());
     buttonPad.button(12).whileTrue(reefL4Command());
     buttonPad.button(1).whileTrue(reefL1Command());
     buttonPad.button(3).whileTrue(netCommand());
-    controller.povDown().whileTrue(pickupAlgaeCommand());
-    
-    controller.povUp().whileTrue(processorCommand());
-    controller.y().whileTrue(netCommand());
+    controller.povDown().whileTrue(m_Climber.extendCommand());
+    controller.b().whileTrue(testUndropIntake());
+    controller.povUp().whileTrue(m_Climber.retractCommand());
+    controller.y().whileTrue(dropServoCommand());
+    // controller.povRight().whileTrue(dropServoCommand());
+    controller.povLeft().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, () -> {
+      var translation = translationSupplier.get();
+
+      double xMove = 0;
+
+      if (translation.isPresent()) {
+          xMove = translation.get().getX();
+      }
+
+      return xMove * 0.2;
+    }));
+    controller.povRight().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, () -> {
+      var translation = translationSupplier.get();
+
+      double xMove = 0;
+
+      if (translation.isPresent()) {
+          xMove = translation.get().getX();
+      }
+
+      return xMove * 0.2;
+    }));
+    // controller.povRight().whileTrue(new Aligntoreef(drivetrain, Aligntoreef.Side.Right, Aligntoreef.Score.Coral));
+    controller.x().whileTrue(dropServoCommand());
 
     arm.setDefaultCommand(drivePositiCommand());
 
@@ -620,7 +651,7 @@ public class RobotContainer {
                 intake.runMotorForwardsSpeedCommand(8).until(intake::haveCoral),
                 new ParallelCommandGroup(
                     intake.runMotorForwardsSpeedCommand(6),
-                    coral.runMotorBackwardsSpeedCommand(4)).until(coral::haveCoral)
+                    coral.runMotorBackwardsSpeedCommand(8)).until(coral::haveCoral)
                 )))
         .withName("Human Player Intake Command");
   }
@@ -686,9 +717,23 @@ public class RobotContainer {
 
   private Command dropIntake() {
     return new ParallelCommandGroup(
-        intakeServoRight.disengageServo(),
-        intakeServoLeft.disengageServo());
+        intakeServoRight.engageServo(),
+        intakeServoLeft.engageServo());
   }
+  private Command testUndropIntake() {
+    return new ParallelCommandGroup(
+      intakeServoRight.setPositionCommand(0.24),
+      intakeServoLeft.setPositionCommand(0.75)
+    ); 
+  }
+  private Command dropServoCommand ()
+  {
+    return new ParallelCommandGroup(
+      intakeServoRight.setPositionCommand(0.0),
+      intakeServoLeft.setPositionCommand(0.9)
+    );
+  }
+
 
   private Command netCommand() {
     superstructure.setRobotState(m_State.L4);
@@ -704,5 +749,6 @@ public class RobotContainer {
             arm.pidCommand(85),
             wrist.pidCommand(125)));
   }
-
+  
 }
+
