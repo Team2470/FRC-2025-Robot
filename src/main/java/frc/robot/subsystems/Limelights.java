@@ -28,8 +28,8 @@ public class Limelights extends SubsystemBase {
         return Commands.run(
             () -> {
                 // Enable throttle when disabled
-                LimelightHelpers.SetThrottle(Limelight.kLeft.name, 150);
-                LimelightHelpers.SetThrottle(Limelight.kRight.name, 150);
+                // LimelightHelpers.SetThrottle(Limelight.kLeft.name, 150);
+                // LimelightHelpers.SetThrottle(Limelight.kRight.name, 150);
             },
             this
         ).withName("Enable Throttle");
