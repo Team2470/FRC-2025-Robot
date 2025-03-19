@@ -5,21 +5,34 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "MHAutoStart"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "MHAutoStart"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Auto"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L4"
+            "name": "OuttakeCoral"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "midAuto",
+  "folder": "cirAutos",
   "choreoAuto": false
 }

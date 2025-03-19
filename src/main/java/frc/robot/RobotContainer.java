@@ -59,6 +59,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Superstructure.m_State;
 import frc.robot.commands.Aligntoreef;
+import frc.robot.commands.DriveStraight;
 
 
 public class RobotContainer {
@@ -117,6 +118,24 @@ public class RobotContainer {
         put("L3", reefL3Command());
         put("L4", reefL4Command());
         put("HpIntake", HumanPlayerIntakeCommand().until(coral::haveCoral));
+        put("Align Left", Aligntoreef.makeDriverController(drivetrain, elevator1, arm, m_limelights, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, ()-> 0.0).withTimeout(3));
+        put("DSLR", new DriveStraight(drivetrain, 0.24));
+        // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
+        put("drive straight right reef", new DriveStraight(drivetrain, 0.18));
+
+        put("stop", new RunCommand(() -> {}));
+
+        // put("scoreL4LeftCoral", new ParallelDeadlineGroup(
+        //   new SequentialCommandGroup(
+        //     new WaitUntilCommand(() -> {
+        //       return Math.abs(elevator1.getPosition() - 54.77 ) < 1  && Math.abs(arm.getPosition() - 60) < 2 && Math.abs(wrist.getPosition() - 125) < 2;
+        //     },
+        //     new DriveStraight(drivetrain, 0.24),
+        //     runInTakeCommand(-8).until(()-> !coral.haveCoral()).withName("Auto Run Outtake"),
+
+        //   ),
+        //   reefL4Command()
+        // ));
       }
     });
 
@@ -134,7 +153,9 @@ public class RobotContainer {
     // m_autoSelector.registerCommand("Trsh", "Trsh", AutoBuilder.buildAuto("Trsh"));
     // m_autoSelector.registerCommand("TRH2", "TRH2", AutoBuilder.buildAuto("TRH2"));
       m_autoSelector.registerCommand("MG", "MGMG", AutoBuilder.buildAuto("MG"));
+      m_autoSelector.registerCommand("LIKL", "LIKL", AutoBuilder.buildAuto("LIKL"));
 
+      
     configureBindings();
     m_autoSelector.initialize();
 
@@ -147,6 +168,7 @@ public class RobotContainer {
     SmartDashboard.putData("OuterIntake", algea);
     SmartDashboard.putData("Limelights", m_limelights);
     SmartDashboard.putNumber("MaxAngularRate", MaxAngularRate);
+
   }
 
   private void configureBindings() {
@@ -415,11 +437,16 @@ public class RobotContainer {
     buttonPad.button(1).whileTrue(reefL1Command());
     buttonPad.button(3).whileTrue(netCommand());
     controller.povDown().whileTrue(m_Climber.extendCommand());
-    controller.b().whileTrue(testUndropIntake());
+    controller.povRight().whileTrue(testUndropIntake());
     controller.povUp().whileTrue(m_Climber.retractCommand());
-    controller.y().whileTrue(dropServoCommand());
+    controller.povLeft().whileTrue(dropServoCommand());
     // controller.povRight().whileTrue(dropServoCommand());
-    controller.povLeft().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, () -> {
+
+    controller.y().whileTrue(new DriveStraight(drivetrain, 0.24));
+
+
+
+    controller.x().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, () -> {
       var translation = translationSupplier.get();
 
       double xMove = 0;
@@ -430,7 +457,7 @@ public class RobotContainer {
 
       return xMove * 0.2;
     }));
-    controller.povRight().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, () -> {
+    controller.b().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, m_limelights, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, () -> {
       var translation = translationSupplier.get();
 
       double xMove = 0;
@@ -442,7 +469,6 @@ public class RobotContainer {
       return xMove * 0.2;
     }));
     // controller.povRight().whileTrue(new Aligntoreef(drivetrain, Aligntoreef.Side.Right, Aligntoreef.Score.Coral));
-    controller.x().whileTrue(dropServoCommand());
 
     arm.setDefaultCommand(drivePositiCommand());
 
@@ -749,6 +775,12 @@ public class RobotContainer {
             arm.pidCommand(85),
             wrist.pidCommand(125)));
   }
-  
+
+  private Command setVisionPose(double xMeters, double yMeters) {
+    return new InstantCommand(()->{
+      drivetrain.resetPose(new Pose2d(new Translation2d(xMeters, yMeters), drivetrain.getState().Pose.getRotation()));
+    });
+
+  }
 }
 
