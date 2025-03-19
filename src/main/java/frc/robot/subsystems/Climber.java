@@ -4,14 +4,15 @@
 
 package frc.robot.subsystems;
 
-
-
-
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -24,93 +25,107 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.WristConstants;
 
 public class Climber extends SubsystemBase {
 
-private final TalonFX m_motor ;
-private final VoltageOut m_motorRequest = new VoltageOut(0);
+	private final TalonFX m_motor;
+	private final VoltageOut m_motorRequest = new VoltageOut(0);
+	private final CANcoder m_encoder;
 
-private final Servo m_Servo;
+	private final Servo m_Servo;
+
+	/** Creates a new ClimberPivot. */
+	public Climber(int motorID, int servoChannel) {
+
+		m_motor = new TalonFX(motorID, "Canivore");
+		m_encoder = new CANcoder(m_motor.getDeviceID(), "Canivore");
+
+		TalonFXConfiguration config = new TalonFXConfiguration();
+		config.Feedback.FeedbackRemoteSensorID = m_encoder.getDeviceID();
+		config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+		config.Feedback.SensorToMechanismRatio = 1;
+		config.Feedback.RotorToSensorRatio = 100;
+
+		config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+		config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.697;
+		config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+		config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.1691;
+
+		config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+		config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+		config.CurrentLimits.SupplyCurrentLimit = 20;
+		config.CurrentLimits.SupplyCurrentLimitEnable = true;
+		config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.5;
+
+		CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
+		encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+		encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+		encoderConfig.MagnetSensor.MagnetOffset = Units.degreesToRotations(-0.12866);
+
+		m_motor.getConfigurator().apply(config);
+		m_encoder.getConfigurator().apply(encoderConfig);
+		// m_motor.setInverted(isLeft);
+
+		m_motor.getPosition().setUpdateFrequency(50);
+		m_motor.optimizeBusUtilization();
+
+		m_Servo = new Servo(servoChannel);
+
+	}
+
+	public double getMotorRotations() {
+		return Units.rotationsToDegrees(m_motor.getPosition().getValueAsDouble());
+	}
+
+	@Override
+	public void periodic() {
+		// This method will be called once per scheduler run
+
+		SmartDashboard.putNumber("Climber Encoder Position", m_encoder.getPosition().getValueAsDouble());
+		SmartDashboard.putNumber("Servo Position", m_Servo.getPosition());
+		SmartDashboard.putNumber("Climber Position", m_motor.getPosition().getValueAsDouble());
+
+	}
+
+	public void engageRatchet() {
+
+		m_Servo.setPosition(0.5);
+
+	}
+
+	public void disengageRatchet() {
+
+		m_Servo.setPosition(0.7);
+	}
+
+	public void setVoltage(double voltage) {
+
+		m_motorRequest.withOutput(voltage);
+		m_motor.setControl(m_motorRequest);
+	}
+
+	public void stop() {
+		setVoltage(0);
+		
+	}
 
 
+	public Command retractCommand() {
+		return new ParallelCommandGroup(
+				// Commands.run(() -> engageRatchet(),));
+				new ParallelCommandGroup(
+				// Commands.runEnd(() -> disengageRatchet(), this::engageRatchet)),
+				Commands.runEnd(() -> this.setVoltage(4), this::stop, this))
 
-/** Creates a new ClimberPivot. */
-public Climber(int motorID, int servoChannel) {
-
-	TalonFXConfiguration config = new TalonFXConfiguration();
-
-	config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
-	config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-	config.CurrentLimits.SupplyCurrentLimit = 20;
-	config.CurrentLimits.SupplyCurrentLimitEnable = true;
-	config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-	config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 34;
-	config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
-	config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
-	config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.5;
-
-
-	m_motor = new TalonFX(motorID, "rio");
-	m_motor.getConfigurator().apply(config);
-	//m_motor.setInverted(isLeft);
-
-	m_motor.getPosition().setUpdateFrequency(50);
-	m_motor.optimizeBusUtilization();
-
-
-	m_Servo = new Servo(servoChannel);
-
-
-}
-
-
-
-public double getMotorRotations() {
-	return Units.rotationsToDegrees(m_motor.getPosition().getValueAsDouble());
-}
-
-@Override
-public void periodic() {
-	// This method will be called once per scheduler run
-	
-	
-
-
-
-}
-
-public void engageRatchet(){
-
-	m_Servo.setPosition(0.1);
-
-
-}
-public void disengageRatchet(){
-
-	m_Servo.setPosition(0.9);
-}
-
-public void setVoltage(double voltage){
-	
-
-	m_motorRequest.withOutput(voltage);
-	m_motor.setControl(m_motorRequest);
-}
-
-public void stop(){
-	setVoltage(0);
-}
-
-public Command retractCommand(){
-	return new ParallelCommandGroup(
-	// Commands.run(() -> engageRatchet(),));
-	Commands.runEnd(() -> engageRatchet(), this::stop, this));
-}
+		);
+	}
 
 	public Command extendCommand(){
-	return new ParallelCommandGroup(
-	Commands.runEnd(() -> disengageRatchet(), this::stop, this)
+		return new ParallelCommandGroup(
+			Commands.runEnd(() -> disengageRatchet(), this::engageRatchet),
+			Commands.runEnd(() -> this.setVoltage(-4), this::stop, this)
+
 	// new SequentialCommandGroup(
 	// 	new WaitCommand(0.2)
 		// Commands.runEnd(() -> this.setVoltage(4), this::stop, this)

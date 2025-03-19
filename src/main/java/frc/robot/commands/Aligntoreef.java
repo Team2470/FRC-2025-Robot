@@ -60,9 +60,9 @@ public class Aligntoreef extends SequentialCommandGroup {
 
   private final SwerveRequest.Idle idleRequest = new SwerveRequest.Idle(); 
   private final ModifiedRobotCentricFacingAngle swerveAlign = new ModifiedRobotCentricFacingAngle()
-    .withHeadingPID(10, 0, 0)
+    .withHeadingPID(15, 0, 0)
     .withRotationalDeadband(RobotContainer.MaxAngularRate * 0.1) // Add a 10% deadband
-    .withMaxAbsRotationalRate(RobotContainer.MaxAngularRate * 0.25) // 25% of max rotation speed
+    .withMaxAbsRotationalRate(RobotContainer.MaxAngularRate * 0.5) // 25% of max rotation speed
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
     .withSteerRequestType(SteerRequestType.MotionMagicExpo)
     .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance);

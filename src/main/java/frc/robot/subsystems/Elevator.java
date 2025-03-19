@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
 import frc.robot.Constants.ElevatorConstants;
 
 public class Elevator extends SubsystemBase {
@@ -135,7 +136,11 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
+    if (!m_isHomed){
+      LimelightHelpers.setLEDMode_ForceBlink("limelight-middle");
+    } else {
+      LimelightHelpers.setLEDMode_ForceOff("limelight-middle");
+    }
     double outputVoltage = 0;
 
     if (!m_isHomed && isRetracted()) {
