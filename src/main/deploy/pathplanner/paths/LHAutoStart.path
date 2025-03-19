@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 7.1,
-        "y": 5.49
+        "y": 6.5
       },
       "prevControl": null,
       "nextControl": {
         "x": 6.319099629177329,
-        "y": 4.5421917833830046
+        "y": 5.552191783383004
       },
       "isLocked": false,
       "linkedName": "leftAutoStart"
@@ -33,10 +33,10 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 0.5,
-    "maxAngularVelocity": 100.0,
-    "maxAngularAcceleration": 50.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
