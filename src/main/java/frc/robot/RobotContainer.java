@@ -118,9 +118,24 @@ public class RobotContainer {
         put("L3", reefL3Command());
         put("L4", reefL4Command());
         put("HpIntake", HumanPlayerIntakeCommand().until(coral::haveCoral));
-        put("drive straight left reef", new DriveStraight(drivetrain, 0.24));
-        put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
+        put("Align Left", Aligntoreef.makeAuto(drivetrain, elevator1, arm, m_limelights, Aligntoreef.Side.Left, Aligntoreef.Score.Coral).withTimeout(3));
+        put("DSLR", new DriveStraight(drivetrain, 0.24));
+        // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
+        put("drive straight right reef", new DriveStraight(drivetrain, 0.18));
 
+        put("stop", new RunCommand(() -> {}));
+
+        // put("scoreL4LeftCoral", new ParallelDeadlineGroup(
+        //   new SequentialCommandGroup(
+        //     new WaitUntilCommand(() -> {
+        //       return Math.abs(elevator1.getPosition() - 54.77 ) < 1  && Math.abs(arm.getPosition() - 60) < 2 && Math.abs(wrist.getPosition() - 125) < 2;
+        //     },
+        //     new DriveStraight(drivetrain, 0.24),
+        //     runInTakeCommand(-8).until(()-> !coral.haveCoral()).withName("Auto Run Outtake"),
+
+        //   ),
+        //   reefL4Command()
+        // ));
       }
     });
 
@@ -138,7 +153,9 @@ public class RobotContainer {
     // m_autoSelector.registerCommand("Trsh", "Trsh", AutoBuilder.buildAuto("Trsh"));
     // m_autoSelector.registerCommand("TRH2", "TRH2", AutoBuilder.buildAuto("TRH2"));
       m_autoSelector.registerCommand("MG", "MGMG", AutoBuilder.buildAuto("MG"));
+      m_autoSelector.registerCommand("LIKL", "LIKL", AutoBuilder.buildAuto("LIKL"));
 
+      
     configureBindings();
     m_autoSelector.initialize();
 
@@ -151,6 +168,7 @@ public class RobotContainer {
     SmartDashboard.putData("OuterIntake", algea);
     SmartDashboard.putData("Limelights", m_limelights);
     SmartDashboard.putNumber("MaxAngularRate", MaxAngularRate);
+
   }
 
   private void configureBindings() {

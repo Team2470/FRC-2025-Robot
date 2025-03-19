@@ -272,6 +272,43 @@ public class Aligntoreef extends SequentialCommandGroup {
           .withTargetDirection(Rotation2d.fromDegrees(heading));
 
       }).until(() -> heading == null || (m_txPID.atSetpoint() && m_tyPID.atSetpoint()) || !LimelightHelpers.getTV(side.name)),
+
+      drive.applyRequest(() -> {
+        // double xMove = MathUtil.clamp(
+        //   m_tyPID.calculate(LimelightHelpers.getTY(side.name), 0), -0.2,0.5
+        // );
+        double yMove = MathUtil.clamp(
+          m_txPID.calculate(LimelightHelpers.getTX(side.name), 0), -0.2,0.5
+        );
+        double xMove = 0;
+        //yMove = 0.11;
+        // xMove += xFeedForward;
+        // yMove += yFeedForward;
+        // xMove = MathUtil.applyDeadband(xMove, 0.01);
+        // yMove = MathUtil.applyDeadband(yMove, 0.01);
+        SmartDashboard.putNumber("AlignToReef Heading Error", swerveAlign.HeadingController.getPositionError());
+        SmartDashboard.putNumber("AlignToReef Heading Setpoint", swerveAlign.HeadingController.getSetpoint());
+        SmartDashboard.putNumber("AlignToReef tx error", m_txPID.getError());
+        SmartDashboard.putNumber("AlignToReef ty error", m_tyPID.getError());
+        SmartDashboard.putNumber("AlignToReef xFeedForward", xFeedForward);
+        SmartDashboard.putNumber("AlignToReef yFeedForward", yFeedForward);
+        SmartDashboard.putNumber("AlignToReef xMove", xMove);
+        SmartDashboard.putNumber("AlignToReef yMove", yMove);
+        SmartDashboard.putBoolean("AlignToReef isFarAway", false);
+        
+        if (heading == null) {
+          // Something not right, do nothing! We should not have gotten here should have been killed ealier
+          return idleRequest;
+        }
+
+        return swerveAlign
+          .withVelocityX(xMove)
+          .withVelocityY(yMove)
+          .withTargetDirection(Rotation2d.fromDegrees(heading));
+
+      }).until(() -> heading == null || !LimelightHelpers.getTV(side.name)).withTimeout(0.7),
+
+
       // Finally let the drive drive back and forth, and keep heading and disable side to side movement
       drive.applyRequest(() -> {
         double yMove = moveSupplier.getAsDouble();
