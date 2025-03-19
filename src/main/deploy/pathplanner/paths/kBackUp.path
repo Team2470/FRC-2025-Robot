@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.7,
+        "y": 5.7
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.9493237487630997,
+        "y": 5.718375753119708
+      },
+      "isLocked": false,
+      "linkedName": "postK"
+    },
+    {
+      "anchor": {
+        "x": 3.8,
+        "y": 5.498
+      },
+      "prevControl": {
+        "x": 3.5210965494033237,
+        "y": 5.484233770779287
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "kBack"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 180.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -59.99999999999999
+  },
+  "reversed": false,
+  "folder": "backFromPost",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -59.99999999999999
+  },
+  "useDefaultConstraints": true
+}

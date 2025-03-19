@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.0,
-        "y": 3.9
+        "x": 5.5,
+        "y": 5.323
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.3984375,
-        "y": 3.909709821428571
+        "x": 3.3054383116883117,
+        "y": 7.538767045454546
       },
       "isLocked": false,
-      "linkedName": "postG"
+      "linkedName": "iBack"
     },
     {
       "anchor": {
-        "x": 6.372321428571428,
-        "y": 3.9
+        "x": 1.6,
+        "y": 0.7
       },
       "prevControl": {
-        "x": 5.987109375,
-        "y": 3.903180803571428
+        "x": 1.5242288961038961,
+        "y": 1.4323863636363638
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "farRightStation"
     }
   ],
   "rotationTargets": [],
@@ -33,22 +33,22 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 0.5,
-    "maxAngularVelocity": 100.0,
-    "maxAngularAcceleration": 50.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 54.0
   },
   "reversed": false,
-  "folder": "autoStart",
+  "folder": "postToFarRightIntake",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": true
 }
