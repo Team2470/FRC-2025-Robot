@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 
@@ -20,30 +18,18 @@ public class Limelights extends SubsystemBase {
         }
     }
 
-    public Limelights() {
-        setDefaultCommand(enableThrottle().ignoringDisable(true));
+    @Override
+    public void periodic() {
+        if (DriverStation.isEnabled()) {
+            // Disable throttle
+            LimelightHelpers.SetThrottle(Limelight.kLeft.name, 0);
+            LimelightHelpers.SetThrottle(Limelight.kRight.name, 0);
+        } else {
+            // Enable throttle when disabled
+            LimelightHelpers.SetThrottle(Limelight.kLeft.name, 150);
+            LimelightHelpers.SetThrottle(Limelight.kRight.name, 150);
+        }
     }
 
-    public Command enableThrottle() {
-        return Commands.run(
-            () -> {
-                // Enable throttle when disabled
-                LimelightHelpers.SetThrottle(Limelight.kLeft.name, 150);
-                LimelightHelpers.SetThrottle(Limelight.kRight.name, 150);
-            },
-            this
-        ).withName("Enable Throttle");
-    }
-
-    public Command disableThrottle() {
-        return Commands.run(
-            () -> {
-                // Disable throttle
-                LimelightHelpers.SetThrottle(Limelight.kLeft.name, 0);
-                LimelightHelpers.SetThrottle(Limelight.kRight.name, 0);
-            },
-            this
-        ).withName("Disable Throttle");
-    }
 
 }
