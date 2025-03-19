@@ -109,9 +109,6 @@ public class Aligntoreef extends SequentialCommandGroup {
       Commands.runOnce(() -> {
         SmartDashboard.putNumber("ATR", 0);
         LimelightHelpers.setPipelineIndex(side.name, score.pipeline);
-        LimelightHelpers.SetThrottle(Limelight.kLeft.name, 0);
-        LimelightHelpers.SetThrottle(Limelight.kRight.name, 0);
-
       }),
       new WaitUntilCommand(()-> LimelightHelpers.getTV(side.name)),
       Commands.runOnce(() -> SmartDashboard.putNumber("ATR",1)),
