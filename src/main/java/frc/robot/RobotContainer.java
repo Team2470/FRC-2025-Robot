@@ -158,6 +158,8 @@ public class RobotContainer {
       
     configureBindings();
     m_autoSelector.initialize();
+    SmartDashboard.putData("AutoSelector next auto", m_autoSelector.nextAutoCommand());
+    SmartDashboard.putData("AutoSelector previous auto", m_autoSelector.previousAutoCommand());
 
     SmartDashboard.putData(CommandScheduler.getInstance());
     SmartDashboard.putData("Drive", drivetrain);
