@@ -59,6 +59,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Superstructure.m_State;
 import frc.robot.commands.Aligntoreef;
+import frc.robot.commands.DriveStraight;
 
 
 public class RobotContainer {
@@ -117,6 +118,9 @@ public class RobotContainer {
         put("L3", reefL3Command());
         put("L4", reefL4Command());
         put("HpIntake", HumanPlayerIntakeCommand().until(coral::haveCoral));
+        put("drive straight left reef", new DriveStraight(drivetrain, 0.24));
+        put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
+
       }
     });
 
@@ -419,6 +423,11 @@ public class RobotContainer {
     controller.povUp().whileTrue(m_Climber.retractCommand());
     controller.y().whileTrue(dropServoCommand());
     // controller.povRight().whileTrue(dropServoCommand());
+
+    controller.x().whileTrue(new DriveStraight(drivetrain, 0.24));
+
+
+
     controller.povLeft().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, m_limelights, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, () -> {
       var translation = translationSupplier.get();
 
@@ -749,6 +758,12 @@ public class RobotContainer {
             arm.pidCommand(85),
             wrist.pidCommand(125)));
   }
-  
+
+  private Command setVisionPose(double xMeters, double yMeters) {
+    return new InstantCommand(()->{
+      drivetrain.resetPose(new Pose2d(new Translation2d(xMeters, yMeters), drivetrain.getState().Pose.getRotation()));
+    });
+
+  }
 }
 
