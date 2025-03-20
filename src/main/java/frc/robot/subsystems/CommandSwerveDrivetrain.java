@@ -221,15 +221,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     (speeds, feedforwards) -> setControl(
                             m_pathApplyRobotSpeeds.withSpeeds(speeds)
                                     .withSteerRequestType(SteerRequestType.MotionMagicExpo)
-                                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-                                    // .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-                                    // .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+                                    .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                                    .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
                                 ),
                     new PPHolonomicDriveController(
                             // PID constants for translation
-                            new PIDConstants(0, 0, 0),
+                            new PIDConstants(15, 0, 0),
                             // PID constants for rotation
-                            new PIDConstants(0, 0, 0)),
+                            new PIDConstants(4, 0, 0)),
                     config,
                     // Assume the path needs to be flipped for Red vs Blue, this is normally the
                     // case
