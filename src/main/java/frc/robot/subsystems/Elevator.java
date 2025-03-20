@@ -175,7 +175,7 @@ public class Elevator extends SubsystemBase {
 
       case kPID:
 
-      if (!m_candi.getS2Closed().getValue() || m_demand < 10) {
+      // if (!m_candi.getS2Closed().getValue() || m_demand < 10) {
 
         m_feedforward = new ElevatorFeedforward(
             SmartDashboard.getNumber("Elevator kS", ElevatorConstants.kS),
@@ -204,10 +204,10 @@ public class Elevator extends SubsystemBase {
         m_pidLastTime = Timer.getFPGATimestamp();
 
         break;
-      } else if (m_candi.getS2Closed().getValue() && m_demand > 10) {
-        stop();
-        break;
-      }
+      // } else if (m_candi.getS2Closed().getValue() && m_demand > 10) {
+      //   stop();
+      //   break;
+      // }
       default:
         // What happened!?
         break;
