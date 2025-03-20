@@ -118,12 +118,14 @@ public class RobotContainer {
         put("L3", reefL3Command());
         put("L4", reefL4Command());
         put("HpIntake", HumanPlayerIntakeCommand().until(coral::haveCoral));
-        put("Align Left", Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, ()-> 0.0).withTimeout(3));
+        put("Align Left", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
         put("DSLR", new DriveStraight(drivetrain, 0.24));
         // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
         put("drive straight right reef", new DriveStraight(drivetrain, 0.18));
 
         put("stop", new RunCommand(() -> {}));
+        put("debug-false", Commands.runOnce(() -> SmartDashboard.putBoolean("Auto debug flag", false)));
+        put("debug-true", Commands.runOnce(() -> SmartDashboard.putBoolean("Auto debug flag", true)));
 
         // put("scoreL4LeftCoral", new ParallelDeadlineGroup(
         //   new SequentialCommandGroup(

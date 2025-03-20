@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "debug-false"
+          }
+        },
+        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -37,18 +43,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "stop"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Align Left"
-          }
-        },
-        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -68,6 +62,18 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "debug-true"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stop"
+          }
+        },
+        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -84,12 +90,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4"
           }
         },
         {
