@@ -93,6 +93,7 @@ public class RobotContainer {
   // Autos
   private final RevDigit m_revDigit;
   private final AutoSelector m_autoSelector;
+  private final SwerveRequest m_idleRequest = new SwerveRequest.Idle(); 
 
   public RobotContainer() {
 
@@ -123,7 +124,7 @@ public class RobotContainer {
         // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
         put("drive straight right reef", new DriveStraight(drivetrain, 0.18));
 
-        put("stop", new RunCommand(() -> {}));
+        put("stop", drivetrain.applyRequest(() -> m_idleRequest).withName("stop"));
         put("debug-false", Commands.runOnce(() -> SmartDashboard.putBoolean("Auto debug flag", false)));
         put("debug-true", Commands.runOnce(() -> SmartDashboard.putBoolean("Auto debug flag", true)));
 

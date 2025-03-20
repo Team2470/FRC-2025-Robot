@@ -296,7 +296,7 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
           .withVelocityY(yMove)
           .withTargetDirection(Rotation2d.fromDegrees(heading));
 
-      }).withName("Align Far Away").until(() -> heading == null || (m_txPID.atSetpoint() && m_tyPID.atSetpoint()) || !LimelightHelpers.getTV(side.name)),
+      }).withName("Align near").until(() -> heading == null || (m_txPID.atSetpoint() && m_tyPID.atSetpoint()) || !LimelightHelpers.getTV(side.name)),
 
       Commands.runOnce(() -> SmartDashboard.putNumber("ATR",5)),
       drive.applyRequest(() -> {
@@ -332,7 +332,7 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
           .withVelocityY(yMove)
           .withTargetDirection(Rotation2d.fromDegrees(heading));
 
-      }).withName("Align Near").until(() -> heading == null || !LimelightHelpers.getTV(side.name)).withTimeout(0.7),
+      }).withName("Align stabilization").until(() -> heading == null || !LimelightHelpers.getTV(side.name)).withTimeout(0.7),
 
       Commands.runOnce(() -> SmartDashboard.putNumber("ATR",6)).withName("Advancing to ATR to 6"),
 
@@ -364,6 +364,11 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
       }).withName("Manual drive").until(() -> heading == null || !enableMove),
       Commands.runOnce(() -> SmartDashboard.putNumber("ATR",7)).withName("Advancing ATR to 7")
     );
+  }
+
+  @Override
+  public String getName() {
+    return "Generic AlignToReef";
   }
   // public static Command autoCoralSide(CommandSwerveDrivetrain drive, Side userSide) {
   //   return Commands.sequence(

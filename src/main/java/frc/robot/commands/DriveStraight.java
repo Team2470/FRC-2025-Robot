@@ -12,7 +12,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class DriveStraight extends SequentialCommandGroup {
     private final SwerveRequest.RobotCentric request = new SwerveRequest.RobotCentric()
-            .withVelocityX(0.1)
+            .withVelocityX(0.25)
             .withVelocityY(0)
             .withRotationalRate(0)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
