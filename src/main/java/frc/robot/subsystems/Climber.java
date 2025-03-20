@@ -120,7 +120,7 @@ public class Climber extends SubsystemBase {
 				// Commands.run(() -> engageRatchet(),));
 				new ParallelCommandGroup(
 				// Commands.runEnd(() -> disengageRatchet(), this::engageRatchet)),
-				Commands.runEnd(() -> this.setVoltage(4), this::stop, this))
+				Commands.runEnd(() -> this.setVoltage(8), this::stop, this))
 
 		);
 	}

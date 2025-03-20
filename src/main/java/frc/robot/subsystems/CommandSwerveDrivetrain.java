@@ -220,7 +220,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     // Consumer of ChassisSpeeds and feedforwards to drive the robot
                     (speeds, feedforwards) -> setControl(
                             m_pathApplyRobotSpeeds.withSpeeds(speeds)
-                                    .withSteerRequestType(SteerRequestType.MotionMagicExpo)
+                                    // .withSteerRequestType(SteerRequestType.MotionMagicExpo)
                                     .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
                                     .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
                                 ),

@@ -485,7 +485,7 @@ controller.y().whileTrue( // Drivetrain will execute this command periodically
     controller.povRight().whileTrue(testUndropIntake());
     controller.povUp().whileTrue(m_Climber.retractCommand());
     controller.povLeft().whileTrue(new SequentialCommandGroup(
-        new WaitUntilCommand(()-> m_Climber.getPosition() < 0.3),
+        // new WaitUntilCommand(()-> m_Climber.getPosition() < 0.3),
         dropServoCommand())
       );
     // controller.povRight().whileTrue(dropServoCommand());
