@@ -5,21 +5,47 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "MGAutoStart"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "MGAutoStart"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Auto"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L4"
+            "name": "OuttakeCoral"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "gToFarLeft"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "gToFarLeft"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoHumanPlayerIntakeCommand"
+                }
+              }
+            ]
           }
         },
         {
@@ -29,21 +55,47 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "farLeftToH"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "farLeftToH"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Auto"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L4"
+            "name": "OuttakeCoral"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "hToFarLeft"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "hToFarLeft"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoHumanPlayerIntakeCommand"
+                }
+              }
+            ]
           }
         },
         {
@@ -53,15 +105,28 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "farLeftToI"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "farLeftToI"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Auto"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L4"
+            "name": "OuttakeCoral"
           }
         }
       ]

@@ -8,6 +8,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -219,14 +220,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     // Consumer of ChassisSpeeds and feedforwards to drive the robot
                     (speeds, feedforwards) -> setControl(
                             m_pathApplyRobotSpeeds.withSpeeds(speeds)
-                                    // .withSteerRequestType(SteerRequestType.MotionMagicExpo)
-                                    .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-                                    .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())),
+                                    .withSteerRequestType(SteerRequestType.MotionMagicExpo)
+                                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                                    // .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                                    // .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+                                ),
                     new PPHolonomicDriveController(
                             // PID constants for translation
-                            new PIDConstants(15, 0, 0),
+                            new PIDConstants(0, 0, 0),
                             // PID constants for rotation
-                            new PIDConstants(4, 0, 0)),
+                            new PIDConstants(0, 0, 0)),
                     config,
                     // Assume the path needs to be flipped for Red vs Blue, this is normally the
                     // case
