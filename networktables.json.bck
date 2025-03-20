@@ -1,0 +1,10 @@
+[
+  {
+    "name": "/Preferences/selected_auto",
+    "type": "string",
+    "value": "MG",
+    "properties": {
+      "persistent": true
+    }
+  }
+]

@@ -120,7 +120,9 @@ public class RobotContainer {
         put("L4", reefL4Command());
         put("HpIntake", HumanPlayerIntakeCommand().until(coral::haveCoral));
         put("Align Left", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
-        put("DSLR", new DriveStraight(drivetrain, 0.24));
+        put("DSLR", new DriveStraight(drivetrain, 0.21));
+        put("DSRR", new DriveStraight(drivetrain, 0.18));
+
         // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
         put("drive straight right reef", new DriveStraight(drivetrain, 0.18));
 
@@ -434,8 +436,8 @@ public class RobotContainer {
     // buttonPad.button(7).and(buttonPad.button(6)).whileTrue(arm.openLoopCommand(-2));
     // buttonPad.button(11).and(buttonPad.button(2)).whileTrue(wrist.openLoopCommand(1));
     // buttonPad.button(11).and(buttonPad.button(6)).whileTrue(wrist.openLoopCommand(-1));
-    buttonPad.button(4).whileTrue(runInTakeCommand(8));
-    buttonPad.button(8).whileTrue(runInTakeCommand(-8));
+    buttonPad.button(4).whileTrue(runInTakeCommand(6));
+    buttonPad.button(8).whileTrue(runInTakeCommand(-6));
     buttonPad.button(10).whileTrue(reefL2Command());
     buttonPad.button(11).whileTrue(reefL3Command());
     buttonPad.button(12).whileTrue(reefL4Command());
@@ -444,10 +446,13 @@ public class RobotContainer {
     controller.povDown().whileTrue(m_Climber.extendCommand());
     controller.povRight().whileTrue(testUndropIntake());
     controller.povUp().whileTrue(m_Climber.retractCommand());
-    controller.povLeft().whileTrue(dropServoCommand());
+    controller.povLeft().whileTrue(new SequentialCommandGroup(
+        new WaitUntilCommand(()-> m_Climber.getPosition() < 0.3),
+        dropServoCommand())
+      );
     // controller.povRight().whileTrue(dropServoCommand());
 
-    controller.y().whileTrue(new DriveStraight(drivetrain, 0.24));
+    // controller.y().whileTrue(new DriveStraight(drivetrain, 0.24));
 
 
 
@@ -682,7 +687,7 @@ public class RobotContainer {
                 intake.runMotorForwardsSpeedCommand(8).until(intake::haveCoral),
                 new ParallelCommandGroup(
                     intake.runMotorForwardsSpeedCommand(6),
-                    coral.runMotorBackwardsSpeedCommand(8)).until(coral::haveCoral)
+                    coral.runMotorBackwardsSpeedCommand(6)).until(coral::haveCoral)
                 )))
         .withName("Human Player Intake Command");
   }

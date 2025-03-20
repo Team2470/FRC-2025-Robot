@@ -110,6 +110,10 @@ public class Climber extends SubsystemBase {
 		
 	}
 
+	public double getPosition(){
+		return m_encoder.getPosition().getValueAsDouble();
+	}
+
 
 	public Command retractCommand() {
 		return new ParallelCommandGroup(

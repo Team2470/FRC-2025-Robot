@@ -105,7 +105,7 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
       }
 
       // Stop if arm leaves robot frame
-      if (arm.getPosition() < 75) {
+      if (arm.getPosition() < 60) {
         return true;
       }
 
