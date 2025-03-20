@@ -247,7 +247,7 @@
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": "cirAutos",
   "choreoAuto": false
 }
