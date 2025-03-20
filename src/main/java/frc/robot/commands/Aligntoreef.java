@@ -8,6 +8,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+import com.kennedyrobotics.commands.DebugSequentialCommandGroup;
 
 import java.util.function.DoubleSupplier;
 
@@ -15,6 +16,8 @@ import com.ctre.pheonix6.swerve.ModifiedRobotCentricFacingAngle;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,7 +33,7 @@ import frc.robot.subsystems.Elevator;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class Aligntoreef extends SequentialCommandGroup {
+public class Aligntoreef extends DebugSequentialCommandGroup {
 
   public enum Side {
     Left("limelight-right"),
@@ -67,6 +70,10 @@ public class Aligntoreef extends SequentialCommandGroup {
 
   public static Command makeDriverController(CommandSwerveDrivetrain drive, Elevator elevator, Arm arm, Side side, Score score, DoubleSupplier moveSupplier) {
     return new Aligntoreef(drive, side, score, moveSupplier, true).until(() -> {
+      if (RobotBase.isSimulation()) {
+        return false;
+      }
+
       // Stop if elevator raises
       if (2 < elevator.getPosition()) {
         return true;
@@ -81,8 +88,17 @@ public class Aligntoreef extends SequentialCommandGroup {
     });
   }
 
-  public static Command makeAuto(CommandSwerveDrivetrain drive, Elevator elevator, Arm arm, Side side, Score score) {
-    return new Aligntoreef(drive, side, score, () -> 0.0, false).until(() -> {
+  public static Command makeAuto(CommandSwerveDrivetrain drive, Elevator elevator, Arm arm, Side side, Score score, String name) {
+    var cmd = new Aligntoreef(drive, side, score, () -> 0.0, false) {
+      @Override
+      public String getName() {
+          return name;
+      }
+    }.until(() -> {
+      if (RobotBase.isSimulation()) {
+        return false;
+      }
+
       // Stop if elevator raises
       if (2 < elevator.getPosition()) {
         return true;
@@ -95,6 +111,10 @@ public class Aligntoreef extends SequentialCommandGroup {
 
       return false;
     });
+
+    SmartDashboard.putData("AligntToReef Auto", cmd);
+
+    return cmd;
   }
 
 
@@ -109,9 +129,13 @@ public class Aligntoreef extends SequentialCommandGroup {
       Commands.runOnce(() -> {
         SmartDashboard.putNumber("ATR", 0);
         LimelightHelpers.setPipelineIndex(side.name, score.pipeline);
-      }),
-      new WaitUntilCommand(()-> LimelightHelpers.getTV(side.name)),
-      Commands.runOnce(() -> SmartDashboard.putNumber("ATR",1)),
+      }).withName("Set Pipeline"),
+      new WaitUntilCommand(()-> {
+        SmartDashboard.putNumber("AlignToReef timestamp", Timer.getFPGATimestamp());
+        SmartDashboard.putNumber("ATR", 0.5);
+        return LimelightHelpers.getTV(side.name);
+      }).withName("Waiting for visable target"),
+      Commands.runOnce(() -> SmartDashboard.putNumber("ATR",1)).withName("Advancing ATR to 1"),
         // We see a target, do a bunch of setup!
       Commands.runOnce(() -> {
         m_txPID.reset();
@@ -181,8 +205,8 @@ public class Aligntoreef extends SequentialCommandGroup {
             heading = null;
         }
 
-      }),
-      Commands.runOnce(() -> SmartDashboard.putNumber("ATR",2)),
+      }).withName("Setting target heading and resetting PID controllers"),
+      Commands.runOnce(() -> SmartDashboard.putNumber("ATR",2)).withName("Advancing ATR to 2"),
 
       // First lets move fast, and make sure the Limelight ty is right 
       drive.applyRequest(() -> {
@@ -221,8 +245,8 @@ public class Aligntoreef extends SequentialCommandGroup {
           .withVelocityX(xMove)
           .withVelocityY(yMove)
           .withTargetDirection(Rotation2d.fromDegrees(heading));
-      }).until(() -> heading == null || m_tyPID.atSetpoint() || !LimelightHelpers.getTV(side.name)),
-      Commands.runOnce(() -> SmartDashboard.putNumber("ATR",3)),
+      }).withName("Align Far Away").until(() -> heading == null || m_tyPID.atSetpoint() || !LimelightHelpers.getTV(side.name)),
+      Commands.runOnce(() -> SmartDashboard.putNumber("ATR",3)).withName("Advancing ATR to 3"),
 
       Commands.runOnce(() -> {
         m_txPID.setP(0.1);
@@ -236,9 +260,9 @@ public class Aligntoreef extends SequentialCommandGroup {
         m_tyPID.setTolerance(0.6);
 
 
-      }),
+      }).withName("Change to near PID gains"),
       // Now that ty is right, make sure tx is right
-      Commands.runOnce(() -> SmartDashboard.putNumber("ATR",4)),
+      Commands.runOnce(() -> SmartDashboard.putNumber("ATR",4)).withName("Advancing ATR to 4"),
       drive.applyRequest(() -> {
         // double xMove = MathUtil.clamp(
         //   m_tyPID.calculate(LimelightHelpers.getTY(side.name), 0), -0.2,0.5
@@ -272,7 +296,7 @@ public class Aligntoreef extends SequentialCommandGroup {
           .withVelocityY(yMove)
           .withTargetDirection(Rotation2d.fromDegrees(heading));
 
-      }).until(() -> heading == null || (m_txPID.atSetpoint() && m_tyPID.atSetpoint()) || !LimelightHelpers.getTV(side.name)),
+      }).withName("Align Far Away").until(() -> heading == null || (m_txPID.atSetpoint() && m_tyPID.atSetpoint()) || !LimelightHelpers.getTV(side.name)),
 
       Commands.runOnce(() -> SmartDashboard.putNumber("ATR",5)),
       drive.applyRequest(() -> {
@@ -308,9 +332,9 @@ public class Aligntoreef extends SequentialCommandGroup {
           .withVelocityY(yMove)
           .withTargetDirection(Rotation2d.fromDegrees(heading));
 
-      }).until(() -> heading == null || !LimelightHelpers.getTV(side.name)).withTimeout(0.7),
+      }).withName("Align Near").until(() -> heading == null || !LimelightHelpers.getTV(side.name)).withTimeout(0.7),
 
-      Commands.runOnce(() -> SmartDashboard.putNumber("ATR",6)),
+      Commands.runOnce(() -> SmartDashboard.putNumber("ATR",6)).withName("Advancing to ATR to 6"),
 
       // Finally let the drive drive back and forth, and keep heading and disable side to side movement
       drive.applyRequest(() -> {
@@ -337,8 +361,8 @@ public class Aligntoreef extends SequentialCommandGroup {
           .withVelocityY(yMove)
           .withTargetDirection(Rotation2d.fromDegrees(heading));
 
-      }).until(() -> heading == null || !enableMove),
-      Commands.runOnce(() -> SmartDashboard.putNumber("ATR",7))
+      }).withName("Manual drive").until(() -> heading == null || !enableMove),
+      Commands.runOnce(() -> SmartDashboard.putNumber("ATR",7)).withName("Advancing ATR to 7")
     );
   }
   // public static Command autoCoralSide(CommandSwerveDrivetrain drive, Side userSide) {

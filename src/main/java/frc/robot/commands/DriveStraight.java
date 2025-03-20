@@ -5,13 +5,14 @@ import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class DriveStraight extends SequentialCommandGroup {
     private final SwerveRequest.RobotCentric request = new SwerveRequest.RobotCentric()
-            .withVelocityX(0.05)
+            .withVelocityX(0.1)
             .withVelocityY(0)
             .withRotationalRate(0)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
@@ -21,7 +22,10 @@ public class DriveStraight extends SequentialCommandGroup {
     public DriveStraight(CommandSwerveDrivetrain drivetrain, double distanceMeters) {
         addCommands(
             new InstantCommand(() -> startPose = drivetrain.getState().Pose),
-            drivetrain.applyRequest(()->request).until(()-> drivetrain.getState().Pose.minus(startPose).getTranslation().getNorm() > distanceMeters)
+            drivetrain.applyRequest(()-> {
+                SmartDashboard.putNumber("DriveStraight", (drivetrain.getState().Pose.minus(startPose).getTranslation()).getNorm());
+                return request;
+            }).until(()-> (drivetrain.getState().Pose.minus(startPose).getTranslation()).getNorm() > distanceMeters)
         );
     }
 
