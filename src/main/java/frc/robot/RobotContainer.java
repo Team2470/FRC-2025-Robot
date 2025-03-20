@@ -393,6 +393,44 @@ public class RobotContainer {
               .withVelocityX(xMove)
               .withVelocityY(yMove);
         }).withName("rightHuman"));
+
+    // Align to 180
+    final SwerveRequest.FieldCentricFacingAngle alignNet = new SwerveRequest.FieldCentricFacingAngle()
+    .withHeadingPID(5, 0, 0)
+    .withTargetDirection(Rotation2d.fromDegrees(180))
+    .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+    .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+    .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+
+controller.y().whileTrue( // Drivetrain will execute this command periodically
+    drivetrain.applyRequest(() -> {
+      var translation = translationSupplier.get();
+
+      double xMove = 0;
+      double yMove = 0;
+
+      if (translation.isPresent()) {
+        xMove = translation.get().getX();
+        yMove = translation.get().getY();
+      }
+
+      if (slowModeSupplier.getAsBoolean()) {
+        xMove *= 0.5;
+        yMove *= 0.5;
+
+      } else {
+        xMove *= 1.0;
+        yMove *= 1.0;
+
+      }
+
+      return alignNet
+          .withVelocityX(xMove)
+          .withVelocityY(yMove);
+    }).withName("alignNet"));
+
+
+
     // Reset the field-centric heading on start press
     controller.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
