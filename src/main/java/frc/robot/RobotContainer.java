@@ -481,9 +481,9 @@ controller.y().whileTrue( // Drivetrain will execute this command periodically
     buttonPad.button(12).whileTrue(reefL4Command());
     buttonPad.button(1).whileTrue(reefL1Command());
     buttonPad.button(3).whileTrue(netCommand());
-    controller.povDown().whileTrue(m_Climber.extendCommand());
+    controller.povUp().whileTrue(m_Climber.extendCommand());
     controller.povRight().whileTrue(testUndropIntake());
-    controller.povUp().whileTrue(m_Climber.retractCommand());
+    controller.povDown().whileTrue(m_Climber.retractCommand());
     controller.povLeft().whileTrue(new SequentialCommandGroup(
         // new WaitUntilCommand(()-> m_Climber.getPosition() < 0.3),
         dropServoCommand())
@@ -610,7 +610,7 @@ controller.y().whileTrue( // Drivetrain will execute this command periodically
 
   private Command runInTakeCommand(int voltage) {
     return new ParallelCommandGroup(
-        algea.runMotorForwardsSpeedCommand(2 * voltage), coral.runMotorForwardsSpeedCommand(voltage * 2.5/4), intake.runMotorForwardsSpeedCommand(voltage));
+        algea.runMotorForwardsSpeedCommand(2 * voltage), coral.runMotorForwardsSpeedCommand(voltage * 2.5/4), intake.runMotorForwardsSpeedCommand(-voltage));
 
   }
 
