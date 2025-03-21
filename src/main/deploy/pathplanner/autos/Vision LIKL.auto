@@ -81,22 +81,9 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "LIKL backing up "
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DrivePos"
-                }
-              }
-            ]
+            "name": "L4"
           }
         },
         {

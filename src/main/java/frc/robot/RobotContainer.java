@@ -122,8 +122,8 @@ public class RobotContainer {
         put("Align Left", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
         put("Align Right", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
 
-        put("DSLR", new DriveStraight(drivetrain, 0.21).withName("Drive straigt left reef"));
-        put("DSRR", new DriveStraight(drivetrain, 0.18).withName("Drive straight right reef"));
+        put("DSLR", new DriveStraight(drivetrain, 0.21).withName("Drive straigt left reef").withTimeout(1.2));
+        put("DSRR", new DriveStraight(drivetrain, 0.18).withName("Drive straight right reef").withTimeout(1.2));
         // put("ResVis", setVisionPose());
         // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
         put("drive straight right reef", new DriveStraight(drivetrain, 0.18));
