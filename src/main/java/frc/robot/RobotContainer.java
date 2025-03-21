@@ -122,8 +122,8 @@ public class RobotContainer {
         put("Align Left", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
         put("Align Right", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
 
-        put("DSLR", new DriveStraight(drivetrain, 0.21).withName("Drive straigt left reef").withTimeout(1.2));
-        put("DSRR", new DriveStraight(drivetrain, 0.18).withName("Drive straight right reef").withTimeout(1.2));
+        put("DSLR", new DriveStraight(drivetrain, 0.21).withName("Drive straigt left reef").withTimeout(1.8));
+        put("DSRR", new DriveStraight(drivetrain, 0.18).withName("Drive straight right reef").withTimeout(1.8));
         // put("ResVis", setVisionPose());
         // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
         put("drive straight right reef", new DriveStraight(drivetrain, 0.18));
@@ -162,6 +162,7 @@ public class RobotContainer {
       m_autoSelector.registerCommand("MG", "MGMG", AutoBuilder.buildAuto("MG"));
       m_autoSelector.registerCommand("LIKL", "LIKL", AutoBuilder.buildAuto("LIKL"));
       m_autoSelector.registerCommand("032025 push", "PUSH", AutoBuilder.buildAuto("032025 push"));
+      m_autoSelector.registerCommand("Vision Mg", "vMG", AutoBuilder.buildAuto("Vision Mg"));
 
       
     configureBindings();
@@ -522,6 +523,7 @@ controller.y().whileTrue( // Drivetrain will execute this command periodically
     // controller.povRight().whileTrue(new Aligntoreef(drivetrain, Aligntoreef.Side.Right, Aligntoreef.Score.Coral));
 
     arm.setDefaultCommand(drivePositiCommand());
+    // algea.setDefaultCommand(runInTakeCommand(-8));
 
     // testbuttonpad
     // testButtonPad.button(1).whileTrue(elevator1.openLoopCommand(2));
@@ -567,7 +569,7 @@ controller.y().whileTrue( // Drivetrain will execute this command periodically
       new ConditionalCommand(
         new ParallelCommandGroup(
             arm.pidCommand(82),
-            wrist.pidCommand(85)).until(()->Math.abs(arm.getPosition() - 82) < 3),
+            wrist.pidCommand(85)).until(()->Math.abs(arm.getPosition() - 85) < 10),
         wrist.pidCommand(85).until(() -> Math.abs(wrist.getPosition() - 85) < 10),
         () -> elevator1.getPosition() > 10),
         // wrist.pidCommand(85).until(()-> wrist.getPosition() > 80),
