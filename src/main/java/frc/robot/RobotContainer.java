@@ -159,6 +159,7 @@ public class RobotContainer {
     // m_autoSelector.registerCommand("TRH2", "TRH2", AutoBuilder.buildAuto("TRH2"));
       m_autoSelector.registerCommand("MG", "MGMG", AutoBuilder.buildAuto("MG"));
       m_autoSelector.registerCommand("LIKL", "LIKL", AutoBuilder.buildAuto("LIKL"));
+      m_autoSelector.registerCommand("032025 push", "PUSH", AutoBuilder.buildAuto("032025 push"));
 
       
     configureBindings();
@@ -490,7 +491,7 @@ controller.y().whileTrue( // Drivetrain will execute this command periodically
       );
     // controller.povRight().whileTrue(dropServoCommand());
 
-    // controller.y().whileTrue(new DriveStraight(drivetrain, 0.24));
+    testButtonPad.button(1).whileTrue(new DriveStraight(drivetrain, 0.24));
 
 
 
@@ -521,18 +522,18 @@ controller.y().whileTrue( // Drivetrain will execute this command periodically
     arm.setDefaultCommand(drivePositiCommand());
 
     // testbuttonpad
-    testButtonPad.button(1).whileTrue(elevator1.openLoopCommand(2));
-    testButtonPad.button(5).whileTrue(elevator1.openLoopCommand(-2));
-    testButtonPad.button(10).whileTrue(elevator1.pidCommand(0.5));
-    testButtonPad.button(6).whileTrue(elevator1.pidCommand(24));
-    testButtonPad.button(2).whileTrue(elevator1.pidCommand(48));
+    // testButtonPad.button(1).whileTrue(elevator1.openLoopCommand(2));
+    // testButtonPad.button(5).whileTrue(elevator1.openLoopCommand(-2));
+    // testButtonPad.button(10).whileTrue(elevator1.pidCommand(0.5));
+    // testButtonPad.button(6).whileTrue(elevator1.pidCommand(24));
+    // testButtonPad.button(2).whileTrue(elevator1.pidCommand(48));
 
-    testButtonPad.button(3).whileTrue(arm.openLoopCommand(1));
-    testButtonPad.button(7).whileTrue(arm.openLoopCommand(-1));
-    testButtonPad.button(11).whileTrue(arm.pidCommand(20));
-    testButtonPad.button(12).whileTrue(arm.pidCommand(65));
-    testButtonPad.button(4).whileTrue(wrist.pidCommand(90));
-    testButtonPad.button(8).whileTrue(wrist.pidCommand(0));
+    // testButtonPad.button(3).whileTrue(arm.openLoopCommand(1));
+    // testButtonPad.button(7).whileTrue(arm.openLoopCommand(-1));
+    // testButtonPad.button(11).whileTrue(arm.pidCommand(20));
+    // testButtonPad.button(12).whileTrue(arm.pidCommand(65));
+    // testButtonPad.button(4).whileTrue(wrist.pidCommand(90));
+    // testButtonPad.button(8).whileTrue(wrist.pidCommand(0));
 
     new Trigger(() -> !m_brakeButton.get() && DriverStation.isDisabled()).whileTrue(new StartEndCommand(
         () -> {

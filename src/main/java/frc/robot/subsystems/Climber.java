@@ -54,7 +54,7 @@ public class Climber extends SubsystemBase {
 
 		config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 		config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-		config.CurrentLimits.SupplyCurrentLimit = 20;
+		config.CurrentLimits.SupplyCurrentLimit = 80;
 		config.CurrentLimits.SupplyCurrentLimitEnable = true;
 		config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.5;
 
