@@ -437,16 +437,16 @@ public class RobotContainer {
     buttonPad.button(1).whileTrue(reefL1Command());
     buttonPad.button(3).whileTrue(netCommand());
     controller.povDown().whileTrue(m_Climber.extendCommand());
-    controller.b().whileTrue(testUndropIntake());
+    controller.povRight().whileTrue(testUndropIntake());
     controller.povUp().whileTrue(m_Climber.retractCommand());
-    controller.y().whileTrue(dropServoCommand());
+    controller.povLeft().whileTrue(dropServoCommand());
     // controller.povRight().whileTrue(dropServoCommand());
 
-    controller.x().whileTrue(new DriveStraight(drivetrain, 0.24));
+    controller.y().whileTrue(new DriveStraight(drivetrain, 0.24));
 
 
 
-    controller.povLeft().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, m_limelights, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, () -> {
+    controller.x().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, m_limelights, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, () -> {
       var translation = translationSupplier.get();
 
       double xMove = 0;
@@ -457,7 +457,7 @@ public class RobotContainer {
 
       return xMove * 0.2;
     }));
-    controller.povRight().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, m_limelights, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, () -> {
+    controller.b().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, m_limelights, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, () -> {
       var translation = translationSupplier.get();
 
       double xMove = 0;
@@ -469,7 +469,6 @@ public class RobotContainer {
       return xMove * 0.2;
     }));
     // controller.povRight().whileTrue(new Aligntoreef(drivetrain, Aligntoreef.Side.Right, Aligntoreef.Score.Coral));
-    controller.x().whileTrue(dropServoCommand());
 
     arm.setDefaultCommand(drivePositiCommand());
 
