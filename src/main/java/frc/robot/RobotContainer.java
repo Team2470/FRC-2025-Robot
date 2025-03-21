@@ -122,8 +122,8 @@ public class RobotContainer {
         put("Align Left", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
         put("Align Right", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
 
-        put("DSLR", new DriveStraight(drivetrain, 0.21).withName("Drive straigt left reef").withTimeout(1.8));
-        put("DSRR", new DriveStraight(drivetrain, 0.18).withName("Drive straight right reef").withTimeout(1.8));
+        put("DSLR", new DriveStraight(drivetrain, 0.22).withName("Drive straigt left reef"));
+        put("DSRR", new DriveStraight(drivetrain, 0.18).withName("Drive straight right reef"));
         // put("ResVis", setVisionPose());
         // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
         put("drive straight right reef", new DriveStraight(drivetrain, 0.18));
@@ -406,32 +406,34 @@ public class RobotContainer {
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
     .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
-controller.y().whileTrue( // Drivetrain will execute this command periodically
-    drivetrain.applyRequest(() -> {
-      var translation = translationSupplier.get();
 
-      double xMove = 0;
-      double yMove = 0;
+    // controller.y().whileTrue(netCommand());
+// controller.y().whileTrue( // Drivetrain will execute this command periodically
+//     drivetrain.applyRequest(() -> {
+//       var translation = translationSupplier.get();
 
-      if (translation.isPresent()) {
-        xMove = translation.get().getX();
-        yMove = translation.get().getY();
-      }
+//       double xMove = 0;
+//       double yMove = 0;
 
-      if (slowModeSupplier.getAsBoolean()) {
-        xMove *= 0.5;
-        yMove *= 0.5;
+//       if (translation.isPresent()) {
+//         xMove = translation.get().getX();
+//         yMove = translation.get().getY();
+//       }
 
-      } else {
-        xMove *= 1.0;
-        yMove *= 1.0;
+//       if (slowModeSupplier.getAsBoolean()) {
+//         xMove *= 0.5;
+//         yMove *= 0.5;
 
-      }
+//       } else {
+//         xMove *= 1.0;
+//         yMove *= 1.0;
 
-      return alignNet
-          .withVelocityX(xMove)
-          .withVelocityY(yMove);
-    }).withName("alignNet"));
+//       }
+
+//       return alignNet
+//           .withVelocityX(xMove)
+//           .withVelocityY(yMove);
+//     }).withName("alignNet"));
 
 
 
