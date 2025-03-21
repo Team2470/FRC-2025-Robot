@@ -120,9 +120,11 @@ public class RobotContainer {
         put("L4", reefL4Command());
         put("HpIntake", HumanPlayerIntakeCommand().until(coral::haveCoral));
         put("Align Left", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
-        put("DSLR", new DriveStraight(drivetrain, 0.21));
-        put("DSRR", new DriveStraight(drivetrain, 0.18));
+        put("Align Right", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
 
+        put("DSLR", new DriveStraight(drivetrain, 0.21).withName("Drive straigt left reef"));
+        put("DSRR", new DriveStraight(drivetrain, 0.18).withName("Drive straight right reef"));
+        // put("ResVis", setVisionPose());
         // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
         put("drive straight right reef", new DriveStraight(drivetrain, 0.18));
 
@@ -573,7 +575,7 @@ controller.y().whileTrue( // Drivetrain will execute this command periodically
         new ParallelCommandGroup(
             arm.pidCommand(77),
             wrist.pidCommand(85),
-            new ScheduleCommand(elevator1.pidCommand(0.33).until(() -> Math.abs(elevator1.getErrorPercent()) < 2))))
+            elevator1.pidCommand(0.33).until(() -> Math.abs(elevator1.getErrorPercent()) < 2)))
         .withName("TeleOp Drive Position");
   }
 

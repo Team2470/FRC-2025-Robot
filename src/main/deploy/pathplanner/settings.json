@@ -3,9 +3,10 @@
   "robotLength": 0.93,
   "holonomicMode": true,
   "pathFolders": [
-    "backFromPost",
+    "Ray stuff",
     "Trash",
     "autoStart",
+    "backFromPost",
     "farLeftIntakeToPost",
     "farRightIntakeToPost",
     "intakeToIntake",
