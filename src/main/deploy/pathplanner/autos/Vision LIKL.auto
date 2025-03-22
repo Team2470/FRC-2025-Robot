@@ -81,9 +81,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "L4"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "DSBack"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "0.5W-DrivePos"
+                }
+              }
+            ]
           }
         },
         {
@@ -99,7 +112,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "HpIntake"
+                  "name": "DrivePos"
                 }
               }
             ]

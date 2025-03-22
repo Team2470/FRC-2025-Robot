@@ -118,12 +118,14 @@ public class RobotContainer {
         put("L2", reefL2Command());
         put("L3", reefL3Command());
         put("L4", reefL4Command());
+        put("0.5W-DrivePos", new SequentialCommandGroup(new WaitCommand(0.5), drivePositiCommand()));
         put("HpIntake", HumanPlayerIntakeCommand().until(coral::haveCoral));
         put("Align Left", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
         put("Align Right", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
 
-        put("DSLR", new DriveStraight(drivetrain, 0.22).withName("Drive straigt left reef"));
-        put("DSRR", new DriveStraight(drivetrain, 0.18).withName("Drive straight right reef"));
+        put("DSLR", new DriveStraight(drivetrain, 0.24).withName("Drive straigt left reef"));
+        put("DSRR", new DriveStraight(drivetrain, 0.21).withName("Drive straight right reef"));
+        put("DSBack", new DriveStraight(drivetrain, -0.22).withName("Drive straight backwards"));
         // put("ResVis", setVisionPose());
         // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
         put("drive straight right reef", new DriveStraight(drivetrain, 0.18));
@@ -571,7 +573,7 @@ public class RobotContainer {
       new ConditionalCommand(
         new ParallelCommandGroup(
             arm.pidCommand(82),
-            wrist.pidCommand(85)).until(()->Math.abs(arm.getPosition() - 85) < 10),
+            wrist.pidCommand(85)).until(()->Math.abs(arm.getPosition() - 85) < 20),
         wrist.pidCommand(85).until(() -> Math.abs(wrist.getPosition() - 85) < 10),
         () -> elevator1.getPosition() > 10),
         // wrist.pidCommand(85).until(()-> wrist.getPosition() > 80),
