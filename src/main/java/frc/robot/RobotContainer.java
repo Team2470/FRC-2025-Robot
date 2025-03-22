@@ -408,7 +408,7 @@ public class RobotContainer {
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
     .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
-
+        controller.y().whileTrue(processorCommand());
     // controller.y().whileTrue(netCommand());
 // controller.y().whileTrue( // Drivetrain will execute this command periodically
 //     drivetrain.applyRequest(() -> {
