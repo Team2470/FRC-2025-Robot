@@ -472,7 +472,7 @@ public class RobotContainer {
 
     buttonPad.button(6).whileTrue(aLgaeL2Command());
     buttonPad.button(2).whileTrue(aLgaeL3Command());
-    buttonPad.button(7).whileTrue(processorCommand());
+    buttonPad.button(7).whileTrue(pickupAlgaeCommand());
     // buttonPad.button(7).whileTrue(());
     // buttonPad.button(3).and(buttonPad.button(2)).whileTrue(elevator1.openLoopCommand(2));
     // buttonPad.button(3).and(buttonPad.button(6)).whileTrue(elevator1.openLoopCommand(-2));
@@ -674,23 +674,37 @@ public class RobotContainer {
         reefL2Command().until(() -> Math.abs(elevator1.getErrorPercent()) < 3)).withName("Auto Reef Command");
   }
 
-  private Command 
-  pickupAlgaeCommand() {
-    superstructure.setRobotState(m_State.algaeIntake);
-    return new SequentialCommandGroup(
-        new ParallelCommandGroup(
-            arm.pidCommand(60),
-            wrist.pidCommand(60)).until(() -> Math.abs(arm.getPosition() - 60) < 5),
-        new ParallelCommandGroup(
-            wrist.pidCommand(20),
-            arm.coastCommand(),
-            new ParallelCommandGroup(algea.runMotorBackwardsSpeedCommand(8), coral.runMotorBackwardsSpeedCommand(4))).until(()-> !algea.notHaveAlgea()),
-        new ParallelCommandGroup(
-        drivePositiCommand(),
-        algea.runMotorBackwardsSpeedCommand(2.6)
-        )
+  // private Command 
+  // pickupAlgaeCommand() {
+  //   superstructure.setRobotState(m_State.algaeIntake);
+  //   return new SequentialCommandGroup(
+  //       new ParallelCommandGroup(
+  //           arm.pidCommand(60),
+  //           wrist.pidCommand(60)).until(() -> Math.abs(arm.getPosition() - 60) < 5),
+  //       new ParallelCommandGroup(
+  //           wrist.pidCommand(20),
+  //           arm.coastCommand(),
+  //           new ParallelCommandGroup(algea.runMotorBackwardsSpeedCommand(8), coral.runMotorBackwardsSpeedCommand(4))).until(()-> !algea.notHaveAlgea()),
+  //       new ParallelCommandGroup(
+  //       drivePositiCommand(),
+  //       algea.runMotorBackwardsSpeedCommand(2.6)
+  //       )
         
-            );
+  //           );
+  // }
+
+  private Command pickupAlgaeCommand(){
+    return new SequentialCommandGroup(
+
+              // arm.pidCommand(40).until(() -> Math.abs(arm.getPosition() - 40) < 3),
+              new ParallelCommandGroup(
+                  elevator1.pidCommand(8),
+                  arm.pidCommand(0)).until(() -> Math.abs(elevator1.getPosition() - 8) < 2),
+              new ParallelCommandGroup(
+                  elevator1.pidCommand(8),
+                  arm.pidCommand(0),
+                  wrist.pidCommand(0))
+                  );
   }
 
   private Command reefL1Command() {
