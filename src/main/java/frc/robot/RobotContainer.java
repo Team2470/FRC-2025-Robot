@@ -60,6 +60,7 @@ import frc.robot.subsystems.*;
 import frc.robot.subsystems.Superstructure.m_State;
 import frc.robot.commands.Aligntoreef;
 import frc.robot.commands.DriveStraight;
+import frc.robot.commands.DriveStraightBack;
 
 
 public class RobotContainer {
@@ -125,10 +126,10 @@ public class RobotContainer {
 
         put("DSLR", new DriveStraight(drivetrain, 0.24).withName("Drive straigt left reef"));
         put("DSRR", new DriveStraight(drivetrain, 0.21).withName("Drive straight right reef"));
-        put("DSBack", new DriveStraight(drivetrain, -0.22).withName("Drive straight backwards"));
+        put("DSBack", new DriveStraightBack(drivetrain, 0.22).withName("Drive straight backwards"));
         // put("ResVis", setVisionPose());
         // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
-        put("drive straight right reef", new DriveStraight(drivetrain, 0.18));
+        // put("drive straight right reef", new DriveStraightBack(drivetrain, 0.2));
 
         put("stop", drivetrain.applyRequest(() -> m_idleRequest).withName("stop"));
         put("debug-false", Commands.runOnce(() -> SmartDashboard.putBoolean("Auto debug flag", false)));
@@ -196,7 +197,7 @@ public class RobotContainer {
 
     BooleanSupplier slowModeSupplier = () -> {
 
-      return  elevator1.getPosition() > 20;
+      return  elevator1.getPosition() > 10;
     };
 
     DoubleSupplier rotationSupplier = () -> {
@@ -497,7 +498,7 @@ public class RobotContainer {
         dropServoCommand())
       );
     // controller.povRight().whileTrue(dropServoCommand());
-
+    testButtonPad.button(9).whileTrue(new DriveStraightBack(drivetrain, 0.23));
     testButtonPad.button(1).whileTrue(new DriveStraight(drivetrain, 0.24));
 
 

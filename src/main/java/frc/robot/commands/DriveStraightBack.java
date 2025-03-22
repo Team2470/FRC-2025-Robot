@@ -10,16 +10,16 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
-public class DriveStraight extends SequentialCommandGroup {
+public class DriveStraightBack extends SequentialCommandGroup {
     private final SwerveRequest.RobotCentric request = new SwerveRequest.RobotCentric()
-            .withVelocityX(0.25)
+            .withVelocityX(-0.25)
             .withVelocityY(0)
             .withRotationalRate(0)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
             .withSteerRequestType(SteerRequestType.MotionMagicExpo);
     private Pose2d startPose;
     
-    public DriveStraight(CommandSwerveDrivetrain drivetrain, double distanceMeters) {
+    public DriveStraightBack(CommandSwerveDrivetrain drivetrain, double distanceMeters) {
         addCommands(
             new InstantCommand(() -> startPose = drivetrain.getState().Pose),
             drivetrain.applyRequest(()-> {
