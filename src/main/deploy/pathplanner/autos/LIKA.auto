@@ -5,69 +5,47 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "LIAutoStart"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LIAutoStart"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Auto"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L4"
+            "name": "OuttakeCoral"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "iToFarLeft"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "farLeftToK"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "kToFarLeft"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "farLeftToL"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "lToFarLeft"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "iToFarLeft"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoHumanPlayerIntakeCommand"
+                }
+              }
+            ]
           }
         },
         {
@@ -77,15 +55,128 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "farLeftToA"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "farLeftToK"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Auto"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L4"
+            "name": "OuttakeCoral"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "kToFarLeft"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoHumanPlayerIntakeCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "farLeftToL"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Auto"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OuttakeCoral"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "lToFarLeft"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoHumanPlayerIntakeCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "farLeftToA"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Auto"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OuttakeCoral"
           }
         }
       ]

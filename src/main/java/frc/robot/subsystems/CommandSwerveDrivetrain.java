@@ -8,6 +8,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -221,7 +222,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                             m_pathApplyRobotSpeeds.withSpeeds(speeds)
                                     // .withSteerRequestType(SteerRequestType.MotionMagicExpo)
                                     .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-                                    .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())),
+                                    .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+                                ),
                     new PPHolonomicDriveController(
                             // PID constants for translation
                             new PIDConstants(15, 0, 0),
