@@ -59,6 +59,8 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Superstructure.m_State;
 import frc.robot.commands.Aligntoreef;
+import frc.robot.commands.DriveStraight;
+import frc.robot.commands.DriveStraightBack;
 
 
 public class RobotContainer {
@@ -92,6 +94,7 @@ public class RobotContainer {
   // Autos
   private final RevDigit m_revDigit;
   private final AutoSelector m_autoSelector;
+  private final SwerveRequest m_idleRequest = new SwerveRequest.Idle(); 
 
   public RobotContainer() {
 
@@ -116,7 +119,33 @@ public class RobotContainer {
         put("L2", reefL2Command());
         put("L3", reefL3Command());
         put("L4", reefL4Command());
+        put("0.5W-DrivePos", new SequentialCommandGroup(new WaitCommand(0.5), drivePositiCommand()));
         put("HpIntake", HumanPlayerIntakeCommand().until(coral::haveCoral));
+        put("Align Left", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
+        put("Align Right", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
+
+        put("DSLR", new DriveStraight(drivetrain, 0.24).withName("Drive straigt left reef"));
+        put("DSRR", new DriveStraight(drivetrain, 0.21).withName("Drive straight right reef"));
+        put("DSBack", new DriveStraightBack(drivetrain, 0.22).withName("Drive straight backwards"));
+        // put("ResVis", setVisionPose());
+        // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
+        // put("drive straight right reef", new DriveStraightBack(drivetrain, 0.2));
+
+        put("stop", drivetrain.applyRequest(() -> m_idleRequest).withName("stop"));
+        put("debug-false", Commands.runOnce(() -> SmartDashboard.putBoolean("Auto debug flag", false)));
+        put("debug-true", Commands.runOnce(() -> SmartDashboard.putBoolean("Auto debug flag", true)));
+
+        // put("scoreL4LeftCoral", new ParallelDeadlineGroup(
+        //   new SequentialCommandGroup(
+        //     new WaitUntilCommand(() -> {
+        //       return Math.abs(elevator1.getPosition() - 54.77 ) < 1  && Math.abs(arm.getPosition() - 60) < 2 && Math.abs(wrist.getPosition() - 125) < 2;
+        //     },
+        //     new DriveStraight(drivetrain, 0.24),
+        //     runInTakeCommand(-8).until(()-> !coral.haveCoral()).withName("Auto Run Outtake"),
+
+        //   ),
+        //   reefL4Command()
+        // ));
       }
     });
 
@@ -134,9 +163,15 @@ public class RobotContainer {
     // m_autoSelector.registerCommand("Trsh", "Trsh", AutoBuilder.buildAuto("Trsh"));
     // m_autoSelector.registerCommand("TRH2", "TRH2", AutoBuilder.buildAuto("TRH2"));
       m_autoSelector.registerCommand("MG", "MGMG", AutoBuilder.buildAuto("MG"));
+      m_autoSelector.registerCommand("LIKL", "LIKL", AutoBuilder.buildAuto("LIKL"));
+      m_autoSelector.registerCommand("032025 push", "PUSH", AutoBuilder.buildAuto("032025 push"));
+      m_autoSelector.registerCommand("Vision Mg", "vMG", AutoBuilder.buildAuto("Vision Mg"));
 
+      
     configureBindings();
     m_autoSelector.initialize();
+    SmartDashboard.putData("AutoSelector next auto", m_autoSelector.nextAutoCommand());
+    SmartDashboard.putData("AutoSelector previous auto", m_autoSelector.previousAutoCommand());
 
     SmartDashboard.putData(CommandScheduler.getInstance());
     SmartDashboard.putData("Drive", drivetrain);
@@ -147,6 +182,7 @@ public class RobotContainer {
     SmartDashboard.putData("OuterIntake", algea);
     SmartDashboard.putData("Limelights", m_limelights);
     SmartDashboard.putNumber("MaxAngularRate", MaxAngularRate);
+
   }
 
   private void configureBindings() {
@@ -161,7 +197,7 @@ public class RobotContainer {
 
     BooleanSupplier slowModeSupplier = () -> {
 
-      return  elevator1.getPosition() > 20;
+      return  elevator1.getPosition() > 10;
     };
 
     DoubleSupplier rotationSupplier = () -> {
@@ -364,6 +400,46 @@ public class RobotContainer {
               .withVelocityX(xMove)
               .withVelocityY(yMove);
         }).withName("rightHuman"));
+
+    // Align to 180
+    final SwerveRequest.FieldCentricFacingAngle alignNet = new SwerveRequest.FieldCentricFacingAngle()
+    .withHeadingPID(5, 0, 0)
+    .withTargetDirection(Rotation2d.fromDegrees(180))
+    .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+    .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+    .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+
+        controller.y().whileTrue(processorCommand());
+    // controller.y().whileTrue(netCommand());
+// controller.y().whileTrue( // Drivetrain will execute this command periodically
+//     drivetrain.applyRequest(() -> {
+//       var translation = translationSupplier.get();
+
+//       double xMove = 0;
+//       double yMove = 0;
+
+//       if (translation.isPresent()) {
+//         xMove = translation.get().getX();
+//         yMove = translation.get().getY();
+//       }
+
+//       if (slowModeSupplier.getAsBoolean()) {
+//         xMove *= 0.5;
+//         yMove *= 0.5;
+
+//       } else {
+//         xMove *= 1.0;
+//         yMove *= 1.0;
+
+//       }
+
+//       return alignNet
+//           .withVelocityX(xMove)
+//           .withVelocityY(yMove);
+//     }).withName("alignNet"));
+
+
+
     // Reset the field-centric heading on start press
     controller.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
@@ -399,7 +475,7 @@ public class RobotContainer {
 
     buttonPad.button(6).whileTrue(aLgaeL2Command());
     buttonPad.button(2).whileTrue(aLgaeL3Command());
-    buttonPad.button(7).whileTrue(processorCommand());
+    buttonPad.button(7).whileTrue(pickupAlgaeCommand());
     // buttonPad.button(7).whileTrue(());
     // buttonPad.button(3).and(buttonPad.button(2)).whileTrue(elevator1.openLoopCommand(2));
     // buttonPad.button(3).and(buttonPad.button(6)).whileTrue(elevator1.openLoopCommand(-2));
@@ -407,19 +483,27 @@ public class RobotContainer {
     // buttonPad.button(7).and(buttonPad.button(6)).whileTrue(arm.openLoopCommand(-2));
     // buttonPad.button(11).and(buttonPad.button(2)).whileTrue(wrist.openLoopCommand(1));
     // buttonPad.button(11).and(buttonPad.button(6)).whileTrue(wrist.openLoopCommand(-1));
-    buttonPad.button(4).whileTrue(runInTakeCommand(8));
-    buttonPad.button(8).whileTrue(runInTakeCommand(-8));
+    buttonPad.button(4).whileTrue(runInTakeCommand(6));
+    buttonPad.button(8).whileTrue(runInTakeCommand(-6));
     buttonPad.button(10).whileTrue(reefL2Command());
     buttonPad.button(11).whileTrue(reefL3Command());
     buttonPad.button(12).whileTrue(reefL4Command());
     buttonPad.button(1).whileTrue(reefL1Command());
     buttonPad.button(3).whileTrue(netCommand());
-    controller.povDown().whileTrue(m_Climber.extendCommand());
-    controller.b().whileTrue(testUndropIntake());
-    controller.povUp().whileTrue(m_Climber.retractCommand());
-    controller.y().whileTrue(dropServoCommand());
+    controller.povUp().whileTrue(m_Climber.extendCommand());
+    controller.povRight().whileTrue(testUndropIntake());
+    controller.povDown().whileTrue(m_Climber.retractCommand());
+    controller.povLeft().whileTrue(new SequentialCommandGroup(
+        // new WaitUntilCommand(()-> m_Climber.getPosition() < 0.3),
+        dropServoCommand())
+      );
     // controller.povRight().whileTrue(dropServoCommand());
-    controller.povLeft().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, () -> {
+    testButtonPad.button(9).whileTrue(new DriveStraightBack(drivetrain, 0.23));
+    testButtonPad.button(1).whileTrue(new DriveStraight(drivetrain, 0.24));
+
+
+
+    controller.x().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, () -> {
       var translation = translationSupplier.get();
 
       double xMove = 0;
@@ -430,7 +514,7 @@ public class RobotContainer {
 
       return xMove * 0.2;
     }));
-    controller.povRight().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, () -> {
+    controller.b().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, () -> {
       var translation = translationSupplier.get();
 
       double xMove = 0;
@@ -442,23 +526,23 @@ public class RobotContainer {
       return xMove * 0.2;
     }));
     // controller.povRight().whileTrue(new Aligntoreef(drivetrain, Aligntoreef.Side.Right, Aligntoreef.Score.Coral));
-    controller.x().whileTrue(dropServoCommand());
 
     arm.setDefaultCommand(drivePositiCommand());
+    // algea.setDefaultCommand(runInTakeCommand(-8));
 
     // testbuttonpad
-    testButtonPad.button(1).whileTrue(elevator1.openLoopCommand(2));
-    testButtonPad.button(5).whileTrue(elevator1.openLoopCommand(-2));
-    testButtonPad.button(10).whileTrue(elevator1.pidCommand(0.5));
-    testButtonPad.button(6).whileTrue(elevator1.pidCommand(24));
-    testButtonPad.button(2).whileTrue(elevator1.pidCommand(48));
+    // testButtonPad.button(1).whileTrue(elevator1.openLoopCommand(2));
+    // testButtonPad.button(5).whileTrue(elevator1.openLoopCommand(-2));
+    // testButtonPad.button(10).whileTrue(elevator1.pidCommand(0.5));
+    // testButtonPad.button(6).whileTrue(elevator1.pidCommand(24));
+    // testButtonPad.button(2).whileTrue(elevator1.pidCommand(48));
 
-    testButtonPad.button(3).whileTrue(arm.openLoopCommand(1));
-    testButtonPad.button(7).whileTrue(arm.openLoopCommand(-1));
-    testButtonPad.button(11).whileTrue(arm.pidCommand(20));
-    testButtonPad.button(12).whileTrue(arm.pidCommand(65));
-    testButtonPad.button(4).whileTrue(wrist.pidCommand(90));
-    testButtonPad.button(8).whileTrue(wrist.pidCommand(0));
+    // testButtonPad.button(3).whileTrue(arm.openLoopCommand(1));
+    // testButtonPad.button(7).whileTrue(arm.openLoopCommand(-1));
+    // testButtonPad.button(11).whileTrue(arm.pidCommand(20));
+    // testButtonPad.button(12).whileTrue(arm.pidCommand(65));
+    // testButtonPad.button(4).whileTrue(wrist.pidCommand(90));
+    // testButtonPad.button(8).whileTrue(wrist.pidCommand(0));
 
     new Trigger(() -> !m_brakeButton.get() && DriverStation.isDisabled()).whileTrue(new StartEndCommand(
         () -> {
@@ -490,7 +574,7 @@ public class RobotContainer {
       new ConditionalCommand(
         new ParallelCommandGroup(
             arm.pidCommand(82),
-            wrist.pidCommand(85)).until(()->Math.abs(arm.getPosition() - 82) < 3),
+            wrist.pidCommand(85)).until(()->Math.abs(arm.getPosition() - 85) < 20),
         wrist.pidCommand(85).until(() -> Math.abs(wrist.getPosition() - 85) < 10),
         () -> elevator1.getPosition() > 10),
         // wrist.pidCommand(85).until(()-> wrist.getPosition() > 80),
@@ -498,7 +582,7 @@ public class RobotContainer {
         new ParallelCommandGroup(
             arm.pidCommand(77),
             wrist.pidCommand(85),
-            new ScheduleCommand(elevator1.pidCommand(0.33).until(() -> Math.abs(elevator1.getErrorPercent()) < 2))))
+            elevator1.pidCommand(0.33).until(() -> Math.abs(elevator1.getErrorPercent()) < 2)))
         .withName("TeleOp Drive Position");
   }
 
@@ -536,7 +620,7 @@ public class RobotContainer {
 
   private Command runInTakeCommand(int voltage) {
     return new ParallelCommandGroup(
-        algea.runMotorForwardsSpeedCommand(2 * voltage), coral.runMotorForwardsSpeedCommand(voltage * 2.5/4), intake.runMotorForwardsSpeedCommand(voltage));
+        algea.runMotorForwardsSpeedCommand(2 * voltage), coral.runMotorForwardsSpeedCommand(voltage * 2.5/4), intake.runMotorForwardsSpeedCommand(-voltage));
 
   }
 
@@ -593,23 +677,37 @@ public class RobotContainer {
         reefL2Command().until(() -> Math.abs(elevator1.getErrorPercent()) < 3)).withName("Auto Reef Command");
   }
 
-  private Command 
-  pickupAlgaeCommand() {
-    superstructure.setRobotState(m_State.algaeIntake);
-    return new SequentialCommandGroup(
-        new ParallelCommandGroup(
-            arm.pidCommand(60),
-            wrist.pidCommand(60)).until(() -> Math.abs(arm.getPosition() - 60) < 5),
-        new ParallelCommandGroup(
-            wrist.pidCommand(20),
-            arm.coastCommand(),
-            new ParallelCommandGroup(algea.runMotorBackwardsSpeedCommand(8), coral.runMotorBackwardsSpeedCommand(4))).until(()-> !algea.notHaveAlgea()),
-        new ParallelCommandGroup(
-        drivePositiCommand(),
-        algea.runMotorBackwardsSpeedCommand(2.6)
-        )
+  // private Command 
+  // pickupAlgaeCommand() {
+  //   superstructure.setRobotState(m_State.algaeIntake);
+  //   return new SequentialCommandGroup(
+  //       new ParallelCommandGroup(
+  //           arm.pidCommand(60),
+  //           wrist.pidCommand(60)).until(() -> Math.abs(arm.getPosition() - 60) < 5),
+  //       new ParallelCommandGroup(
+  //           wrist.pidCommand(20),
+  //           arm.coastCommand(),
+  //           new ParallelCommandGroup(algea.runMotorBackwardsSpeedCommand(8), coral.runMotorBackwardsSpeedCommand(4))).until(()-> !algea.notHaveAlgea()),
+  //       new ParallelCommandGroup(
+  //       drivePositiCommand(),
+  //       algea.runMotorBackwardsSpeedCommand(2.6)
+  //       )
         
-            );
+  //           );
+  // }
+
+  private Command pickupAlgaeCommand(){
+    return new SequentialCommandGroup(
+
+              // arm.pidCommand(40).until(() -> Math.abs(arm.getPosition() - 40) < 3),
+              new ParallelCommandGroup(
+                  elevator1.pidCommand(8),
+                  arm.pidCommand(0)).until(() -> Math.abs(elevator1.getPosition() - 8) < 2),
+              new ParallelCommandGroup(
+                  elevator1.pidCommand(8),
+                  arm.pidCommand(0),
+                  wrist.pidCommand(0))
+                  );
   }
 
   private Command reefL1Command() {
@@ -651,7 +749,7 @@ public class RobotContainer {
                 intake.runMotorForwardsSpeedCommand(8).until(intake::haveCoral),
                 new ParallelCommandGroup(
                     intake.runMotorForwardsSpeedCommand(6),
-                    coral.runMotorBackwardsSpeedCommand(8)).until(coral::haveCoral)
+                    coral.runMotorBackwardsSpeedCommand(6)).until(coral::haveCoral)
                 )))
         .withName("Human Player Intake Command");
   }
@@ -749,6 +847,12 @@ public class RobotContainer {
             arm.pidCommand(85),
             wrist.pidCommand(125)));
   }
-  
+
+  private Command setVisionPose(double xMeters, double yMeters) {
+    return new InstantCommand(()->{
+      drivetrain.resetPose(new Pose2d(new Translation2d(xMeters, yMeters), drivetrain.getState().Pose.getRotation()));
+    });
+
+  }
 }
 

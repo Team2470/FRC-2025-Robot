@@ -48,15 +48,16 @@ public class Climber extends SubsystemBase {
 		config.Feedback.RotorToSensorRatio = 100;
 
 		config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-		config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.697;
+		config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.920654;
 		config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-		config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.1691;
+		config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.3 ;
 
 		config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 		config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-		config.CurrentLimits.SupplyCurrentLimit = 20;
-		config.CurrentLimits.SupplyCurrentLimitEnable = true;
+		config.CurrentLimits.SupplyCurrentLimit = 80;
+		config.CurrentLimits.SupplyCurrentLimitEnable = false;
 		config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.5;
+		config.CurrentLimits.StatorCurrentLimitEnable = false;
 
 		CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
 		encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
@@ -110,13 +111,17 @@ public class Climber extends SubsystemBase {
 		
 	}
 
+	public double getPosition(){
+		return m_encoder.getPosition().getValueAsDouble();
+	}
+
 
 	public Command retractCommand() {
 		return new ParallelCommandGroup(
 				// Commands.run(() -> engageRatchet(),));
 				new ParallelCommandGroup(
 				// Commands.runEnd(() -> disengageRatchet(), this::engageRatchet)),
-				Commands.runEnd(() -> this.setVoltage(4), this::stop, this))
+				Commands.runEnd(() -> this.setVoltage(8), this::stop, this))
 
 		);
 	}

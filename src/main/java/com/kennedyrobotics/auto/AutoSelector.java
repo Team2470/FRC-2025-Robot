@@ -4,6 +4,8 @@ import com.kennedyrobotics.hardware.misc.RevDigit;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,6 +73,7 @@ public class AutoSelector implements Runnable {
 		}
 
 		selectedAutoPos_ = selectedAutoPos;
+		updateSelectedAuto();
 		workerThread_.start();
 
 		log("Initialization done");
@@ -98,7 +101,7 @@ public class AutoSelector implements Runnable {
 			this.nextAuto();
 		} else if (revDigit_.getB()) {
 			// Goto previous auto
-			this.perviousAuto();
+			this.previousAuto();
 		} else {
 			// Do nothing
 		}
@@ -115,14 +118,22 @@ public class AutoSelector implements Runnable {
 		log("Advance to next auto: " + selectedAuto().id);
 	}
 
+	public Command nextAutoCommand() {
+		return Commands.runOnce(this::nextAuto).ignoringDisable(true);
+	}
+
 	/** Advance to the previous auto */
-	private synchronized void perviousAuto() {
+	private synchronized void previousAuto() {
 		selectedAutoPos_ = selectedAutoPos_ - 1;
 		if (selectedAutoPos_ < 0) {
 			selectedAutoPos_ = commandsIds_.size() - 1;
 		}
 		updateSelectedAuto();
 		log("Advance to previous auto: " + selectedAuto().id);
+	}
+
+	public Command previousAutoCommand() {
+		return Commands.runOnce(this::previousAuto).ignoringDisable(true);
 	}
 
 	/**
