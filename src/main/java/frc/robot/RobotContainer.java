@@ -195,9 +195,18 @@ public class RobotContainer {
     final var yFilter = new SlewRateLimiter(5);
     final var rotateFilter = new SlewRateLimiter(5);
 
-    BooleanSupplier slowModeSupplier = () -> {
+    DoubleSupplier slowModeSupplier = () -> {
 
-      return  elevator1.getPosition() > 10;
+      if (elevator1.getPosition() > 50 ) {
+        return 0.25;
+      }
+
+      if (elevator1.getPosition() > 10) {
+        return 0.5;
+      }
+
+      // No slow mode
+      return 1.0;
     };
 
     DoubleSupplier rotationSupplier = () -> {
@@ -274,17 +283,21 @@ public class RobotContainer {
           if (Math.abs(rotate) < MaxAngularRate * 0.05 && Math.abs(xMove) < MaxSpeed * 0.05 && Math.abs(yMove) < MaxSpeed * 0.05) {
             return fieldCentricIdle;
           }
-
-          if (slowModeSupplier.getAsBoolean()) {
+          
+          // option 1
+          if (elevator1.getPosition() > 50) {
             xMove *= 0.5;
-            yMove *= 0.5;
-            rotate *= 0.25;
+              yMove *= 0.5;
+              rotate *= 0.25;
+          } else if (elevator1.getPosition() > 10) {
+            xMove *= 0.3;
+            yMove *= 0.3;
+            rotate *= 0.175;
           } else {
             xMove *= 1.0;
             yMove *= 1.0;
             rotate *= 0.5;
           }
-
           return fieldCentric
               .withVelocityX(xMove)
               .withVelocityY(yMove)
@@ -312,10 +325,14 @@ public class RobotContainer {
         // yMove = translation.get().getY();
       }
 
-      if (slowModeSupplier.getAsBoolean()) {
+      if (elevator1.getPosition() > 50) {
         xMove *= 0.5;
-        yMove *= 0.5;
-        rotate *= 0.25;
+          yMove *= 0.5;
+          rotate *= 0.25;
+      } else if (elevator1.getPosition() > 10) {
+        xMove *= 0.3;
+        yMove *= 0.3;
+        rotate *= 0.175;
       } else {
         xMove *= 1.0;
         yMove *= 1.0;
@@ -350,15 +367,15 @@ public class RobotContainer {
             xMove = translation.get().getX();
             yMove = translation.get().getY();
           }
-
-          if (slowModeSupplier.getAsBoolean()) {
+          if (elevator1.getPosition() > 50) {
             xMove *= 0.5;
-            yMove *= 0.5;
-
+              yMove *= 0.5;
+          } else if (elevator1.getPosition() > 10) {
+            xMove *= 0.3;
+            yMove *= 0.3;
           } else {
             xMove *= 1.0;
             yMove *= 1.0;
-
           }
 
           return leftHuman
@@ -381,19 +398,15 @@ public class RobotContainer {
           double xMove = 0;
           double yMove = 0;
 
-          if (translation.isPresent()) {
-            xMove = translation.get().getX();
-            yMove = translation.get().getY();
-          }
-
-          if (slowModeSupplier.getAsBoolean()) {
+          if (elevator1.getPosition() > 50) {
             xMove *= 0.5;
-            yMove *= 0.5;
-
+              yMove *= 0.5;
+          } else if (elevator1.getPosition() > 10) {
+            xMove *= 0.3;
+            yMove *= 0.3;
           } else {
             xMove *= 1.0;
             yMove *= 1.0;
-
           }
 
           return rightHuman
