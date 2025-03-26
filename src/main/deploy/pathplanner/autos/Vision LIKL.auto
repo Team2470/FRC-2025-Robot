@@ -87,13 +87,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "DSBack"
+                  "name": "0.5W-DrivePos"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "0.5W-DrivePos"
+                  "name": "DSBack"
                 }
               }
             ]
@@ -159,6 +159,12 @@
                 "data": {
                   "name": "DSLR"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4"
+                }
               }
             ]
           }
@@ -177,6 +183,25 @@
                 "type": "named",
                 "data": {
                   "name": "L4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "0.5W-DrivePos"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DSBack"
                 }
               }
             ]
@@ -234,9 +259,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "DSRR"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "DSRR"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4"
+                }
+              }
+            ]
           }
         },
         {
@@ -262,6 +300,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "cirAutos",
+  "folder": "compAutos",
   "choreoAuto": false
 }
