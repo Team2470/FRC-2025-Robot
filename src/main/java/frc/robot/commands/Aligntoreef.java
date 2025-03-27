@@ -113,7 +113,7 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
     });
 
     SmartDashboard.putData("AligntToReef Auto", cmd);
-
+    SmartDashboard.putData("AligntToReef Auto", cmd);
     return cmd;
   }
 
@@ -124,6 +124,8 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     SmartDashboard.putNumber("ATR",-1);
+    SmartDashboard.putNumber("AlignToReef feedforward", 0.085);
+
     setName("Aligntoreef");
     addCommands(
       Commands.runOnce(() -> {
@@ -139,27 +141,30 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
         // We see a target, do a bunch of setup!
       Commands.runOnce(() -> {
         m_txPID.reset();
-        m_txPID.setP(0.2);
+        m_txPID.setP(0.3);
         m_txPID.setI(0);
         m_txPID.setD(0.002);
         m_txPID.setTolerance(0.6);
 
         m_tyPID.reset();
-        m_tyPID.setP(0.2);
+        m_tyPID.setP(0.3);
         m_tyPID.setI(0);
         m_tyPID.setD(0);
         m_tyPID.setTolerance(0.6);
 
+
+        double feedforward = SmartDashboard.getNumber("AlignToReef feedforward", 0.099);  
         if (LimelightHelpers.getTX(side.name) <= 0) {
-          yFeedForward = 0.11;
+          yFeedForward = feedforward;
         } else  {
-          yFeedForward = -0.11;
+          yFeedForward = -feedforward;
+
         }
 
         if (LimelightHelpers.getTY(side.name) <= 0) {
-          xFeedForward = 0.11;
+          xFeedForward = feedforward;
         } else {
-          xFeedForward = -0.11;
+          xFeedForward = -feedforward;
         } 
 
         int tagID = (int) LimelightHelpers.getFiducialID(side.name);
@@ -252,12 +257,13 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
         m_txPID.setP(0.1);
         m_txPID.setI(0);
         m_txPID.setD(0.002);
-        m_txPID.setTolerance(0.6);
+        m_txPID.setTolerance(0.5);
 
-        m_tyPID.setP(0.2);
+        //ty pid is not used
+        m_tyPID.setP(0);
         m_tyPID.setI(0);
         m_tyPID.setD(0);
-        m_tyPID.setTolerance(0.6);
+        m_tyPID.setTolerance(0.5);
 
 
       }).withName("Change to near PID gains"),
@@ -268,7 +274,7 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
         //   m_tyPID.calculate(LimelightHelpers.getTY(side.name), 0), -0.2,0.5
         // );
         double yMove = MathUtil.clamp(
-          m_txPID.calculate(LimelightHelpers.getTX(side.name), 0), -0.2,0.5
+          m_txPID.calculate(LimelightHelpers.getTX(side.name), 0), -0.5,0.5
         );
         double xMove = 0;
         //yMove = 0.11;
@@ -296,73 +302,45 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
           .withVelocityY(yMove)
           .withTargetDirection(Rotation2d.fromDegrees(heading));
 
-      }).withName("Align near").until(() -> heading == null || (m_txPID.atSetpoint() && m_tyPID.atSetpoint()) || !LimelightHelpers.getTV(side.name)),
+      }).withName("Align near").until(() -> heading == null || /*  (m_txPID.atSetpoint() && m_tyPID.atSetpoint()) || */ !LimelightHelpers.getTV(side.name)),
 
-      Commands.runOnce(() -> SmartDashboard.putNumber("ATR",5)),
-      drive.applyRequest(() -> {
-        // double xMove = MathUtil.clamp(
-        //   m_tyPID.calculate(LimelightHelpers.getTY(side.name), 0), -0.2,0.5
-        // );
-        double yMove = MathUtil.clamp(
-          m_txPID.calculate(LimelightHelpers.getTX(side.name), 0), -0.2,0.5
-        );
-        double xMove = 0;
-        //yMove = 0.11;
-        // xMove += xFeedForward;
-        // yMove += yFeedForward;
-        // xMove = MathUtil.applyDeadband(xMove, 0.01);
-        // yMove = MathUtil.applyDeadband(yMove, 0.01);
-        SmartDashboard.putNumber("AlignToReef Heading Error", swerveAlign.HeadingController.getPositionError());
-        SmartDashboard.putNumber("AlignToReef Heading Setpoint", swerveAlign.HeadingController.getSetpoint());
-        SmartDashboard.putNumber("AlignToReef tx error", m_txPID.getError());
-        SmartDashboard.putNumber("AlignToReef ty error", m_tyPID.getError());
-        SmartDashboard.putNumber("AlignToReef xFeedForward", xFeedForward);
-        SmartDashboard.putNumber("AlignToReef yFeedForward", yFeedForward);
-        SmartDashboard.putNumber("AlignToReef xMove", xMove);
-        SmartDashboard.putNumber("AlignToReef yMove", yMove);
-        SmartDashboard.putBoolean("AlignToReef isFarAway", false);
+      // Commands.runOnce(() -> SmartDashboard.putNumber("ATR",5)),
+      // drive.applyRequest(() -> {
+      //   // double xMove = MathUtil.clamp(
+      //   //   m_tyPID.calculate(LimelightHelpers.getTY(side.name), 0), -0.2,0.5
+      //   // );
+      //   double yMove = MathUtil.clamp(
+      //     m_txPID.calculate(LimelightHelpers.getTX(side.name), 0), -0.2,0.5
+      //   );
+      //   double xMove = 0;
+      //   //yMove = 0.11;
+      //   // xMove += xFeedForward;
+      //   // yMove += yFeedForward;
+      //   // xMove = MathUtil.applyDeadband(xMove, 0.01);
+      //   // yMove = MathUtil.applyDeadband(yMove, 0.01);
+      //   SmartDashboard.putNumber("AlignToReef Heading Error", swerveAlign.HeadingController.getPositionError());
+      //   SmartDashboard.putNumber("AlignToReef Heading Setpoint", swerveAlign.HeadingController.getSetpoint());
+      //   SmartDashboard.putNumber("AlignToReef tx error", m_txPID.getError());
+      //   SmartDashboard.putNumber("AlignToReef ty error", m_tyPID.getError());
+      //   SmartDashboard.putNumber("AlignToReef xFeedForward", xFeedForward);
+      //   SmartDashboard.putNumber("AlignToReef yFeedForward", yFeedForward);
+      //   SmartDashboard.putNumber("AlignToReef xMove", xMove);
+      //   SmartDashboard.putNumber("AlignToReef yMove", yMove);
+      //   SmartDashboard.putBoolean("AlignToReef isFarAway", false);
         
-        if (heading == null) {
-          // Something not right, do nothing! We should not have gotten here should have been killed ealier
-          return idleRequest;
-        }
+      //   if (heading == null) {
+      //     // Something not right, do nothing! We should not have gotten here should have been killed ealier
+      //     return idleRequest;
+      //   }
 
-        return swerveAlign
-          .withVelocityX(xMove)
-          .withVelocityY(yMove)
-          .withTargetDirection(Rotation2d.fromDegrees(heading));
+      //   return swerveAlign
+      //     .withVelocityX(xMove)
+      //     .withVelocityY(yMove)
+      //     .withTargetDirection(Rotation2d.fromDegrees(heading));
 
-      }).withName("Align stabilization").until(() -> heading == null || !LimelightHelpers.getTV(side.name)).withTimeout(0.7),
+      // }).withName("Align stabilization").until(() -> heading == null || !LimelightHelpers.getTV(side.name)).withTimeout(0.7),
 
-      Commands.runOnce(() -> SmartDashboard.putNumber("ATR",6)).withName("Advancing to ATR to 6"),
-
-      // Finally let the drive drive back and forth, and keep heading and disable side to side movement
-      drive.applyRequest(() -> {
-        double yMove = moveSupplier.getAsDouble();
-        double xMove = 0;
-
-        SmartDashboard.putNumber("AlignToReef Heading Error", swerveAlign.HeadingController.getPositionError());
-        SmartDashboard.putNumber("AlignToReef Heading Setpoint", swerveAlign.HeadingController.getSetpoint());
-        SmartDashboard.putNumber("AlignToReef tx error", m_txPID.getError());
-        SmartDashboard.putNumber("AlignToReef ty error", m_tyPID.getError());
-        SmartDashboard.putNumber("AlignToReef xFeedForward", xFeedForward);
-        SmartDashboard.putNumber("AlignToReef yFeedForward", yFeedForward);
-        SmartDashboard.putNumber("AlignToReef xMove", xMove);
-        SmartDashboard.putNumber("AlignToReef yMove", yMove);
-        SmartDashboard.putBoolean("AlignToReef isFarAway", false);
-
-        if (heading == null) {
-          // Something not right, do nothing! We should not have gotten here should have been killed ealier
-          return idleRequest;
-        }
-
-        return swerveAlign
-          .withVelocityX(xMove)
-          .withVelocityY(yMove)
-          .withTargetDirection(Rotation2d.fromDegrees(heading));
-
-      }).withName("Manual drive").until(() -> heading == null || !enableMove),
-      Commands.runOnce(() -> SmartDashboard.putNumber("ATR",7)).withName("Advancing ATR to 7")
+      Commands.runOnce(() -> SmartDashboard.putNumber("ATR",6)).withName("Advancing to ATR to 6")
     );
   }
 
