@@ -58,6 +58,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Superstructure.m_State;
+import frc.robot.commands.AddVisionMeasurement;
 import frc.robot.commands.Aligntoreef;
 import frc.robot.commands.DriveStraight;
 import frc.robot.commands.DriveStraightBack;
@@ -90,6 +91,8 @@ public class RobotContainer {
   private final Climber m_Climber = new Climber(47, 3);
   private final Limelights m_limelights = new Limelights();
   // private final Climber m_climber = new Climber(, 9);
+
+  private final Vision vision = new Vision();
 
   // Autos
   private final RevDigit m_revDigit;
@@ -866,6 +869,11 @@ public class RobotContainer {
       drivetrain.resetPose(new Pose2d(new Translation2d(xMeters, yMeters), drivetrain.getState().Pose.getRotation()));
     });
 
+  }
+
+    public Command AddVisionMeasurement() {
+    return new AddVisionMeasurement(drivetrain, vision)
+        .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true);
   }
 }
 

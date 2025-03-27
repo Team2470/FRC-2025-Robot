@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    m_robotContainer.AddVisionMeasurement().schedule();
     CommandScheduler.getInstance().run(); 
   }
 
