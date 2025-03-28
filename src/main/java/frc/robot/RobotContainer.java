@@ -514,33 +514,35 @@ public class RobotContainer {
         dropServoCommand())
       );
     // controller.povRight().whileTrue(dropServoCommand());
+
+    controller.x().whileTrue(drivetrain.getAlignRightReef());
     testButtonPad.button(9).whileTrue(new DriveStraightBack(drivetrain, 0.23));
     testButtonPad.button(1).whileTrue(new DriveStraight(drivetrain, 0.24));
 
 
 
-    controller.x().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, () -> {
-      var translation = translationSupplier.get();
+    // controller.x().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, () -> {
+    //   var translation = translationSupplier.get();
 
-      double xMove = 0;
+    //   double xMove = 0;
 
-      if (translation.isPresent()) {
-          xMove = translation.get().getX();
-      }
+    //   if (translation.isPresent()) {
+    //       xMove = translation.get().getX();
+    //   }
 
-      return xMove * 0.2;
-    }));
-    controller.b().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, () -> {
-      var translation = translationSupplier.get();
+    //   return xMove * 0.2;
+    // }));
+    // controller.b().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, () -> {
+    //   var translation = translationSupplier.get();
 
-      double xMove = 0;
+    //   double xMove = 0;
 
-      if (translation.isPresent()) {
-          xMove = translation.get().getX();
-      }
+    //   if (translation.isPresent()) {
+    //       xMove = translation.get().getX();
+    //   }
 
-      return xMove * 0.2;
-    }));
+    //   return xMove * 0.2;
+    // }));
     // controller.povRight().whileTrue(new Aligntoreef(drivetrain, Aligntoreef.Side.Right, Aligntoreef.Score.Coral));
 
     arm.setDefaultCommand(drivePositiCommand());
