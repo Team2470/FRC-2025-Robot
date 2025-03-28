@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import java.util.Optional;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 
@@ -51,7 +52,7 @@ public class AddVisionMeasurement extends Command {
 
     Optional<PoseEstimate> estimatedPose = subVision.determinePoseEstimate(gyroRate);
     if (estimatedPose.isPresent()) {
-      subDrivetrain.addVisionMeasurement(estimatedPose.get().pose, estimatedPose.get().timestampSeconds);
+      subDrivetrain.addVisionMeasurement(estimatedPose.get().pose, estimatedPose.get().timestampSeconds, VecBuilder.fill(.5,.5,9999999));
     }
   }
 

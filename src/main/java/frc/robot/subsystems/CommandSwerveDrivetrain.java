@@ -37,7 +37,9 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
@@ -393,8 +395,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     Pose2d robotPose = getState().Pose;;
     Pose2d reefToAlign = robotPose.nearest(kReefTags);
 
-    final double xOffset = 0.5;
-    final double yOffset = 0.5;
+    final double xOffset = 0;
+    final double yOffset = 1;
     final double angleOffset = 0;   // This value is 1.5 Pi
 
     double deltaX = xOffset * Math.sin(reefToAlign.getRotation().getRadians() + angleOffset) + yOffset * Math.cos(reefToAlign.getRotation().getRadians() + angleOffset);
@@ -404,6 +406,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 }
 
   public Command getAlignRightReef() {
+    SmartDashboard.putNumber("getAlignRightReef: Timestamp", Timer.getFPGATimestamp());
+
     Pose2d curPose = getState().Pose;
     Pose2d goalPose = getReefRightPose();
 
@@ -417,7 +421,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     );
 
     // The values are low so if anything goes wrong we can disable the robot
-    PathConstraints constraints = new PathConstraints(0.5, 0.5, 2 * Math.PI, 4 * Math.PI);
+    PathConstraints constraints = new PathConstraints(3, 3, 2 * Math.PI, 4 * Math.PI);
 
     PathPlannerPath alignmentPath = new PathPlannerPath(
       waypoints,

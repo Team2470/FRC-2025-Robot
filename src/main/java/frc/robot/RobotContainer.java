@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import java.lang.Thread.State;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -39,6 +40,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -184,6 +186,7 @@ public class RobotContainer {
     SmartDashboard.putData("InnerIntake", coral);
     SmartDashboard.putData("OuterIntake", algea);
     SmartDashboard.putData("Limelights", m_limelights);
+    SmartDashboard.putData("Vision", vision);
     SmartDashboard.putNumber("MaxAngularRate", MaxAngularRate);
 
   }
@@ -515,7 +518,13 @@ public class RobotContainer {
       );
     // controller.povRight().whileTrue(dropServoCommand());
 
-    controller.x().whileTrue(drivetrain.getAlignRightReef());
+    controller.x().whileTrue(new ParallelCommandGroup(
+      new DeferredCommand(
+        ()-> drivetrain.getAlignRightReef(), 
+        Set.of(drivetrain)
+      ),
+      Commands.run(() -> {}, vision)
+    ).withName("Align Right Reef"));
     testButtonPad.button(9).whileTrue(new DriveStraightBack(drivetrain, 0.23));
     testButtonPad.button(1).whileTrue(new DriveStraight(drivetrain, 0.24));
 
@@ -546,6 +555,7 @@ public class RobotContainer {
     // controller.povRight().whileTrue(new Aligntoreef(drivetrain, Aligntoreef.Side.Right, Aligntoreef.Score.Coral));
 
     arm.setDefaultCommand(drivePositiCommand());
+    vision.setDefaultCommand(new AddVisionMeasurement(drivetrain, vision).ignoringDisable(true));
     // algea.setDefaultCommand(runInTakeCommand(-8));
 
     // testbuttonpad
@@ -873,9 +883,9 @@ public class RobotContainer {
 
   }
 
-    public Command AddVisionMeasurement() {
-    return new AddVisionMeasurement(drivetrain, vision)
-        .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true);
-  }
+  // public Command AddVisionMeasurement() {
+  //   return new AddVisionMeasurement(drivetrain, vision)
+  //       .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true);
+  // }
 }
 
