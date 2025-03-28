@@ -52,7 +52,7 @@ public class AddVisionMeasurement extends Command {
 
     Optional<PoseEstimate> estimatedPose = subVision.determinePoseEstimate(gyroRate);
     if (estimatedPose.isPresent()) {
-      subDrivetrain.addVisionMeasurement(estimatedPose.get().pose, estimatedPose.get().timestampSeconds, VecBuilder.fill(.5,.5,9999999));
+      subDrivetrain.addVisionMeasurement(estimatedPose.get().pose, estimatedPose.get().timestampSeconds, VecBuilder.fill(2,2,9999999));
     }
   }
 

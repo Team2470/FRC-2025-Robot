@@ -522,8 +522,8 @@ public class RobotContainer {
       new DeferredCommand(
         ()-> drivetrain.getAlignRightReef(), 
         Set.of(drivetrain)
-      ),
-      Commands.run(() -> {}, vision)
+      )
+      // Commands.run(() -> {}, vision)
     ).withName("Align Right Reef"));
     testButtonPad.button(9).whileTrue(new DriveStraightBack(drivetrain, 0.23));
     testButtonPad.button(1).whileTrue(new DriveStraight(drivetrain, 0.24));
