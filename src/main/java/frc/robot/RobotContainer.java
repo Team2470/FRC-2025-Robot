@@ -22,6 +22,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.hal.simulation.AnalogInDataJNI;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -124,12 +125,12 @@ public class RobotContainer {
         put("L2", reefL2Command());
         put("L3", reefL3Command());
         put("L4", reefL4Command());
-        put("0.5W-DrivePos", new SequentialCommandGroup(drivePositiCommand()));
+        put("0.5W-DrivePos", new SequentialCommandGroup(new WaitCommand(0.5), drivePositiCommand()));
         put("HpIntake", HumanPlayerIntakeCommand().until(coral::haveCoral));
-        put("Align Left", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
-        put("Align Right", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
+        put("Align Left", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(5));
+        put("Align Right", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(5));
 
-        put("DSLR", new DriveStraight(drivetrain, 0.24).withName("Drive straigt left reef"));
+        put("DSLR", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.20).withName("Drive straigt left reef")));
         put("DSRR", new DriveStraight(drivetrain, 0.21).withName("Drive straight right reef"));
         put("DSBack", new DriveStraightBack(drivetrain, 0.22).withName("Drive straight backwards"));
         // put("ResVis", setVisionPose());
@@ -558,7 +559,7 @@ public class RobotContainer {
     // controller.povRight().whileTrue(new Aligntoreef(drivetrain, Aligntoreef.Side.Right, Aligntoreef.Score.Coral));
 
     arm.setDefaultCommand(drivePositiCommand());
-    vision.setDefaultCommand(new AddVisionMeasurement(drivetrain, vision).ignoringDisable(true));
+    // vision.setDefaultCommand(new AddVisionMeasurement(drivetrain, vision).ignoringDisable(true));
     // algea.setDefaultCommand(runInTakeCommand(-8));
 
     // testbuttonpad
@@ -895,6 +896,12 @@ public class RobotContainer {
         m_Climber.extendCommand().until(()-> m_Climber.getPosition() > 0.6),
         testUndropIntake(),
         m_Climber.extendCommand());
+  }
+
+  private Command visionLeftL4(){
+    return new SequentialCommandGroup(
+      Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Vision Left")
+    );
   }
 }
 

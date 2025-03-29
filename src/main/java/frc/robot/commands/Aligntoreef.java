@@ -22,7 +22,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
@@ -269,41 +271,47 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
       }).withName("Change to near PID gains"),
       // Now that ty is right, make sure tx is right
       Commands.runOnce(() -> SmartDashboard.putNumber("ATR",4)).withName("Advancing ATR to 4"),
-      drive.applyRequest(() -> {
-        // double xMove = MathUtil.clamp(
-        //   m_tyPID.calculate(LimelightHelpers.getTY(side.name), 0), -0.2,0.5
-        // );
-        double yMove = MathUtil.clamp(
-          m_txPID.calculate(LimelightHelpers.getTX(side.name), 0), -0.5,0.5
-        );
-        double xMove = 0;
-        //yMove = 0.11;
-        // xMove += xFeedForward;
-        // yMove += yFeedForward;
-        // xMove = MathUtil.applyDeadband(xMove, 0.01);
-        // yMove = MathUtil.applyDeadband(yMove, 0.01);
-        SmartDashboard.putNumber("AlignToReef Heading Error", swerveAlign.HeadingController.getPositionError());
-        SmartDashboard.putNumber("AlignToReef Heading Setpoint", swerveAlign.HeadingController.getSetpoint());
-        SmartDashboard.putNumber("AlignToReef tx error", m_txPID.getError());
-        SmartDashboard.putNumber("AlignToReef ty error", m_tyPID.getError());
-        SmartDashboard.putNumber("AlignToReef xFeedForward", xFeedForward);
-        SmartDashboard.putNumber("AlignToReef yFeedForward", yFeedForward);
-        SmartDashboard.putNumber("AlignToReef xMove", xMove);
-        SmartDashboard.putNumber("AlignToReef yMove", yMove);
-        SmartDashboard.putBoolean("AlignToReef isFarAway", false);
-        
-        if (heading == null) {
-          // Something not right, do nothing! We should not have gotten here should have been killed ealier
-          return idleRequest;
-        }
+      new ParallelDeadlineGroup(
+        new SequentialCommandGroup(
+          new WaitUntilCommand(()->(m_txPID.atSetpoint() && m_tyPID.atSetpoint())),
+          new WaitCommand(0.75)
+        ),
 
-        return swerveAlign
-          .withVelocityX(xMove)
-          .withVelocityY(yMove)
-          .withTargetDirection(Rotation2d.fromDegrees(heading));
+        drive.applyRequest(() -> {
+          // double xMove = MathUtil.clamp(
+          //   m_tyPID.calculate(LimelightHelpers.getTY(side.name), 0), -0.2,0.5
+          // );
+          double yMove = MathUtil.clamp(
+            m_txPID.calculate(LimelightHelpers.getTX(side.name), 0), -0.5,0.5
+          );
+          double xMove = 0;
+          //yMove = 0.11;
+          // xMove += xFeedForward;
+          // yMove += yFeedForward;
+          // xMove = MathUtil.applyDeadband(xMove, 0.01);
+          // yMove = MathUtil.applyDeadband(yMove, 0.01);
+          SmartDashboard.putNumber("AlignToReef Heading Error", swerveAlign.HeadingController.getPositionError());
+          SmartDashboard.putNumber("AlignToReef Heading Setpoint", swerveAlign.HeadingController.getSetpoint());
+          SmartDashboard.putNumber("AlignToReef tx error", m_txPID.getError());
+          SmartDashboard.putNumber("AlignToReef ty error", m_tyPID.getError());
+          SmartDashboard.putNumber("AlignToReef xFeedForward", xFeedForward);
+          SmartDashboard.putNumber("AlignToReef yFeedForward", yFeedForward);
+          SmartDashboard.putNumber("AlignToReef xMove", xMove);
+          SmartDashboard.putNumber("AlignToReef yMove", yMove);
+          SmartDashboard.putBoolean("AlignToReef isFarAway", false);
+          
+          if (heading == null) {
+            // Something not right, do nothing! We should not have gotten here should have been killed ealier
+            return idleRequest;
+          }
 
-      }).withName("Align near").until(() -> heading == null || /*  (m_txPID.atSetpoint() && m_tyPID.atSetpoint()) || */ !LimelightHelpers.getTV(side.name)),
+          return swerveAlign
+            .withVelocityX(xMove)
+            .withVelocityY(yMove)
+            .withTargetDirection(Rotation2d.fromDegrees(heading));
 
+        }).withName("Align near").until(() -> heading == null || /*  (m_txPID.atSetpoint() && m_tyPID.atSetpoint()) || */ !LimelightHelpers.getTV(side.name))
+      ),
       // Commands.runOnce(() -> SmartDashboard.putNumber("ATR",5)),
       // drive.applyRequest(() -> {
       //   // double xMove = MathUtil.clamp(

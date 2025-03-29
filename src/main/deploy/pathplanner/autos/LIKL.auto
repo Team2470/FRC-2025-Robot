@@ -85,15 +85,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "LIKL backing up "
+                  "name": "DSBack"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "DrivePos"
+                  "name": "0.5W-DrivePos"
                 }
               }
             ]
@@ -112,7 +112,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "HpIntake"
+                  "name": "DrivePos"
                 }
               }
             ]
