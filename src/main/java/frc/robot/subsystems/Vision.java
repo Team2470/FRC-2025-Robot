@@ -81,10 +81,10 @@ public class Vision extends SubsystemBase {
     PoseEstimate currentEstimateLeft = new PoseEstimate();
 
     if (useMegaTag2) {
-      currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
+      currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-middle");
       currentEstimateLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
     } else {
-      currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
+      currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-middle");
       currentEstimateLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
     }
 

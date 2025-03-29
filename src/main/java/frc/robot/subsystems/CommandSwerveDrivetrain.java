@@ -230,7 +230,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     // Consumer of ChassisSpeeds and feedforwards to drive the robot
                     (speeds, feedforwards) -> setControl(
                             m_pathApplyRobotSpeeds.withSpeeds(speeds)
-                                    // .withSteerRequestType(SteerRequestType.MotionMagicExpo)
+                                    .withSteerRequestType(SteerRequestType.MotionMagicExpo)
                                     .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
                                     .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
                                 ),
@@ -238,7 +238,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                             // PID constants for translation
                             new PIDConstants(8, 0, 0),
                             // PID constants for rotation
-                            new PIDConstants(12, 0, 0)),
+                            new PIDConstants(18, 0, 0)),
                     config,
                     // Assume the path needs to be flipped for Red vs Blue, this is normally the
                     // case
@@ -416,7 +416,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     
     List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-        new Pose2d(curPose.getX(), curPose.getY(), curPose.getRotation()),
+        new Pose2d(curPose.getX(), curPose.getY(), goalPose.getRotation().unaryMinus()),
         new Pose2d(goalPose.getX(), goalPose.getY(), goalPose.getRotation())
     );
     SmartDashboard.putNumber("tagFace", goalPose.getRotation().getDegrees());
