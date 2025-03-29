@@ -124,7 +124,7 @@ public class RobotContainer {
         put("L2", reefL2Command());
         put("L3", reefL3Command());
         put("L4", reefL4Command());
-        put("0.5W-DrivePos", new SequentialCommandGroup(new WaitCommand(0.5), drivePositiCommand()));
+        put("0.5W-DrivePos", new SequentialCommandGroup(drivePositiCommand()));
         put("HpIntake", HumanPlayerIntakeCommand().until(coral::haveCoral));
         put("Align Left", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
         put("Align Right", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
@@ -512,10 +512,11 @@ public class RobotContainer {
     controller.povUp().whileTrue(m_Climber.extendCommand());
     controller.povRight().whileTrue(testUndropIntake());
     controller.povDown().whileTrue(m_Climber.retractCommand());
-    controller.povLeft().whileTrue(new SequentialCommandGroup(
-        // new WaitUntilCommand(()-> m_Climber.getPosition() < 0.3),
-        dropServoCommand())
-      );
+    controller.povLeft().whileTrue(autoClimbCommand());
+    // controller.povLeft().whileTrue(new SequentialCommandGroup(
+    //     // new WaitUntilCommand(()-> m_Climber.getPosition() < 0.3),
+    //     dropServoCommand())
+    //   );
     // controller.povRight().whileTrue(dropServoCommand());
 
     controller.x().whileTrue(new SequentialCommandGroup(
@@ -889,5 +890,11 @@ public class RobotContainer {
   //   return new AddVisionMeasurement(drivetrain, vision)
   //       .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true);
   // }
+  private Command autoClimbCommand() {
+    return new SequentialCommandGroup(
+        m_Climber.extendCommand().until(()-> m_Climber.getPosition() > 0.6),
+        testUndropIntake(),
+        m_Climber.extendCommand());
+  }
 }
 

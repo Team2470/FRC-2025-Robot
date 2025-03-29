@@ -20,15 +20,21 @@ import frc.robot.LimelightHelpers.PoseEstimate;
 public class Vision extends SubsystemBase {
   PoseEstimate lastEstimateRight = new PoseEstimate();
   PoseEstimate lastEstimateLeft = new PoseEstimate();
+  PoseEstimate lastEstimateMiddle = new PoseEstimate();
+
 
   // Not logged, as they turn to false immediately after being read
   @NotLogged
   boolean newRightEstimate = false;
   @NotLogged
   boolean newLeftEstimate = false;
+  @NotLogged
+  boolean newMiddleEstimate = false;
 
   Pose2d rightPose = new Pose2d();
   Pose2d leftPose = new Pose2d();
+  Pose2d middlePose = new Pose2d();
+
 
   private boolean useMegaTag2 = false;
   public static final AngularVelocity MAX_ANGULAR_VELOCITY = Units.DegreesPerSecond.of(720);
@@ -79,13 +85,17 @@ public class Vision extends SubsystemBase {
   public void setCurrentEstimates(AngularVelocity gyroRate) {
     PoseEstimate currentEstimateRight = new PoseEstimate();
     PoseEstimate currentEstimateLeft = new PoseEstimate();
+    PoseEstimate currentEstimateMiddle = new PoseEstimate();
+
 
     if (useMegaTag2) {
-      currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-middle");
+      currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
       currentEstimateLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
+      currentEstimateMiddle = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-middle");
     } else {
-      currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-middle");
+      currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
       currentEstimateLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
+      currentEstimateMiddle = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-middle");
     }
 
     if (currentEstimateRight != null && !rejectUpdate(currentEstimateRight, gyroRate)) {
@@ -98,36 +108,53 @@ public class Vision extends SubsystemBase {
       leftPose = currentEstimateLeft.pose;
       newLeftEstimate = true;
     }
+    if (currentEstimateMiddle != null && !rejectUpdate(currentEstimateMiddle, gyroRate)) {
+      lastEstimateMiddle = currentEstimateMiddle;
+      middlePose = currentEstimateMiddle.pose;
+      newMiddleEstimate = true;
+    }
   }
 
   public Optional<PoseEstimate> determinePoseEstimate(AngularVelocity gyroRate) {
     setCurrentEstimates(gyroRate);
 
     // No valid pose estimates :(
-    if (!newRightEstimate && !newLeftEstimate) {
-      return Optional.empty();
-
-    } else if (newRightEstimate && !newLeftEstimate) {
-      // One valid pose estimate (right)
-      newRightEstimate = false;
-      return Optional.of(lastEstimateRight);
-
-    } else if (!newRightEstimate && newLeftEstimate) {
-      // One valid pose estimate (left)
-      newLeftEstimate = false;
-      // return Optional.of(lastEstimateLeft);
-      return Optional.empty();
-
+      if (!newRightEstimate && !newLeftEstimate && !newMiddleEstimate) {
+        return Optional.empty();
+    
+    } else if (!newRightEstimate && !newLeftEstimate && newMiddleEstimate) {
+        // One valid pose estimate (middle)
+        newMiddleEstimate = false;
+        return Optional.of(lastEstimateMiddle);
+    
+    } else if (!newRightEstimate && newLeftEstimate && !newMiddleEstimate) {
+        // One valid pose estimate (left)
+        newLeftEstimate = false;
+        // return Optional.of(lastEstimateLeft);
+        return Optional.empty();
+    
+    } else if (newRightEstimate && !newLeftEstimate && !newMiddleEstimate) {
+        // One valid pose estimate (right)
+        newRightEstimate = false;
+        // return Optional.of(lastEstimateRight);
+        return Optional.empty();
+    
     } else {
-      // Two valid pose estimates, disgard the one that's further
-      newRightEstimate = false;
-      newLeftEstimate = false;
-      if (lastEstimateLeft.avgTagDist < lastEstimateRight.avgTagDist) {
-        return Optional.of(lastEstimateRight);
-      } else {
-        return Optional.of(lastEstimateLeft);
-      }
+        // More than one valid pose estimate, discard the one that's furthest
+        newRightEstimate = false;
+        newLeftEstimate = false;
+        newMiddleEstimate = false;
+    
+        if (lastEstimateLeft.avgTagDist < lastEstimateRight.avgTagDist &&
+            lastEstimateLeft.avgTagDist < lastEstimateMiddle.avgTagDist) {
+            return Optional.of(lastEstimateLeft);
+        } else if (lastEstimateRight.avgTagDist < lastEstimateMiddle.avgTagDist) {
+            return Optional.of(lastEstimateRight);
+        } else {
+            return Optional.of(lastEstimateMiddle);
+        }
     }
+    
   }
 
   @Override
