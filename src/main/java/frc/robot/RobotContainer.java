@@ -518,13 +518,15 @@ public class RobotContainer {
       );
     // controller.povRight().whileTrue(dropServoCommand());
 
-    controller.x().whileTrue(new ParallelCommandGroup(
+    controller.x().whileTrue(new SequentialCommandGroup(
+    //new AddVisionMeasurement(drivetrain, vision).withTimeout(0.2),
+    new ParallelCommandGroup(
       new DeferredCommand(
         ()-> drivetrain.getAlignRightReef(), 
         Set.of(drivetrain)
       )
       // Commands.run(() -> {}, vision)
-    ).withName("Align Right Reef"));
+    )).withName("Align Right Reef"));
     testButtonPad.button(9).whileTrue(new DriveStraightBack(drivetrain, 0.23));
     testButtonPad.button(1).whileTrue(new DriveStraight(drivetrain, 0.24));
 

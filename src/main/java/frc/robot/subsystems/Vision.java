@@ -115,7 +115,8 @@ public class Vision extends SubsystemBase {
     } else if (!newRightEstimate && newLeftEstimate) {
       // One valid pose estimate (left)
       newLeftEstimate = false;
-      return Optional.of(lastEstimateLeft);
+      // return Optional.of(lastEstimateLeft);
+      return Optional.empty();
 
     } else {
       // Two valid pose estimates, disgard the one that's further

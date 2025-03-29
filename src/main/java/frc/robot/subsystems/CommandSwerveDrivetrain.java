@@ -236,9 +236,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                                 ),
                     new PPHolonomicDriveController(
                             // PID constants for translation
-                            new PIDConstants(15, 0, 0),
+                            new PIDConstants(8, 0, 0),
                             // PID constants for rotation
-                            new PIDConstants(4, 0, 0)),
+                            new PIDConstants(12, 0, 0)),
                     config,
                     // Assume the path needs to be flipped for Red vs Blue, this is normally the
                     // case
@@ -416,12 +416,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     
     List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-        new Pose2d(curPose.getX(), curPose.getY(), Rotation2d.fromDegrees(0)),
-        new Pose2d(goalPose.getX(), goalPose.getY(), Rotation2d.fromDegrees(0))
+        new Pose2d(curPose.getX(), curPose.getY(), curPose.getRotation()),
+        new Pose2d(goalPose.getX(), goalPose.getY(), goalPose.getRotation())
     );
+    SmartDashboard.putNumber("tagFace", goalPose.getRotation().getDegrees());
 
     // The values are low so if anything goes wrong we can disable the robot
-    PathConstraints constraints = new PathConstraints(3, 3, 2 * Math.PI, 4 * Math.PI);
+    PathConstraints constraints = new PathConstraints(1, 1, Math.PI, Math.PI);
+
 
     PathPlannerPath alignmentPath = new PathPlannerPath(
       waypoints,
