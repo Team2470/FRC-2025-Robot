@@ -144,7 +144,26 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "L4"
+                  "name": "DrivePos"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align Left"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DrivePos"
                 }
               }
             ]
@@ -158,6 +177,12 @@
                 "type": "named",
                 "data": {
                   "name": "DSLR"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4"
                 }
               }
             ]
@@ -187,6 +212,25 @@
           "data": {
             "commands": [
               {
+                "type": "named",
+                "data": {
+                  "name": "DSBack"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "0.5W-DrivePos"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
                 "type": "path",
                 "data": {
                   "pathName": "kToFarLeft"
@@ -195,7 +239,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "HpIntake"
+                  "name": "DrivePos"
                 }
               }
             ]
@@ -227,16 +271,48 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "L4"
+                  "name": "DrivePos"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "DSRR"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align Right"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DrivePos"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "DSRR"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4"
+                }
+              }
+            ]
           }
         },
         {
@@ -253,6 +329,25 @@
                 "type": "named",
                 "data": {
                   "name": "L4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "DSBack"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "0.5W-DrivePos"
                 }
               }
             ]

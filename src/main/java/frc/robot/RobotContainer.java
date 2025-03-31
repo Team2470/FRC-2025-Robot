@@ -118,7 +118,7 @@ public class RobotContainer {
         // put("speaker-shoot", speakerShoot());
         put("L2", autoReefCommand());
         put("HoldL2", reefL2Command());
-        put("OuttakeCoral", runInTakeCommand(-8).until(()-> !coral.haveCoral()).withName("Auto Run Outtake"));
+        put("OuttakeCoral", runInTakeCommand(-12).until(()-> !coral.haveCoral()).withName("Auto Run Outtake"));
         // put("OuttakeCoral", runInTakeCommand(8).withTimeout(1).withName("Auto Run Intkae"));
         put("DrivePos", drivePositiCommand());
         put("L1", reefL1Command());
@@ -127,11 +127,11 @@ public class RobotContainer {
         put("L4", reefL4Command());
         put("0.5W-DrivePos", new SequentialCommandGroup(new WaitCommand(0.5), drivePositiCommand()));
         put("HpIntake", HumanPlayerIntakeCommand().until(coral::haveCoral));
-        put("Align Left", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(5));
-        put("Align Right", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(5));
+        put("Align Left", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left"));
+        put("Align Right", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left"));
 
-        put("DSLR", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.20).withName("Drive straigt left reef")));
-        put("DSRR", new DriveStraight(drivetrain, 0.21).withName("Drive straight right reef"));
+        put("DSLR", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.065).withName("Drive straigt left reef")));
+        put("DSRR", new DriveStraight(drivetrain, 0.065).withName("Drive straight right reef"));
         put("DSBack", new DriveStraightBack(drivetrain, 0.22).withName("Drive straight backwards"));
         // put("ResVis", setVisionPose());
         // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
@@ -520,42 +520,42 @@ public class RobotContainer {
     //   );
     // controller.povRight().whileTrue(dropServoCommand());
 
-    controller.x().whileTrue(new SequentialCommandGroup(
-    //new AddVisionMeasurement(drivetrain, vision).withTimeout(0.2),
-    new ParallelCommandGroup(
-      new DeferredCommand(
-        ()-> drivetrain.getAlignRightReef(), 
-        Set.of(drivetrain)
-      )
-      // Commands.run(() -> {}, vision)
-    )).withName("Align Right Reef"));
+    // controller.x().whileTrue(new SequentialCommandGroup(
+    // //new AddVisionMeasurement(drivetrain, vision).withTimeout(0.2),
+    // new ParallelCommandGroup(
+    //   new DeferredCommand(
+    //     ()-> drivetrain.getAlignRightReef(), 
+    //     Set.of(drivetrain)
+    //   )
+    //   // Commands.run(() -> {}, vision)
+    // )).withName("Align Right Reef"));
     testButtonPad.button(9).whileTrue(new DriveStraightBack(drivetrain, 0.23));
     testButtonPad.button(1).whileTrue(new DriveStraight(drivetrain, 0.24));
 
 
 
-    // controller.x().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, () -> {
-    //   var translation = translationSupplier.get();
+    controller.x().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, () -> {
+      var translation = translationSupplier.get();
 
-    //   double xMove = 0;
+      double xMove = 0;
 
-    //   if (translation.isPresent()) {
-    //       xMove = translation.get().getX();
-    //   }
+      if (translation.isPresent()) {
+          xMove = translation.get().getX();
+      }
 
-    //   return xMove * 0.2;
-    // }));
-    // controller.b().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, () -> {
-    //   var translation = translationSupplier.get();
+      return xMove * 0.2;
+    }));
+    controller.b().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, () -> {
+      var translation = translationSupplier.get();
 
-    //   double xMove = 0;
+      double xMove = 0;
 
-    //   if (translation.isPresent()) {
-    //       xMove = translation.get().getX();
-    //   }
+      if (translation.isPresent()) {
+          xMove = translation.get().getX();
+      }
 
-    //   return xMove * 0.2;
-    // }));
+      return xMove * 0.2;
+    }));
     // controller.povRight().whileTrue(new Aligntoreef(drivetrain, Aligntoreef.Side.Right, Aligntoreef.Score.Coral));
 
     arm.setDefaultCommand(drivePositiCommand());

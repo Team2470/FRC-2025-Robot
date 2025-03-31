@@ -15,6 +15,8 @@ import java.util.function.DoubleSupplier;
 import com.ctre.pheonix6.swerve.ModifiedRobotCentricFacingAngle;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -60,6 +62,9 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
   private double xFeedForward;
   private double yFeedForward;
   private Double heading;
+
+  private final Debouncer m_debouncer = new Debouncer(0.2, DebounceType.kBoth);
+
 
   private final SwerveRequest.Idle idleRequest = new SwerveRequest.Idle(); 
   private final ModifiedRobotCentricFacingAngle swerveAlign = new ModifiedRobotCentricFacingAngle()
@@ -137,7 +142,7 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
       new WaitUntilCommand(()-> {
         SmartDashboard.putNumber("AlignToReef timestamp", Timer.getFPGATimestamp());
         SmartDashboard.putNumber("ATR", 0.5);
-        return LimelightHelpers.getTV(side.name);
+        return m_debouncer.calculate(LimelightHelpers.getTV(side.name));
       }).withName("Waiting for visable target"),
       Commands.runOnce(() -> SmartDashboard.putNumber("ATR",1)).withName("Advancing ATR to 1"),
         // We see a target, do a bunch of setup!
@@ -252,7 +257,7 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
           .withVelocityX(xMove)
           .withVelocityY(yMove)
           .withTargetDirection(Rotation2d.fromDegrees(heading));
-      }).withName("Align Far Away").until(() -> heading == null || m_tyPID.atSetpoint() || !LimelightHelpers.getTV(side.name)),
+      }).withName("Align Far Away").until(() -> heading == null || m_tyPID.atSetpoint() || !m_debouncer.calculate(LimelightHelpers.getTV(side.name))),
       Commands.runOnce(() -> SmartDashboard.putNumber("ATR",3)).withName("Advancing ATR to 3"),
 
       Commands.runOnce(() -> {
@@ -273,7 +278,7 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
       Commands.runOnce(() -> SmartDashboard.putNumber("ATR",4)).withName("Advancing ATR to 4"),
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new WaitUntilCommand(()->(m_txPID.atSetpoint() && m_tyPID.atSetpoint())),
+          new WaitUntilCommand(()->(m_txPID.atSetpoint())),
           new WaitCommand(0.75)
         ),
 
@@ -310,7 +315,7 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
             .withVelocityY(yMove)
             .withTargetDirection(Rotation2d.fromDegrees(heading));
 
-        }).withName("Align near").until(() -> heading == null || /*  (m_txPID.atSetpoint() && m_tyPID.atSetpoint()) || */ !LimelightHelpers.getTV(side.name))
+        }).withName("Align near").until(() -> heading == null || /*  (m_txPID.atSetpoint() && m_tyPID.atSetpoint()) || */ !m_debouncer.calculate(LimelightHelpers.getTV(side.name)))
       ),
       // Commands.runOnce(() -> SmartDashboard.putNumber("ATR",5)),
       // drive.applyRequest(() -> {
