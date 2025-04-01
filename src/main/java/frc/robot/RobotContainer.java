@@ -118,20 +118,24 @@ public class RobotContainer {
         // put("speaker-shoot", speakerShoot());
         put("L2", autoReefCommand());
         put("HoldL2", reefL2Command());
-        put("OuttakeCoral", runInTakeCommand(-12).until(()-> !coral.haveCoral()).withName("Auto Run Outtake"));
+        put("OuttakeCoral", new SequentialCommandGroup(runInTakeCommand(-12).until(()-> !coral.haveCoral()),
+        runInTakeCommand(-12).withTimeout(0.4)
+        ).withName("Auto Run Outtake"));
         // put("OuttakeCoral", runInTakeCommand(8).withTimeout(1).withName("Auto Run Intkae"));
         put("DrivePos", drivePositiCommand());
         put("L1", reefL1Command());
         put("L2", reefL2Command());
         put("L3", reefL3Command());
         put("L4", reefL4Command());
-        put("0.5W-DrivePos", new SequentialCommandGroup(new WaitCommand(0.5), drivePositiCommand()));
+        put("0.5W-DrivePos", new SequentialCommandGroup(new WaitCommand(0.5), drivePositiCommand()).until(()-> elevator1.getPosition() < 5));
         put("HpIntake", HumanPlayerIntakeCommand().until(coral::haveCoral));
-        put("Align Left", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left"));
-        put("Align Right", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left"));
+        put("Align Left", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
+        put("Align Right", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
+        put("Align Left2", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
 
-        put("DSLR", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.065).withName("Drive straigt left reef")));
-        put("DSRR", new DriveStraight(drivetrain, 0.065).withName("Drive straight right reef"));
+
+        put("DSLR", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.075).withName("Drive straigt left reef")));
+        put("DSRR", new DriveStraight(drivetrain, 0.075).withName("Drive straight right reef"));
         put("DSBack", new DriveStraightBack(drivetrain, 0.22).withName("Drive straight backwards"));
         // put("ResVis", setVisionPose());
         // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
