@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 
 import java.lang.Thread.State;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
@@ -48,6 +49,7 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -128,14 +130,19 @@ public class RobotContainer {
         put("L3", reefL3Command());
         put("L4", reefL4Command());
         put("0.5W-DrivePos", new SequentialCommandGroup(new WaitCommand(0.5), drivePositiCommand()).until(()-> elevator1.getPosition() < 5));
-        put("HpIntake", HumanPlayerIntakeCommand().until(coral::haveCoral));
+        put("HpIntake", new SequentialCommandGroup(
+          drivePositiCommand().until(()-> elevator1.getPosition() < 2),
+          HumanPlayerIntakeCommand().until(coral::haveCoral))
+        
+        );
         put("Align Left", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
         put("Align Right", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
         put("Align Left2", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
 
+        put("DSLR2", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.125).withName("Drive straigt left reef")));
 
-        put("DSLR", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.075).withName("Drive straigt left reef")));
-        put("DSRR", new DriveStraight(drivetrain, 0.075).withName("Drive straight right reef"));
+        put("DSLR", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.085).withName("Drive straigt left reef")));
+        put("DSRR", new DriveStraight(drivetrain, 0.085).withName("Drive straight right reef"));
         put("DSBack", new DriveStraightBack(drivetrain, 0.22).withName("Drive straight backwards"));
         // put("ResVis", setVisionPose());
         // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
@@ -468,7 +475,8 @@ public class RobotContainer {
     controller.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     // Reset robot pose to 0,0, and 0 degrees
-    controller.back().onTrue(drivetrain.runOnce(() -> drivetrain.resetPose(new Pose2d())));
+    //controller.back().onTrue(drivetrain.runOnce(() -> drivetrain.resetPose(new Pose2d())));
+    controller.back().onTrue(elevator1.elevatorHomeCommand());
 
     drivetrain.registerTelemetry(logger::telemeterize);
 
@@ -509,10 +517,10 @@ public class RobotContainer {
     // buttonPad.button(11).and(buttonPad.button(6)).whileTrue(wrist.openLoopCommand(-1));
     buttonPad.button(4).whileTrue(runInTakeCommand(6));
     buttonPad.button(8).whileTrue(runInTakeCommand(-6));
-    buttonPad.button(10).whileTrue(reefL2Command());
-    buttonPad.button(11).whileTrue(reefL3Command());
-    buttonPad.button(12).whileTrue(reefL4Command());
-    buttonPad.button(1).whileTrue(reefL1Command());
+    // buttonPad.button(10).whileTrue(reefL2Command());
+    // buttonPad.button(11).whileTrue(reefL3Command());
+    // buttonPad.button(12).whileTrue(reefL4Command());
+    // buttonPad.button(1).whileTrue(reefL1Command());
     buttonPad.button(3).whileTrue(netCommand());
     controller.povUp().whileTrue(m_Climber.extendCommand());
     controller.povRight().whileTrue(testUndropIntake());
@@ -538,28 +546,78 @@ public class RobotContainer {
 
 
 
-    controller.x().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, () -> {
-      var translation = translationSupplier.get();
 
-      double xMove = 0;
 
-      if (translation.isPresent()) {
-          xMove = translation.get().getX();
-      }
+      controller.x().whileTrue(
+        new SequentialCommandGroup(
+          new WaitUntilCommand(()->elevator1.getPosition() < 10),
+          alignLeftCommand(),
+        new WaitUntilCommand(()-> buttonPad.getHID().getRawButton(9) || buttonPad.getHID().getRawButton(10) || buttonPad.getHID().getRawButton(11) || buttonPad.getHID().getRawButton(12)),
+        new SelectCommand<>(
+          Map.ofEntries(
+            Map.entry(0, new InstantCommand()),
+            Map.entry(1, L1wDriveBack()),
+            Map.entry(2, L2wDriveBack()),
+            Map.entry(3, L3wDriveBack()),
+            Map.entry(4, L4wDriveBack())
+          ),
+          () -> {
+            if (buttonPad.getHID().getRawButton(9)) {
+              return 1;
+            } else if (buttonPad.getHID().getRawButton(10)) {
+              return 2;
+            } else if (buttonPad.getHID().getRawButton(11)) {
+              return 3;
+            } else if (buttonPad.getHID().getRawButton(12)) {
+              return 4;
+            }
 
-      return xMove * 0.2;
-    }));
-    controller.b().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, () -> {
-      var translation = translationSupplier.get();
+            return 0;
+          }
+              )
+            )
+          );
+        
 
-      double xMove = 0;
+      // buttonPad.button(9).and(controller.x().negate()).and(controller.b().negate()).whileTrue();
 
-      if (translation.isPresent()) {
-          xMove = translation.get().getX();
-      }
 
-      return xMove * 0.2;
-    }));
+controller.b().whileTrue(
+  new SequentialCommandGroup(
+    new ParallelDeadlineGroup(
+      new SequentialCommandGroup(
+        Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left"),
+        Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left")
+            ),
+        drivePositiCommand()
+    ),
+    new ParallelCommandGroup(
+        reefL4Command(),
+        new SequentialCommandGroup(
+            new WaitUntilCommand(() -> elevator1.getPosition() > 30),
+            new DriveStraight(drivetrain, 0.105).withName("Drive straight left reef"),
+            new SequentialCommandGroup(
+                runInTakeCommand(-12).until(() -> !coral.haveCoral()),
+                runInTakeCommand(-12).withTimeout(0.4)
+            ),
+            new DriveStraightBack(drivetrain, 0.22).withName("Drive straight backwards")
+        )
+    )
+  )
+);
+      
+      
+    //   controller.b().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, () -> {
+    //   var translation = translationSupplier.get();
+
+    //   double xMove = 0;
+
+    //   if (translation.isPresent()) {
+    //       xMove = translation.get().getX();
+    //   }
+
+    //   return xMove * 0.2;
+    // }));
     // controller.povRight().whileTrue(new Aligntoreef(drivetrain, Aligntoreef.Side.Right, Aligntoreef.Score.Coral));
 
     arm.setDefaultCommand(drivePositiCommand());
@@ -603,6 +661,83 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return m_autoSelector.selected();
   }
+
+
+  private Command L4wDriveBack(){
+    return new ParallelCommandGroup(
+      reefL4Command(),
+      new SequentialCommandGroup(
+          new WaitUntilCommand(() -> elevator1.getPosition() > 30),
+          new DriveStraight(drivetrain, 0.085).withName("Drive straight left reef"),
+          new SequentialCommandGroup(
+              runInTakeCommand(-12).until(() -> !coral.haveCoral()),
+              runInTakeCommand(-12).withTimeout(0.4)
+          ),
+          new DriveStraightBack(drivetrain, 0.22).withName("Drive straight backwards")
+      )
+    );
+  }
+  private Command L3wDriveBack(){
+    return new ParallelCommandGroup(
+      reefL3Command(),
+      new SequentialCommandGroup(
+          new WaitUntilCommand(() -> elevator1.getPosition() > 30),
+          new DriveStraight(drivetrain, 0.085).withName("Drive straight left reef"),
+          new SequentialCommandGroup(
+              runInTakeCommand(-12).until(() -> !coral.haveCoral()),
+              runInTakeCommand(-12).withTimeout(0.4)
+          ),
+          new DriveStraightBack(drivetrain, 0.22).withName("Drive straight backwards")
+      )
+    );
+  }
+  private Command L2wDriveBack(){
+    return new ParallelCommandGroup(
+      reefL4Command(),
+      new SequentialCommandGroup(
+          new WaitUntilCommand(() -> elevator1.getPosition() > 30),
+          new DriveStraight(drivetrain, 0.085).withName("Drive straight left reef"),
+          new SequentialCommandGroup(
+              runInTakeCommand(-12).until(() -> !coral.haveCoral()),
+              runInTakeCommand(-12).withTimeout(0.4)
+          ),
+          new DriveStraightBack(drivetrain, 0.22).withName("Drive straight backwards")
+      )
+    );
+  }
+  private Command L1wDriveBack(){
+    return new ParallelCommandGroup(
+      reefL4Command(),
+      new SequentialCommandGroup(
+          new WaitUntilCommand(() -> elevator1.getPosition() > 30),
+          new DriveStraight(drivetrain, 0.085).withName("Drive straight left reef"),
+          new SequentialCommandGroup(
+              runInTakeCommand(-12).until(() -> !coral.haveCoral()),
+              runInTakeCommand(-12).withTimeout(0.4)
+          ),
+          new DriveStraightBack(drivetrain, 0.22).withName("Drive straight backwards")
+      )
+    );
+  }
+
+
+
+  private Command alignLeftCommand(){
+    return new ParallelDeadlineGroup(
+      new SequentialCommandGroup(
+        Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left"),
+        Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left")
+        ),
+      drivePositiCommand());
+    }
+    private Command alignRightCommand(){
+      return new ParallelDeadlineGroup(
+        new SequentialCommandGroup(
+          Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left"),
+          Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left")
+          ),
+        drivePositiCommand());
+      }
 
   private Command drivePositiCommand() {
     superstructure.setRobotState(m_State.Drive);
@@ -897,7 +1032,7 @@ public class RobotContainer {
   // }
   private Command autoClimbCommand() {
     return new SequentialCommandGroup(
-        m_Climber.extendCommand().until(()-> m_Climber.getPosition() > 0.6),
+        m_Climber.extendCommand().until(()-> m_Climber.getPosition() < 0.22),
         testUndropIntake(),
         m_Climber.extendCommand());
   }

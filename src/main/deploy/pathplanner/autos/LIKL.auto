@@ -104,28 +104,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "iToFarLeft"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DrivePos"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
                 "type": "named",
                 "data": {
                   "name": "HpIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "iToFarLeft"
                 }
               }
             ]
@@ -176,7 +163,26 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "DSLR"
+                  "name": "Align Left"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DrivePos"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "DSLR2"
                 }
               },
               {
@@ -231,15 +237,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "kToFarLeft"
+                  "name": "HpIntake"
                 }
               },
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "DrivePos"
+                  "pathName": "kToFarLeft"
                 }
               }
             ]
@@ -248,14 +254,7 @@
         {
           "type": "deadline",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "HpIntake"
-                }
-              }
-            ]
+            "commands": []
           }
         },
         {

@@ -42,7 +42,7 @@ public class OuterIntake  extends SubsystemBase {
         configs_FXS.Slot0.kD = 10;
         configs_FXS.Slot0.kV = 2;
         configs_FXS.CurrentLimits.StatorCurrentLimitEnable = true;
-        configs_FXS.CurrentLimits.StatorCurrentLimit = 40;
+        configs_FXS.CurrentLimits.StatorCurrentLimit = 16;
         configs_FXS.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
         configs_FXS.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 

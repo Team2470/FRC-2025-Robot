@@ -75,7 +75,7 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
       }
 
       // Stop if elevator raises
-      if (2 < elevator.getPosition()) {
+      if (6 < elevator.getPosition()) {
         return true;
       }
 
