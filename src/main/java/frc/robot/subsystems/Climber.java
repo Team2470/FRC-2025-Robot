@@ -48,9 +48,9 @@ public class Climber extends SubsystemBase {
 		config.Feedback.RotorToSensorRatio = 100;
 
 		config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-		config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.920654;
+		config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.783447;
 		config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-		config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.3 ;
+		config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.135 ;
 
 		config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 		config.MotorOutput.NeutralMode = NeutralModeValue.Coast;

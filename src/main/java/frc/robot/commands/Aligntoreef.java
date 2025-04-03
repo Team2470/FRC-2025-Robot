@@ -75,7 +75,7 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
       }
 
       // Stop if elevator raises
-      if (2 < elevator.getPosition()) {
+      if (6 < elevator.getPosition()) {
         return true;
       }
 
@@ -105,7 +105,7 @@ public class Aligntoreef extends DebugSequentialCommandGroup {
       }
 
       // Stop if arm leaves robot frame
-      if (arm.getPosition() < 60) {
+      if (arm.getPosition() < 30) {
         return true;
       }
 

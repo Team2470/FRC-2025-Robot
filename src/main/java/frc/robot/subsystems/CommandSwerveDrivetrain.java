@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -16,8 +18,13 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -27,9 +34,12 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
@@ -220,15 +230,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     // Consumer of ChassisSpeeds and feedforwards to drive the robot
                     (speeds, feedforwards) -> setControl(
                             m_pathApplyRobotSpeeds.withSpeeds(speeds)
-                                    // .withSteerRequestType(SteerRequestType.MotionMagicExpo)
+                                    .withSteerRequestType(SteerRequestType.MotionMagicExpo)
                                     .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
                                     .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
                                 ),
                     new PPHolonomicDriveController(
                             // PID constants for translation
-                            new PIDConstants(15, 0, 0),
+                            new PIDConstants(8, 0, 0),
                             // PID constants for rotation
-                            new PIDConstants(4, 0, 0)),
+                            new PIDConstants(18, 0, 0)),
                     config,
                     // Assume the path needs to be flipped for Red vs Blue, this is normally the
                     // case
@@ -370,4 +380,64 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         () -> getCurrentCommand() != null ? getCurrentCommand().getName() : "none",
         null);
   }
+
+  public static final List<Pose2d> kReefTags = new ArrayList<>();
+  static {
+    var fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+    
+    kReefTags.add(fieldLayout.getTagPose(6).get().toPose2d());
+    kReefTags.add(fieldLayout.getTagPose(7).get().toPose2d());
+    kReefTags.add(fieldLayout.getTagPose(11).get().toPose2d());
+
+  }
+
+  public Pose2d getReefRightPose() {
+    Pose2d robotPose = getState().Pose;;
+    Pose2d reefToAlign = robotPose.nearest(kReefTags);
+
+    final double xOffset = 0;
+    final double yOffset = 1;
+    final double angleOffset = 0;   // This value is 1.5 Pi
+
+    double deltaX = xOffset * Math.sin(reefToAlign.getRotation().getRadians() + angleOffset) + yOffset * Math.cos(reefToAlign.getRotation().getRadians() + angleOffset);
+    double deltaY = -xOffset * Math.cos(reefToAlign.getRotation().getRadians() + angleOffset) + yOffset * Math.sin(reefToAlign.getRotation().getRadians() + angleOffset);
+
+    return new Pose2d(reefToAlign.getX() + deltaX, reefToAlign.getY() + deltaY, reefToAlign.getRotation().plus(Rotation2d.k180deg));
+}
+
+  public Command getAlignRightReef() {
+    SmartDashboard.putNumber("getAlignRightReef: Timestamp", Timer.getFPGATimestamp());
+
+    Pose2d curPose = getState().Pose;
+    Pose2d goalPose = getReefRightPose();
+
+    SmartDashboard.putNumberArray("getAlignRightReef: curPose", new double[] {curPose.getX(), curPose.getY(), curPose.getRotation().getDegrees()});
+    SmartDashboard.putNumberArray("getAlignRightReef: goalPose", new double[] {goalPose.getX(), goalPose.getY(), goalPose.getRotation().getDegrees()});
+
+    
+    List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+        new Pose2d(curPose.getX(), curPose.getY(), goalPose.getRotation().unaryMinus()),
+        new Pose2d(goalPose.getX(), goalPose.getY(), goalPose.getRotation())
+    );
+    SmartDashboard.putNumber("tagFace", goalPose.getRotation().getDegrees());
+
+    // The values are low so if anything goes wrong we can disable the robot
+    PathConstraints constraints = new PathConstraints(1, 1, Math.PI, Math.PI);
+
+
+    PathPlannerPath alignmentPath = new PathPlannerPath(
+      waypoints,
+      constraints,
+      null,
+      new GoalEndState(0, goalPose.getRotation())
+    );
+
+    alignmentPath.preventFlipping= true;
+
+    // resetPose(mPoseEstimator.getEstimatedPosition());
+    return AutoBuilder.followPath(alignmentPath);
+}
+  
+
+
 }
