@@ -50,7 +50,7 @@ public class Climber extends SubsystemBase {
 		config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
 		config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.783447;
 		config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-		config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.135 ;
+		config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.155 ;
 
 		config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 		config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
