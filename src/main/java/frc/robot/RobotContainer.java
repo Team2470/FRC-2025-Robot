@@ -502,31 +502,18 @@ public class RobotContainer {
     ));
 
     buttonPad.button(9).whileTrue(pickupCommand());
-    // buttonPad.button(5).whileTrue(pickupAlgaeCommand());
     buttonPad.button(5).whileTrue(HumanPlayerIntakeCommand());
-
     buttonPad.button(6).whileTrue(aLgaeL2Command());
     buttonPad.button(2).whileTrue(aLgaeL3Command());
     buttonPad.button(7).whileTrue(pickupAlgaeCommand());
-    // buttonPad.button(7).whileTrue(());
-    // buttonPad.button(3).and(buttonPad.button(2)).whileTrue(elevator1.openLoopCommand(2));
-    // buttonPad.button(3).and(buttonPad.button(6)).whileTrue(elevator1.openLoopCommand(-2));
-    // buttonPad.button(7).and(buttonPad.button(2)).whileTrue(arm.openLoopCommand(2));
-    // buttonPad.button(7).and(buttonPad.button(6)).whileTrue(arm.openLoopCommand(-2));
-    // buttonPad.button(11).and(buttonPad.button(2)).whileTrue(wrist.openLoopCommand(1));
-    // buttonPad.button(11).and(buttonPad.button(6)).whileTrue(wrist.openLoopCommand(-1));
     buttonPad.button(4).whileTrue(runInTakeCommand(6));
     buttonPad.button(8).whileTrue(runInTakeCommand(-6));
     buttonPad.button(1).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL1Command());
     buttonPad.button(10).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL2Command());
     buttonPad.button(11).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL3Command());
-    buttonPad.button(12).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL4Command());
-
-    // buttonPad.button(10).whileTrue(reefL2Command());
-    // buttonPad.button(11).whileTrue(reefL3Command());
-    // buttonPad.button(12).whileTrue(reefL4Command());
-    // buttonPad.button(1).whileTrue(reefL1Command());
+    buttonPad.button(12).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL4TeleOpCommand());
     buttonPad.button(3).whileTrue(netCommand());
+
     controller.povUp().whileTrue(m_Climber.extendCommand());
     controller.povRight().whileTrue(testUndropIntake());
     controller.povDown().whileTrue(m_Climber.retractCommand());
@@ -546,10 +533,21 @@ public class RobotContainer {
     //   )
     //   // Commands.run(() -> {}, vision)
     // )).withName("Align Right Reef"));
-    testButtonPad.button(9).whileTrue(new DriveStraightBack(drivetrain, 0.23));
-    testButtonPad.button(1).whileTrue(new DriveStraight(drivetrain, 0.24));
+    // testButtonPad.button(9).whileTrue(new DriveStraightBack(drivetrain, 0.23));
+    // testButtonPad.button(1).whileTrue(new DriveStraight(drivetrain, 0.24));
 
-
+    testButtonPad.button(9).whileTrue(pickupCommand());
+    testButtonPad.button(5).whileTrue(HumanPlayerIntakeCommand());
+    testButtonPad.button(6).whileTrue(aLgaeL2Command());
+    testButtonPad.button(2).whileTrue(aLgaeL3Command());
+    testButtonPad.button(7).whileTrue(pickupAlgaeCommand());
+    testButtonPad.button(4).whileTrue(runInTakeCommand(6));
+    testButtonPad.button(8).whileTrue(runInTakeCommand(-6));
+    testButtonPad.button(1).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL1Command());
+    testButtonPad.button(10).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL2Command());
+    testButtonPad.button(11).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL3Command());
+    testButtonPad.button(12).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL4Command());
+    testButtonPad.button(3).whileTrue(netCommand());
 
 
 
@@ -844,6 +842,21 @@ controller.b().whileTrue(
             elevator1.pidCommand(54.77),
             arm.pidCommand(60),
             wrist.pidCommand(125)));
+  }
+  private Command reefL4TeleOpCommand() {
+    superstructure.setRobotState(m_State.L4);
+    return new SequentialCommandGroup(
+        new WaitUntilCommand(()-> superstructure.getRobotState() == m_State.Drive),
+        arm.pidCommand(60).until(() -> Math.abs(arm.getErrorAngle()) < 3),
+
+        new ParallelCommandGroup(
+            elevator1.pidCommand(56),
+            wrist.pidCommand(100),
+            arm.pidCommand(60)).until(() -> Math.abs(elevator1.getPosition() - 54.77) < 1),
+        new ParallelCommandGroup(
+            elevator1.pidCommand(56),
+            arm.pidCommand(60),
+            wrist.pidCommand(100)));
   }
 
   private Command autoReefCommand() {
