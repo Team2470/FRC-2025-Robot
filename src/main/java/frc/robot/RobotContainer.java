@@ -141,7 +141,7 @@ public class RobotContainer {
 
         put("DSLR2", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.125).withName("Drive straigt left reef")));
 
-        put("DSLR", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.085).withName("Drive straigt left reef")));
+        put("DSLR", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.145).withName("Drive straigt left reef")));
         put("DSRR", new DriveStraight(drivetrain, 0.085).withName("Drive straight right reef"));
         put("DSBack", new DriveStraightBack(drivetrain, 0.22).withName("Drive straight backwards"));
         // put("ResVis", setVisionPose());
@@ -517,6 +517,11 @@ public class RobotContainer {
     // buttonPad.button(11).and(buttonPad.button(6)).whileTrue(wrist.openLoopCommand(-1));
     buttonPad.button(4).whileTrue(runInTakeCommand(6));
     buttonPad.button(8).whileTrue(runInTakeCommand(-6));
+    buttonPad.button(1).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL1Command());
+    buttonPad.button(10).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL2Command());
+    buttonPad.button(11).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL3Command());
+    buttonPad.button(12).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL4Command());
+
     // buttonPad.button(10).whileTrue(reefL2Command());
     // buttonPad.button(11).whileTrue(reefL3Command());
     // buttonPad.button(12).whileTrue(reefL4Command());
@@ -579,7 +584,6 @@ public class RobotContainer {
           );
         
 
-      // buttonPad.button(9).and(controller.x().negate()).and(controller.b().negate()).whileTrue();
 
 
 controller.b().whileTrue(
@@ -668,7 +672,7 @@ controller.b().whileTrue(
       reefL4Command(),
       new SequentialCommandGroup(
           new WaitUntilCommand(() -> elevator1.getPosition() > 30),
-          new DriveStraight(drivetrain, 0.085).withName("Drive straight left reef"),
+          new DriveStraight(drivetrain, 0.145).withName("Drive straight left reef"),
           new SequentialCommandGroup(
               runInTakeCommand(-12).until(() -> !coral.haveCoral()),
               runInTakeCommand(-12).withTimeout(0.4)
@@ -682,7 +686,7 @@ controller.b().whileTrue(
       reefL3Command(),
       new SequentialCommandGroup(
           new WaitUntilCommand(() -> elevator1.getPosition() > 30),
-          new DriveStraight(drivetrain, 0.205).withName("Drive straight left reef"),
+          new DriveStraight(drivetrain, 0.245).withName("Drive straight left reef"),
           new SequentialCommandGroup(
               runInTakeCommand(-12).until(() -> !coral.haveCoral()),
               runInTakeCommand(-12).withTimeout(0.4)
@@ -696,7 +700,7 @@ controller.b().whileTrue(
       reefL2Command(),
       new SequentialCommandGroup(
           new WaitUntilCommand(() -> elevator1.getPosition() > 10),
-          new DriveStraight(drivetrain, 0.205).withName("Drive straight left reef"),
+          new DriveStraight(drivetrain, 0.245).withName("Drive straight left reef"),
           new SequentialCommandGroup(
               runInTakeCommand(-12).until(() -> !coral.haveCoral()),
               runInTakeCommand(-12).withTimeout(0.4)
@@ -710,7 +714,7 @@ controller.b().whileTrue(
       reefL4Command(),
       new SequentialCommandGroup(
           new WaitUntilCommand(() -> elevator1.getPosition() > 30),
-          new DriveStraight(drivetrain, 0.085).withName("Drive straight left reef"),
+          new DriveStraight(drivetrain, 0.145).withName("Drive straight left reef"),
           new SequentialCommandGroup(
               runInTakeCommand(-12).until(() -> !coral.haveCoral()),
               runInTakeCommand(-12).withTimeout(0.4)
@@ -1033,7 +1037,7 @@ controller.b().whileTrue(
   private Command autoClimbCommand() {
     return new SequentialCommandGroup(
         m_Climber.extendCommand().until(()-> m_Climber.getPosition() < 0.22),
-        testUndropIntake(),
+        testUndropIntake().withTimeout(1.5),
         m_Climber.extendCommand());
   }
 
