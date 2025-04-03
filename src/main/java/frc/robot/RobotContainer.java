@@ -516,7 +516,7 @@ public class RobotContainer {
 
     controller.povUp().whileTrue(m_Climber.extendCommand());
     controller.povRight().whileTrue(testUndropIntake());
-    controller.povDown().whileTrue(m_Climber.retractCommand());
+    controller.povDown().whileTrue(new ParallelCommandGroup(m_Climber.retractCommand(),climbPositiCommand()));
     controller.povLeft().whileTrue(autoClimbCommand());
     // controller.povLeft().whileTrue(new SequentialCommandGroup(
     //     // new WaitUntilCommand(()-> m_Climber.getPosition() < 0.3),
@@ -757,6 +757,10 @@ controller.b().whileTrue(
             wrist.pidCommand(85),
             elevator1.pidCommand(0.33).until(() -> Math.abs(elevator1.getErrorPercent()) < 2)))
         .withName("TeleOp Drive Position");
+  }
+
+  private Command climbPositiCommand(){
+    return new ParallelCommandGroup(arm.pidCommand(89), wrist.pidCommand(85));
   }
 
   private Command autoDrivePositiCommand() {
@@ -1008,7 +1012,7 @@ controller.b().whileTrue(
   }
   private Command testUndropIntake() {
     return new ParallelCommandGroup(
-      intakeServoRight.setPositionCommand(0.24),
+      intakeServoRight.setPositionCommand(0.26),
       intakeServoLeft.setPositionCommand(0.75)
     ); 
   }
