@@ -183,6 +183,7 @@ public class RobotContainer {
       m_autoSelector.registerCommand("LIKL", "LIKL", AutoBuilder.buildAuto("LIKL"));
       m_autoSelector.registerCommand("032025 push", "PUSH", AutoBuilder.buildAuto("032025 push"));
       m_autoSelector.registerCommand("Vision Mg", "vMG", AutoBuilder.buildAuto("Vision Mg"));
+      m_autoSelector.registerCommand("LIKLpush", "PSH2", AutoBuilder.buildAuto("LIKLpush"));
 
       
     configureBindings();
@@ -303,14 +304,18 @@ public class RobotContainer {
           }
           
           // option 1
-          if (elevator1.getPosition() > 50) {
-            xMove *= 0.5;
-              yMove *= 0.5;
-              rotate *= 0.25;
-          } else if (elevator1.getPosition() > 10) {
+          if (controller.getHID().getXButton()) {
             xMove *= 0.3;
             yMove *= 0.3;
             rotate *= 0.175;
+          } else if (elevator1.getPosition() > 50) {
+            xMove *= 0.3;
+            yMove *= 0.3;
+            rotate *= 0.175;
+          } else if (elevator1.getPosition() > 10) {
+              xMove *= 0.5;
+              yMove *= 0.5;
+              rotate *= 0.25;
           } else {
             xMove *= 1.0;
             yMove *= 1.0;
@@ -513,10 +518,10 @@ public class RobotContainer {
     buttonPad.button(7).whileTrue(pickupAlgaeCommand());
     buttonPad.button(4).whileTrue(runInTakeCommand(6));
     buttonPad.button(8).whileTrue(runInTakeCommand(-6));
-    buttonPad.button(1).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL1Command());
-    buttonPad.button(10).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL2Command());
-    buttonPad.button(11).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL3Command());
-    buttonPad.button(12).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL4TeleOpCommand());
+    buttonPad.button(1).whileTrue(reefL1Command());
+    buttonPad.button(10).whileTrue(reefL2Command());
+    buttonPad.button(11).whileTrue(reefL3Command());
+    buttonPad.button(12).whileTrue(reefL4TeleOpCommand());
     buttonPad.button(3).whileTrue(netCommand());
 
     controller.povUp().whileTrue(m_Climber.extendCommand());
@@ -548,70 +553,70 @@ public class RobotContainer {
     testButtonPad.button(7).whileTrue(pickupAlgaeCommand());
     testButtonPad.button(4).whileTrue(runInTakeCommand(6));
     testButtonPad.button(8).whileTrue(runInTakeCommand(-6));
-    testButtonPad.button(1).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL1Command());
-    testButtonPad.button(10).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL2Command());
-    testButtonPad.button(11).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL3Command());
-    testButtonPad.button(12).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL4Command());
+    testButtonPad.button(1).whileTrue(reefL1Command());
+    testButtonPad.button(10).whileTrue(reefL2Command());
+    testButtonPad.button(11).whileTrue(reefL3Command());
+    testButtonPad.button(12).whileTrue(reefL4Command());
     testButtonPad.button(3).whileTrue(netCommand());
 
 
 
-      controller.x().whileTrue(
-        new SequentialCommandGroup(
-          new WaitUntilCommand(()->elevator1.getPosition() < 10),
-          alignLeftCommand(),
-        new WaitUntilCommand(()-> buttonPad.getHID().getRawButton(9) || buttonPad.getHID().getRawButton(10) || buttonPad.getHID().getRawButton(11) || buttonPad.getHID().getRawButton(12)),
-        new SelectCommand<>(
-          Map.ofEntries(
-            Map.entry(0, new InstantCommand()),
-            Map.entry(1, L1wDriveBack()),
-            Map.entry(2, L2wDriveBack()),
-            Map.entry(3, L3wDriveBack()),
-            Map.entry(4, L4wDriveBack())
-          ),
-          () -> {
-            if (buttonPad.getHID().getRawButton(9)) {
-              return 1;
-            } else if (buttonPad.getHID().getRawButton(10)) {
-              return 2;
-            } else if (buttonPad.getHID().getRawButton(11)) {
-              return 3;
-            } else if (buttonPad.getHID().getRawButton(12)) {
-              return 4;
-            }
+      // controller.x().whileTrue(
+      //   new SequentialCommandGroup(
+      //     new WaitUntilCommand(()->elevator1.getPosition() < 10),
+      //     alignLeftCommand(),
+      //   new WaitUntilCommand(()-> buttonPad.getHID().getRawButton(9) || buttonPad.getHID().getRawButton(10) || buttonPad.getHID().getRawButton(11) || buttonPad.getHID().getRawButton(12)),
+      //   new SelectCommand<>(
+      //     Map.ofEntries(
+      //       Map.entry(0, new InstantCommand()),
+      //       Map.entry(1, L1wDriveBack()),
+      //       Map.entry(2, L2wDriveBack()),
+      //       Map.entry(3, L3wDriveBack()),
+      //       Map.entry(4, L4wDriveBack())
+      //     ),
+      //     () -> {
+      //       if (buttonPad.getHID().getRawButton(9)) {
+      //         return 1;
+      //       } else if (buttonPad.getHID().getRawButton(10)) {
+      //         return 2;
+      //       } else if (buttonPad.getHID().getRawButton(11)) {
+      //         return 3;
+      //       } else if (buttonPad.getHID().getRawButton(12)) {
+      //         return 4;
+      //       }
 
-            return 0;
-          }
-              )
-            )
-          );
+      //       return 0;
+      //     }
+      //         )
+      //       )
+      //     );
         
 
 
 
-controller.b().whileTrue(
-  new SequentialCommandGroup(
-    new ParallelDeadlineGroup(
-      new SequentialCommandGroup(
-        Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left"),
-        Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left")
-            ),
-        drivePositiCommand()
-    ),
-    new ParallelCommandGroup(
-        reefL4Command(),
-        new SequentialCommandGroup(
-            new WaitUntilCommand(() -> elevator1.getPosition() > 30),
-            new DriveStraight(drivetrain, 0.105).withName("Drive straight left reef"),
-            new SequentialCommandGroup(
-                runInTakeCommand(-12).until(() -> !coral.haveCoral()),
-                runInTakeCommand(-12).withTimeout(0.4)
-            ),
-            new DriveStraightBack(drivetrain, 0.22).withName("Drive straight backwards")
-        )
-    )
-  )
-);
+// controller.b().whileTrue(
+//   new SequentialCommandGroup(
+//     new ParallelDeadlineGroup(
+//       new SequentialCommandGroup(
+//         Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left"),
+//         Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left")
+//             ),
+//         drivePositiCommand()
+//     ),
+//     new ParallelCommandGroup(
+//         reefL4Command(),
+//         new SequentialCommandGroup(
+//             new WaitUntilCommand(() -> elevator1.getPosition() > 30),
+//             new DriveStraight(drivetrain, 0.105).withName("Drive straight left reef"),
+//             new SequentialCommandGroup(
+//                 runInTakeCommand(-12).until(() -> !coral.haveCoral()),
+//                 runInTakeCommand(-12).withTimeout(0.4)
+//             ),
+//             new DriveStraightBack(drivetrain, 0.22).withName("Drive straight backwards")
+//         )
+//     )
+//   )
+// );
       
       
     //   controller.b().whileTrue(Aligntoreef.makeDriverController(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, () -> {
@@ -1060,7 +1065,7 @@ controller.b().whileTrue(
     return new SequentialCommandGroup(
         m_Climber.extendCommand().until(()-> m_Climber.getPosition() < 0.22),
         testUndropIntake().withTimeout(1.5),
-        m_Climber.extendCommand());
+        m_Climber.extendCommand().until(() -> m_Climber.getPosition() <  0.178));
   }
 
   private Command visionLeftL4(){

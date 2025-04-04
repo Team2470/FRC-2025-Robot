@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Revolutions;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -15,6 +17,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -134,7 +137,11 @@ public class Climber extends SubsystemBase {
 	// new SequentialCommandGroup(
 	// 	new WaitCommand(0.2)
 		// Commands.runEnd(() -> this.setVoltage(4), this::stop, this)
-	);
-}
+		);
+	}
+	public boolean isAtForwardLimit() {
+		return m_motor.getPosition().getValue().in(Revolutions) >  0.78;
+	}
+
 
 }
