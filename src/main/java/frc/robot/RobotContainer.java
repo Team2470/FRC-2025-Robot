@@ -139,9 +139,9 @@ public class RobotContainer {
         put("Align Right", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
         put("Align Left2", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
 
-        put("DSLR2", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.125).withName("Drive straigt left reef")));
+        put("DSLR2", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.180).withName("Drive straigt left reef")));
 
-        put("DSLR", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.150).withName("Drive straigt left reef")));
+        put("DSLR", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.180).withName("Drive straigt left reef")));
         put("DSRR", new DriveStraight(drivetrain, 0.150).withName("Drive straight right reef"));
         put("DSBack", new DriveStraightBack(drivetrain, 0.22).withName("Drive straight backwards"));
         // put("ResVis", setVisionPose());
@@ -416,6 +416,11 @@ public class RobotContainer {
           double xMove = 0;
           double yMove = 0;
 
+          if (translation.isPresent()) {
+            xMove = translation.get().getX();
+            yMove = translation.get().getY();
+          }
+
           if (elevator1.getPosition() > 50) {
             xMove *= 0.5;
               yMove *= 0.5;
@@ -670,7 +675,7 @@ controller.b().whileTrue(
       reefL4Command(),
       new SequentialCommandGroup(
           new WaitUntilCommand(() -> elevator1.getPosition() > 30),
-          new DriveStraight(drivetrain, 0.145).withName("Drive straight left reef"),
+          new DriveStraight(drivetrain, 0.155).withName("Drive straight left reef"),
           new SequentialCommandGroup(
               runInTakeCommand(-12).until(() -> !coral.haveCoral()),
               runInTakeCommand(-12).withTimeout(0.4)
