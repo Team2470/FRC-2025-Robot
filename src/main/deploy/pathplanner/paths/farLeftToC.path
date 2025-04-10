@@ -8,8 +8,13 @@
       },
       "prevControl": null,
       "nextControl": {
+<<<<<<< Updated upstream
         "x": 1.873687414559125,
         "y": 6.6416107740943255
+=======
+        "x": 1.5754143882433354,
+        "y": 6.9302620898838
+>>>>>>> Stashed changes
       },
       "isLocked": false,
       "linkedName": "farLeftStation"
