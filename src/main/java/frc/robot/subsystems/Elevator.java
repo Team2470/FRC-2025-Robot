@@ -50,7 +50,7 @@ public class Elevator extends SubsystemBase {
   private ControlMode m_controlMode = ControlMode.kStop;
   private final ProfiledPIDController m_pidController = new ProfiledPIDController(ElevatorConstants.kP,
       ElevatorConstants.kI, ElevatorConstants.kD,
-      new TrapezoidProfile.Constraints(100, 150));
+      new TrapezoidProfile.Constraints(100, 200));
 
   private ElevatorFeedforward m_feedforward = new ElevatorFeedforward(ElevatorConstants.kS, ElevatorConstants.kG,
       ElevatorConstants.kV,

@@ -11,6 +11,25 @@
               {
                 "type": "path",
                 "data": {
+                  "pathName": "New New Path"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DrivePos"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
                   "pathName": "LIAutoStart"
                 }
               },
@@ -144,7 +163,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Align Right"
+                  "name": "Align Left"
                 }
               },
               {

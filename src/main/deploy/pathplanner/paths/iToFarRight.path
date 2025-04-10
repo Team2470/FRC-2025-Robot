@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.5,
-        "y": 5.323
+        "x": 3.4830592105263154,
+        "y": 6.074424342105263
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3054383116883117,
-        "y": 7.538767045454546
+        "x": 1.288497522214627,
+        "y": 8.290191387559808
       },
       "isLocked": false,
       "linkedName": "iBack"
@@ -48,7 +48,7 @@
   "folder": "postToFarRightIntake",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": -59.99999999999999
   },
   "useDefaultConstraints": true
 }
