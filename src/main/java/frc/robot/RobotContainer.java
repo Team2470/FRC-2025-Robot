@@ -139,10 +139,10 @@ public class RobotContainer {
         put("Align Right", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
         put("Align Left2", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
 
-        put("DSLR2", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.180).withName("Drive straigt left reef")));
+        put("DSLR2", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.35).withName("Drive straigt left reef")));
 
-        put("DSLR", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.180).withName("Drive straigt left reef")));
-        put("DSRR", new DriveStraight(drivetrain, 0.150).withName("Drive straight right reef"));
+        put("DSLR", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.35).withName("Drive straigt left reef")));
+        put("DSRR", new DriveStraight(drivetrain, 0.35).withName("Drive straight right reef"));
         put("DSBack", new DriveStraightBack(drivetrain, 0.22).withName("Drive straight backwards"));
         // put("ResVis", setVisionPose());
         // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
@@ -524,7 +524,7 @@ public class RobotContainer {
     buttonPad.button(12).whileTrue(reefL4TeleOpCommand());
     buttonPad.button(3).whileTrue(netCommand());
 
-    controller.povUp().whileTrue(m_Climber.extendCommand());
+    controller.povUp().whileTrue(m_Climber.extendFastCommand());
     controller.povRight().whileTrue(testUndropIntake());
     controller.povDown().whileTrue(new ParallelCommandGroup(m_Climber.retractCommand(),climbPositiCommand()));
     controller.povLeft().whileTrue(autoClimbCommand());
