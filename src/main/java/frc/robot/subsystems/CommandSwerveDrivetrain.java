@@ -30,6 +30,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -238,7 +239,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                             // PID constants for translation
                             new PIDConstants(8, 0, 0),
                             // PID constants for rotation
-                            new PIDConstants(18, 0, 0)),
+                            new PIDConstants(22, 0, 0.25)),
                     config,
                     // Assume the path needs to be flipped for Red vs Blue, this is normally the
                     // case
@@ -395,7 +396,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     Pose2d robotPose = getState().Pose;;
     Pose2d reefToAlign = robotPose.nearest(kReefTags);
 
-    final double xOffset = 0;
+    final double xOffset = Units.inchesToMeters(8);
     final double yOffset = 1;
     final double angleOffset = 0;   // This value is 1.5 Pi
 

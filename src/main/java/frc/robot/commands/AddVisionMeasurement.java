@@ -44,10 +44,10 @@ public class AddVisionMeasurement extends Command {
     double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
 
     // Tells the limelight where we are on the field
-    LimelightHelpers.SetRobotOrientation("limelight-right",
-        driveState.Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
     LimelightHelpers.SetRobotOrientation("limelight-left",
         driveState.Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    // LimelightHelpers.SetRobotOrientation("limelight-left",
+    //     driveState.Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
     AngularVelocity gyroRate = DegreesPerSecond.of(omegaRps);
 
     Optional<PoseEstimate> estimatedPose = subVision.determinePoseEstimate(gyroRate);

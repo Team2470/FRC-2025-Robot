@@ -543,6 +543,7 @@ public class RobotContainer {
     //   )
     //   // Commands.run(() -> {}, vision)
     // )).withName("Align Right Reef"));
+    
     // testButtonPad.button(9).whileTrue(new DriveStraightBack(drivetrain, 0.23));
     // testButtonPad.button(1).whileTrue(new DriveStraight(drivetrain, 0.24));
 
@@ -590,6 +591,17 @@ public class RobotContainer {
       //         )
       //       )
       //     );
+          controller.x().whileTrue(
+            new SequentialCommandGroup(
+              new WaitUntilCommand(()->elevator1.getPosition() < 10),
+              new DeferredCommand(
+                ()-> drivetrain.getAlignRightReef(), 
+                Set.of(drivetrain)
+              ),
+              L4wDriveBack()
+            )
+
+          );
         
 
 
@@ -1057,10 +1069,12 @@ public class RobotContainer {
 
   }
 
-  // public Command AddVisionMeasurement() {
-  //   return new AddVisionMeasurement(drivetrain, vision)
-  //       .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true);
-  // }
+  public Command AddVisionMeasurement() {
+    return new AddVisionMeasurement(drivetrain, vision)
+        .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true);
+  }
+
+
   private Command autoClimbCommand() {
     return new SequentialCommandGroup(
         m_Climber.extendCommand().until(()-> m_Climber.getPosition() < 0.22),

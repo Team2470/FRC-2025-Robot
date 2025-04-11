@@ -49,8 +49,8 @@ public class Limelights extends SubsystemBase {
             LimelightHelpers.SetThrottle(Limelight.kRight.name, 150);
         }
 
-        // LimelightHelpers.setPipelineIndex(Limelight.kLeft.name, 2);
-        // LimelightHelpers.setPipelineIndex(Limelight.kRight.name, 2);
+        LimelightHelpers.setPipelineIndex(Limelight.kLeft.name, 2);
+        LimelightHelpers.setPipelineIndex(Limelight.kRight.name, 2);
 
 
         SmartDashboard.putBoolean("Limelight left tv", LimelightHelpers.getTV(Limelight.kLeft.name));
