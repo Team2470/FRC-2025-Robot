@@ -424,7 +424,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     SmartDashboard.putNumber("tagFace", goalPose.getRotation().getDegrees());
 
     // The values are low so if anything goes wrong we can disable the robot
-    PathConstraints constraints = new PathConstraints(1, 1, Math.PI, Math.PI);
+    PathConstraints constraints = new PathConstraints(3, 3, Math.PI, Math.PI);
 
 
     PathPlannerPath alignmentPath = new PathPlannerPath(
@@ -471,7 +471,7 @@ public Command getAlignRightReef() {
     SmartDashboard.putNumber("tagFace", goalPose.getRotation().getDegrees());
 
     // The values are low so if anything goes wrong we can disable the robot
-    PathConstraints constraints = new PathConstraints(1, 1, Math.PI, Math.PI);
+    PathConstraints constraints = new PathConstraints(3, 3, Math.PI, Math.PI);
 
 
     PathPlannerPath alignmentPath = new PathPlannerPath(
