@@ -372,7 +372,7 @@ public class RobotContainer {
     controller.rightStick().toggleOnTrue(drivetrain.applyRequest(() -> brake));
 
     final SwerveRequest.FieldCentricFacingAngle leftHuman = new SwerveRequest.FieldCentricFacingAngle()
-        .withHeadingPID(5, 0, 0)
+        .withHeadingPID(10, 0, 0)
         .withTargetDirection(Rotation2d.fromDegrees(-54))
         .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
@@ -594,9 +594,26 @@ public class RobotContainer {
           controller.x().whileTrue(
             new SequentialCommandGroup(
               new WaitUntilCommand(()->elevator1.getPosition() < 10),
+              new ParallelDeadlineGroup(
+              new DeferredCommand(
+                ()-> drivetrain.getAlignLeftReef(), 
+                Set.of(drivetrain)
+              ),
+              drivePositiCommand()
+              ),
+              L4wDriveBack()
+            )
+
+          );
+          controller.b().whileTrue(
+            new SequentialCommandGroup(
+              new WaitUntilCommand(()->elevator1.getPosition() < 10),
+              new ParallelDeadlineGroup(
               new DeferredCommand(
                 ()-> drivetrain.getAlignRightReef(), 
                 Set.of(drivetrain)
+              ),
+              drivePositiCommand()
               ),
               L4wDriveBack()
             )
@@ -692,7 +709,7 @@ public class RobotContainer {
       reefL4Command(),
       new SequentialCommandGroup(
           new WaitUntilCommand(() -> elevator1.getPosition() > 30),
-          new DriveStraight(drivetrain, 0.20).withName("Drive straight left reef"),
+          new DriveStraight(drivetrain, 0.22).withName("Drive straight left reef"),
           new SequentialCommandGroup(
               runInTakeCommand(-12).until(() -> !coral.haveCoral()),
               runInTakeCommand(-12).withTimeout(0.4)
