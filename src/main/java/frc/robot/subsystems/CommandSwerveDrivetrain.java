@@ -388,10 +388,20 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   public static final List<Pose2d> kReefTags = new ArrayList<>();
   static {
     var fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
-    
+
     kReefTags.add(fieldLayout.getTagPose(6).get().toPose2d());
     kReefTags.add(fieldLayout.getTagPose(7).get().toPose2d());
+    kReefTags.add(fieldLayout.getTagPose(8).get().toPose2d());
+    kReefTags.add(fieldLayout.getTagPose(9).get().toPose2d());
+    kReefTags.add(fieldLayout.getTagPose(10).get().toPose2d());
     kReefTags.add(fieldLayout.getTagPose(11).get().toPose2d());
+    kReefTags.add(fieldLayout.getTagPose(17).get().toPose2d());
+    kReefTags.add(fieldLayout.getTagPose(18).get().toPose2d());
+    kReefTags.add(fieldLayout.getTagPose(19).get().toPose2d());
+    kReefTags.add(fieldLayout.getTagPose(20).get().toPose2d());
+    kReefTags.add(fieldLayout.getTagPose(21).get().toPose2d());
+    kReefTags.add(fieldLayout.getTagPose(22).get().toPose2d());
+
 
   }
 
