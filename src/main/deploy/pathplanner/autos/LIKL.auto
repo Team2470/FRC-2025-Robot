@@ -100,7 +100,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Align Left"
+                  "name": "Align Right"
                 }
               },
               {
@@ -139,107 +139,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "kToFarLeft"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": []
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "farLeftToL"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DrivePos"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Align Right"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DrivePos"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "DSRR"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "OuttakeCoral"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "DSBack"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "0.5W-DrivePos"
                 }
               }
             ]

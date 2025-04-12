@@ -141,13 +141,16 @@ public class RobotContainer {
           Set.of(drivetrain)
         ));
 
-        put("Align Right", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Right, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
+        put("Align Right", new DeferredCommand(
+          ()-> drivetrain.getAlignRightReef(), 
+          Set.of(drivetrain))
+        );
         put("Align Left2", Aligntoreef.makeAuto(drivetrain, elevator1, arm, Aligntoreef.Side.Left, Aligntoreef.Score.Coral, "Auto Align left").withTimeout(3));
 
         put("DSLR2", new SequentialCommandGroup(new WaitUntilCommand(()-> elevator1.getPosition() > 30), new DriveStraight(drivetrain, 0.35).withName("Drive straigt left reef")));
 
         put("DSLR", autoL4wDriveBack());
-        put("DSRR", new DriveStraight(drivetrain, 0.22).withName("Drive straight right reef"));
+        put("DSRR", autoL4wDriveBack());
         put("DSBack", new DriveStraightBack(drivetrain, 0.22).withName("Drive straight backwards"));
         // put("ResVis", setVisionPose());
         // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
@@ -413,7 +416,7 @@ public class RobotContainer {
 
     // Robot aligns with right human player station
     final SwerveRequest.FieldCentricFacingAngle rightHuman = new SwerveRequest.FieldCentricFacingAngle()
-        .withHeadingPID(5, 0, 0)
+        .withHeadingPID(10, 0, 0)
         .withTargetDirection(Rotation2d.fromDegrees(54))
         .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors

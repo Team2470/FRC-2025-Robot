@@ -263,6 +263,7 @@ public class Elevator extends SubsystemBase {
         () -> {
           m_motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
           m_motor.getConfigurator().apply(m_motorConfig);
+          m_isHomed = false;
         },
         () -> {
           m_controlMode = ControlMode.kHoming;

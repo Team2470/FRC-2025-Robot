@@ -40,12 +40,12 @@ public class Limelights extends SubsystemBase {
     @Override
     public void periodic() {
         if (DriverStation.isEnabled()) {
-            LimelightHelpers.SetIMUMode(Limelight.kLeft.name, 2);
+            // LimelightHelpers.SetIMUMode(Limelight.kLeft.name, 2);
             // Disable throttle
             LimelightHelpers.SetThrottle(Limelight.kLeft.name, 0);
             LimelightHelpers.SetThrottle(Limelight.kRight.name, 0);
         } else {
-            LimelightHelpers.SetIMUMode(Limelight.kLeft.name, 1);
+            // LimelightHelpers.SetIMUMode(Limelight.kLeft.name, 1);
             // Enable throttle when disabled
             LimelightHelpers.SetThrottle(Limelight.kLeft.name, 10);
             LimelightHelpers.SetThrottle(Limelight.kRight.name, 10);
