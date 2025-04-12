@@ -418,7 +418,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     
     List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-        new Pose2d(curPose.getX(), curPose.getY(), goalPose.getRotation()),
+        new Pose2d(curPose.getX(), curPose.getY(), goalPose.getRotation().unaryMinus()),
         new Pose2d(goalPose.getX(), goalPose.getY(), goalPose.getRotation())
     );
     SmartDashboard.putNumber("tagFace", goalPose.getRotation().getDegrees());
@@ -465,7 +465,7 @@ public Command getAlignRightReef() {
 
     
     List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-        new Pose2d(curPose.getX(), curPose.getY(), goalPose.getRotation()),
+        new Pose2d(curPose.getX(), curPose.getY(), goalPose.getRotation().unaryMinus()),
         new Pose2d(goalPose.getX(), goalPose.getY(), goalPose.getRotation())
     );
     SmartDashboard.putNumber("tagFace", goalPose.getRotation().getDegrees());
