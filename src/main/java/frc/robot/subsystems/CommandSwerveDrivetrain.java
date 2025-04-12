@@ -336,6 +336,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      */
     @Override
     public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
+        SmartDashboard.putNumberArray("Vision: addVisionMeasurement pose", new double[] {visionRobotPoseMeters.getX(), visionRobotPoseMeters.getY(), visionRobotPoseMeters.getRotation().getDegrees()});
+        SmartDashboard.putNumber("Vision: addVisionMeasurement timestamp", timestampSeconds);
+
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds));
     }
 

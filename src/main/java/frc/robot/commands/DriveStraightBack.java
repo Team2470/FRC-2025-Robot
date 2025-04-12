@@ -17,6 +17,7 @@ public class DriveStraightBack extends SequentialCommandGroup {
             .withRotationalRate(0)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
             .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+    private final SwerveRequest.Idle idleRequest = new SwerveRequest.Idle();
     private Pose2d startPose;
     
     public DriveStraightBack(CommandSwerveDrivetrain drivetrain, double distanceMeters) {
@@ -25,7 +26,7 @@ public class DriveStraightBack extends SequentialCommandGroup {
             drivetrain.applyRequest(()-> {
                 SmartDashboard.putNumber("DriveStraight", (drivetrain.getState().Pose.minus(startPose).getTranslation()).getNorm());
                 return request;
-            }).until(()-> (drivetrain.getState().Pose.minus(startPose).getTranslation()).getNorm() > distanceMeters)
+            }).finallyDo(()-> drivetrain.setControl(idleRequest)).until(()-> (drivetrain.getState().Pose.minus(startPose).getTranslation()).getNorm() > distanceMeters)
         );
     }
 

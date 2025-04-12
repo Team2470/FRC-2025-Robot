@@ -51,50 +51,6 @@
                 "data": {
                   "name": "DSLR"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "OuttakeCoral"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "DSBack"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "0.5W-DrivePos"
-                }
               }
             ]
           }
@@ -144,25 +100,6 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Align Right"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DrivePos"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
                   "name": "Align Left"
                 }
               },
@@ -182,51 +119,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "DSLR2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "OuttakeCoral"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "DSBack"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "0.5W-DrivePos"
+                  "name": "DSLR"
                 }
               }
             ]
