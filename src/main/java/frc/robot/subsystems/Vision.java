@@ -89,25 +89,25 @@ public class Vision extends SubsystemBase {
 
 
     if (useMegaTag2) {
-      currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
-      currentEstimateLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
-      currentEstimateMiddle = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-middle");
+      // currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
+      // currentEstimateLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
+      currentEstimateMiddle = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
     } else {
-      currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
-      currentEstimateLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
-      currentEstimateMiddle = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-middle");
+      // currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
+      // currentEstimateLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
+      currentEstimateMiddle = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
     }
 
-    if (currentEstimateRight != null && !rejectUpdate(currentEstimateRight, gyroRate)) {
-      lastEstimateRight = currentEstimateRight;
-      rightPose = currentEstimateRight.pose;
-      newRightEstimate = true;
-    }
-    if (currentEstimateLeft != null && !rejectUpdate(currentEstimateLeft, gyroRate)) {
-      lastEstimateLeft = currentEstimateLeft;
-      leftPose = currentEstimateLeft.pose;
-      newLeftEstimate = true;
-    }
+    // if (currentEstimateRight != null && !rejectUpdate(currentEstimateRight, gyroRate)) {
+    //   lastEstimateRight = currentEstimateRight;
+    //   rightPose = currentEstimateRight.pose;
+    //   newRightEstimate = true;
+    // }
+    // if (currentEstimateLeft != null && !rejectUpdate(currentEstimateLeft, gyroRate)) {
+    //   lastEstimateLeft = currentEstimateLeft;
+    //   leftPose = currentEstimateLeft.pose;
+    //   newLeftEstimate = true;
+    // }
     if (currentEstimateMiddle != null && !rejectUpdate(currentEstimateMiddle, gyroRate)) {
       lastEstimateMiddle = currentEstimateMiddle;
       middlePose = currentEstimateMiddle.pose;
@@ -119,40 +119,40 @@ public class Vision extends SubsystemBase {
     setCurrentEstimates(gyroRate);
 
     // No valid pose estimates :(
-      if (!newRightEstimate && !newLeftEstimate && !newMiddleEstimate) {
+      if (!newMiddleEstimate) {
         return Optional.empty();
     
-    } else if (!newRightEstimate && !newLeftEstimate && newMiddleEstimate) {
+    } else if (newMiddleEstimate) {
         // One valid pose estimate (middle)
         newMiddleEstimate = false;
         return Optional.of(lastEstimateMiddle);
     
-    } else if (!newRightEstimate && newLeftEstimate && !newMiddleEstimate) {
-        // One valid pose estimate (left)
-        newLeftEstimate = false;
-        // return Optional.of(lastEstimateLeft);
-        return Optional.empty();
+    // } else if (!newRightEstimate && newLeftEstimate && !newMiddleEstimate) {
+    //     // One valid pose estimate (left)
+    //     newLeftEstimate = false;
+    //     // return Optional.of(lastEstimateLeft);
+    //     return Optional.empty();
     
-    } else if (newRightEstimate && !newLeftEstimate && !newMiddleEstimate) {
-        // One valid pose estimate (right)
-        newRightEstimate = false;
-        // return Optional.of(lastEstimateRight);
-        return Optional.empty();
+    // } else if (newRightEstimate && !newLeftEstimate && !newMiddleEstimate) {
+    //     // One valid pose estimate (right)
+    //     newRightEstimate = false;
+    //     // return Optional.of(lastEstimateRight);
+    //     return Optional.empty();
     
     } else {
         // More than one valid pose estimate, discard the one that's furthest
-        newRightEstimate = false;
-        newLeftEstimate = false;
+        // newRightEstimate = false;
+        // newLeftEstimate = false;
         newMiddleEstimate = false;
     
-        if (lastEstimateLeft.avgTagDist < lastEstimateRight.avgTagDist &&
-            lastEstimateLeft.avgTagDist < lastEstimateMiddle.avgTagDist) {
-            return Optional.of(lastEstimateLeft);
-        } else if (lastEstimateRight.avgTagDist < lastEstimateMiddle.avgTagDist) {
-            return Optional.of(lastEstimateRight);
-        } else {
+        // if (lastEstimateLeft.avgTagDist < lastEstimateRight.avgTagDist &&
+        //     lastEstimateLeft.avgTagDist < lastEstimateMiddle.avgTagDist) {
+        //     return Optional.of(lastEstimateLeft);
+        // } else if (lastEstimateRight.avgTagDist < lastEstimateMiddle.avgTagDist) {
+        //     return Optional.of(lastEstimateRight);
+        // } else {
             return Optional.of(lastEstimateMiddle);
-        }
+        // }
     }
     
   }

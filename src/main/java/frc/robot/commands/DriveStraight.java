@@ -18,14 +18,15 @@ public class DriveStraight extends SequentialCommandGroup {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
             .withSteerRequestType(SteerRequestType.MotionMagicExpo);
     private Pose2d startPose;
-    
+    private final SwerveRequest.Idle idleRequest = new SwerveRequest.Idle();
+
     public DriveStraight(CommandSwerveDrivetrain drivetrain, double distanceMeters) {
         addCommands(
             new InstantCommand(() -> startPose = drivetrain.getState().Pose),
             drivetrain.applyRequest(()-> {
                 SmartDashboard.putNumber("DriveStraight", (drivetrain.getState().Pose.minus(startPose).getTranslation()).getNorm());
                 return request;
-            }).until(()-> (drivetrain.getState().Pose.minus(startPose).getTranslation()).getNorm() > distanceMeters)
+            }).finallyDo(()-> drivetrain.setControl(idleRequest)).until(()-> (drivetrain.getState().Pose.minus(startPose).getTranslation()).getNorm() > distanceMeters)
         );
     }
 
