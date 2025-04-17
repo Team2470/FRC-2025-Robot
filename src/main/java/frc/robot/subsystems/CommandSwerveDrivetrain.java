@@ -409,7 +409,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     Pose2d robotPose = getState().Pose;;
     Pose2d reefToAlign = robotPose.nearest(kReefTags);
 
-    final double xOffset = Units.inchesToMeters(6);
+    final double xOffset = Units.inchesToMeters(8);
     final double yOffset = 1;
     final double angleOffset = Units.degreesToRadians(-1);   // This value is 1.5 Pi
 

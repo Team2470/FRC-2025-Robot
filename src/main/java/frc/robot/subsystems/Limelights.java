@@ -47,8 +47,8 @@ public class Limelights extends SubsystemBase {
         } else {
             // LimelightHelpers.SetIMUMode(Limelight.kLeft.name, 1);
             // Enable throttle when disabled
-            LimelightHelpers.SetThrottle(Limelight.kLeft.name, 0);
-            LimelightHelpers.SetThrottle(Limelight.kRight.name, 0);
+            LimelightHelpers.SetThrottle(Limelight.kLeft.name, 10);
+            LimelightHelpers.SetThrottle(Limelight.kRight.name, 10);
         }
 
         LimelightHelpers.setPipelineIndex(Limelight.kLeft.name, 2);
