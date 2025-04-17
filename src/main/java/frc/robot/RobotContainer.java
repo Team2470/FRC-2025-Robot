@@ -132,7 +132,7 @@ public class RobotContainer {
         put("0.5W-DrivePos", new SequentialCommandGroup(new WaitCommand(0.5), drivePositiCommand()).until(()-> elevator1.getPosition() < 5));
         put("HpIntake", new SequentialCommandGroup(
           drivePositiCommand().until(()-> elevator1.getPosition() < 2),
-          HumanPlayerIntakeCommand().until(coral::haveCoral))
+          FirstEnableHumanPlayerIntakeCommand().until(coral::haveCoral))
         
         );
 
@@ -520,7 +520,7 @@ public class RobotContainer {
     ));
 
     buttonPad.button(9).whileTrue(pickupCommand());
-    buttonPad.button(5).whileTrue(HumanPlayerIntakeCommand());
+    buttonPad.button(5).whileTrue(FirstEnableHumanPlayerIntakeCommand());
     buttonPad.button(6).whileTrue(aLgaeL2Command());
     buttonPad.button(2).whileTrue(aLgaeL3Command());
     buttonPad.button(7).whileTrue(pickupAlgaeCommand());
@@ -560,7 +560,7 @@ public class RobotContainer {
     // testButtonPad.button(1).whileTrue(new DriveStraight(drivetrain, 0.24));
 
     testButtonPad.button(9).whileTrue(pickupCommand());
-    testButtonPad.button(5).whileTrue(HumanPlayerIntakeCommand());
+    testButtonPad.button(5).whileTrue(FirstEnableHumanPlayerIntakeCommand());
     testButtonPad.button(6).whileTrue(aLgaeL2Command());
     testButtonPad.button(2).whileTrue(aLgaeL3Command());
     testButtonPad.button(7).whileTrue(pickupAlgaeCommand());
@@ -1052,6 +1052,34 @@ public class RobotContainer {
         new ParallelCommandGroup(
             elevator1.pidCommand(3),
             wrist.pidCommand(172), // hold wrist position
+            arm.pidCommand(55), // hold arm position
+            new SequentialCommandGroup(// runs the human player intake and then slows down after beam break sensor is
+                                       // triggered
+                intake.runMotorForwardsSpeedCommand(8).until(intake::haveCoral),
+                new ParallelCommandGroup(
+                    intake.runMotorForwardsSpeedCommand(6),
+                    coral.runMotorBackwardsSpeedCommand(3)).until(coral::haveCoral)
+                )))
+        .withName("Human Player Intake Command");
+  }
+
+  private Command FirstEnableHumanPlayerIntakeCommand() {
+    superstructure.setRobotState(m_State.HpIntake);
+    return new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            arm.pidCommand(45), // arm goes down for the wrist rotate
+            elevator1.pidCommand(3),
+            wrist.pidCommand(185)).until(() -> Math.abs(wrist.getPosition() - 185) < 5), // wrist rotates towards the
+                                                                                         // human
+        // player intake
+        new ParallelCommandGroup(
+            elevator1.pidCommand(3),
+            wrist.pidCommand(185), // hold wrist position
+            arm.pidCommand(55)).until(() -> Math.abs(arm.getPosition() - 55) < 5), // arm goes up to intake from human
+                                                                                   // player position
+        new ParallelCommandGroup(
+            elevator1.pidCommand(3),
+            wrist.pidCommand(185), // hold wrist position
             arm.pidCommand(55), // hold arm position
             new SequentialCommandGroup(// runs the human player intake and then slows down after beam break sensor is
                                        // triggered
