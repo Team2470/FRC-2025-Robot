@@ -573,7 +573,7 @@ public class RobotContainer {
     // testButtonPad.button(1).whileTrue(new DriveStraight(drivetrain, 0.24));
 
     testButtonPad.button(9).whileTrue(pickupCommand());
-    testButtonPad.button(5).whileTrue(FirstEnableHumanPlayerIntakeCommand());
+    testButtonPad.button(5).whileTrue(HumanPlayerIntakeCommand());
     testButtonPad.button(6).whileTrue(aLgaeL2Command());
     testButtonPad.button(2).whileTrue(aLgaeL3Command());
     testButtonPad.button(7).whileTrue(pickupAlgaeCommand());
@@ -1157,17 +1157,17 @@ public class RobotContainer {
         new ParallelCommandGroup(
             arm.pidCommand(45), // arm goes down for the wrist rotate
             elevator1.pidCommand(3),
-            wrist.pidCommand(185)).until(() -> Math.abs(wrist.getPosition() - 185) < 5), // wrist rotates towards the
+            wrist.pidCommand(188)).until(() -> Math.abs(wrist.getPosition() - 188) < 5), // wrist rotates towards the
                                                                                          // human
         // player intake
         new ParallelCommandGroup(
             elevator1.pidCommand(3),
-            wrist.pidCommand(185), // hold wrist position
+            wrist.pidCommand(188), // hold wrist position
             arm.pidCommand(55)).until(() -> Math.abs(arm.getPosition() - 55) < 5), // arm goes up to intake from human
                                                                                    // player position
         new ParallelCommandGroup(
             elevator1.pidCommand(3),
-            wrist.pidCommand(185), // hold wrist position
+            wrist.pidCommand(188), // hold wrist position
             arm.pidCommand(55), // hold arm position
             new SequentialCommandGroup(// runs the human player intake and then slows down after beam break sensor is
                                        // triggered
