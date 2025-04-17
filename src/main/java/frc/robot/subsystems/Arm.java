@@ -49,6 +49,7 @@ public class Arm extends SubsystemBase {
     //
     private final TalonFX m_motor;
     private final CANdi m_candi;
+    private final CANcoder m_encoder;
     private final MedianFilter m_absoluteEncoderFilter = new MedianFilter(5);
     private final CoastOut m_CoastOut = new CoastOut();
     //
@@ -66,13 +67,26 @@ public class Arm extends SubsystemBase {
       ArmConstants.kA);
 
     public Arm (CANdi candi) {
-       m_candi = candi;
+        CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
+        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
+        encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        encoderConfig.MagnetSensor.MagnetOffset = 0.286621;
+        m_encoder = new CANcoder(ArmConstants.kEndoderId, "rio");
+        m_encoder.getConfigurator().apply(encoderConfig);
+
+
+        
+
+        m_candi = candi;
     
         TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-        motorConfig.Feedback.FeedbackRemoteSensorID = m_candi.getDeviceID();
-        motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-        // motorConfig.Feedback.SensorToMechanismRatio = ArmConstants.kSensorToMechanismRatio;
-        // motorConfig.Feedback.RotorToSensorRatio = ArmConstants.kRotorToSensorRatio;
+        // motorConfig.Feedback.FeedbackRemoteSensorID = m_candi.getDeviceID();
+        // motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+        
+        motorConfig.Feedback.FeedbackRemoteSensorID = m_encoder.getDeviceID();
+        motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        motorConfig.Feedback.SensorToMechanismRatio = ArmConstants.kSensorToMechanismRatio;
+        motorConfig.Feedback.RotorToSensorRatio = ArmConstants.kRotorToSensorRatio;
         
         motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -84,7 +98,7 @@ public class Arm extends SubsystemBase {
         motorConfig.CurrentLimits.StatorCurrentLimit = 125;
 
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 37.9733333;
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.2373;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
 
@@ -106,11 +120,17 @@ public class Arm extends SubsystemBase {
 
     }
 
+
+    public double getPosition() {
+        return Units.rotationsToDegrees(m_motor.getPosition().getValueAsDouble());
+    }
+
+
     /**
      * 
      * @return Degrees
      */
-    public double getPosition() {
+    public double getPositionMotor() {
         return Units.rotationsToDegrees(m_motor.getPosition().getValueAsDouble()/ArmConstants.kRotorToSensorRatio);
     }
 
@@ -128,9 +148,9 @@ public class Arm extends SubsystemBase {
         // Calculates the next value of the output
         var absolutePositionFiltered = (m_absoluteEncoderFilter.calculate(getAbsolutePosition()));
         
-        if (DriverStation.isDisabled()) {
-            m_motor.setPosition(absolutePositionFiltered/360.0 * ArmConstants.kRotorToSensorRatio);
-        }
+        // if (DriverStation.isDisabled()) {
+        //     m_motor.setPosition(absolutePositionFiltered/360.0 * ArmConstants.kRotorToSensorRatio);
+        // }
 
         double outputVoltage = 0;
         switch (m_controlMode) {
@@ -179,6 +199,7 @@ public class Arm extends SubsystemBase {
         }
 
         SmartDashboard.putNumber("Arm Position", getPosition());
+        SmartDashboard.putNumber("Arm Position (Motor)", getPositionMotor());
         SmartDashboard.putNumber("Arm Velocity", getVelocity());
         SmartDashboard.putString("Arm Controlmode", m_controlMode.toString());
         SmartDashboard.putNumber("Arm Demand", m_demand);

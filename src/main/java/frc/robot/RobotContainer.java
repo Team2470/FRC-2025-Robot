@@ -126,6 +126,8 @@ public class RobotContainer {
         // put("OuttakeCoral", runInTakeCommand(8).withTimeout(1).withName("Auto Run
         // Intkae"));
         put("DrivePos", drivePositiCommand());
+        put("StartDrivePos", new SequentialCommandGroup(new WaitUntilCommand(()->arm.getPosition() < 87),drivePositiCommand()));
+
         put("L1", reefL1Command());
         put("L2", reefL2Command());
         put("L3", reefL3Command());
@@ -1155,20 +1157,20 @@ public class RobotContainer {
     superstructure.setRobotState(m_State.HpIntake);
     return new SequentialCommandGroup(
         new ParallelCommandGroup(
-            arm.pidCommand(45), // arm goes down for the wrist rotate
+            arm.pidCommand(40), // arm goes down for the wrist rotate
             elevator1.pidCommand(3),
-            wrist.pidCommand(188)).until(() -> Math.abs(wrist.getPosition() - 188) < 5), // wrist rotates towards the
+            wrist.pidCommand(180)).until(() -> Math.abs(wrist.getPosition() - 180) < 5), // wrist rotates towards the
                                                                                          // human
         // player intake
         new ParallelCommandGroup(
             elevator1.pidCommand(3),
-            wrist.pidCommand(188), // hold wrist position
-            arm.pidCommand(55)).until(() -> Math.abs(arm.getPosition() - 55) < 5), // arm goes up to intake from human
+            wrist.pidCommand(180), // hold wrist position
+            arm.pidCommand(40)).until(() -> Math.abs(arm.getPosition() - 40) < 5), // arm goes up to intake from human
                                                                                    // player position
         new ParallelCommandGroup(
             elevator1.pidCommand(3),
-            wrist.pidCommand(188), // hold wrist position
-            arm.pidCommand(55), // hold arm position
+            wrist.pidCommand(180), // hold wrist position
+            arm.pidCommand(40), // hold arm position
             new SequentialCommandGroup(// runs the human player intake and then slows down after beam break sensor is
                                        // triggered
                 intake.runMotorForwardsSpeedCommand(8).until(intake::haveCoral),
@@ -1182,6 +1184,7 @@ public class RobotContainer {
 
   private Command aLgaeL2Command() {
     return new SequentialCommandGroup(
+
         // new WaitUntilCommand(() -> wrist.getPosition() < 90),
         arm.pidCommand(40).until(() -> Math.abs(arm.getPosition() - 40) < 3),
 
