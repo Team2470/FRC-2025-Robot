@@ -409,7 +409,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     Pose2d robotPose = getState().Pose;;
     Pose2d reefToAlign = robotPose.nearest(kReefTags);
 
-    final double xOffset = Units.inchesToMeters(6);
+    final double xOffset = Units.inchesToMeters(8);
     final double yOffset = 1;
     final double angleOffset = Units.degreesToRadians(-1);   // This value is 1.5 Pi
 
@@ -499,7 +499,59 @@ public Command getAlignRightReef() {
     // resetPose(mPoseEstimator.getEstimatedPosition());
     return AutoBuilder.followPath(alignmentPath);
 }
-  
 
+//LEFT L4
+//LEFT L4
+//LEFT L4
+//LEFT L4
+//LEFT L4
+//LEFT L4
+
+public Pose2d getReefLeftPose() {
+    Pose2d robotPose = getState().Pose;;
+    Pose2d reefToAlign = robotPose.nearest(kReefTags);
+
+    final double xOffset = Units.inchesToMeters(8.25);
+    final double yOffset = 1;
+    final double angleOffset = Units.degreesToRadians(-1);   // This value is 1.5 Pi
+
+    double deltaX = xOffset * Math.sin(reefToAlign.getRotation().getRadians() + angleOffset) + yOffset * Math.cos(reefToAlign.getRotation().getRadians() + angleOffset);
+    double deltaY = -xOffset * Math.cos(reefToAlign.getRotation().getRadians() + angleOffset) + yOffset * Math.sin(reefToAlign.getRotation().getRadians() + angleOffset);
+
+    return new Pose2d(reefToAlign.getX() + deltaX, reefToAlign.getY() + deltaY, reefToAlign.getRotation().plus(Rotation2d.k180deg));
+}
+
+
+  public Command getAlignLeftReef2() {
+    SmartDashboard.putNumber("getAlignRightReef: Timestamp", Timer.getFPGATimestamp());
+
+    Pose2d curPose = getState().Pose;
+    Pose2d goalPose = getReefLeftPose();
+
+    SmartDashboard.putNumberArray("getAlignRightReef: curPose", new double[] {curPose.getX(), curPose.getY(), curPose.getRotation().getDegrees()});
+    SmartDashboard.putNumberArray("getAlignRightReef: goalPose", new double[] {goalPose.getX(), goalPose.getY(), goalPose.getRotation().getDegrees()});
+
+    
+    List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+        new Pose2d(curPose.getX(), curPose.getY(), goalPose.getRotation().unaryMinus()),
+        new Pose2d(goalPose.getX(), goalPose.getY(), goalPose.getRotation())
+    );
+    SmartDashboard.putNumber("tagFace", goalPose.getRotation().getDegrees());
+
+    // The values are low so if anything goes wrong we can disable the robot
+    PathConstraints constraints = new PathConstraints(3, 3, Math.PI, Math.PI);
+
+
+    PathPlannerPath alignmentPath = new PathPlannerPath(
+      waypoints,
+      constraints,
+      null,
+      new GoalEndState(0, goalPose.getRotation())
+    );
+
+    alignmentPath.preventFlipping= true;
+    // resetPose(mPoseEstimator.getEstimatedPosition());
+    return AutoBuilder.followPath(alignmentPath);
+  }
 
 }
