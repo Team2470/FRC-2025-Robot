@@ -31,6 +31,7 @@ public class Constants {
         public static final int kMotorID =  42;
         public static final boolean kMotorInverted = false;
         public static final int kCANdiID = 42;
+        public static final int kEncoderID = 42;
         public static final double kSensorToMechanismRatio = 1.0;
         public static final double kRotorToSensorRatio = 160;
         public static final double kP = 10;
