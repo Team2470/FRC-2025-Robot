@@ -1126,13 +1126,15 @@ public class RobotContainer {
         new ParallelCommandGroup(
             arm.pidCommand(45), // arm goes down for the wrist rotate
             elevator1.pidCommand(3),
-            wrist.pidCommand(180)).until(() -> Math.abs(wrist.getPosition() - 180) < 5), // wrist rotates towards the
+            wrist.pidCommand(180)
+        ).until(() -> Math.abs(wrist.getPosition() - 180) < 5), // wrist rotates towards the
                                                                                          // human
         // player intake
         new ParallelCommandGroup(
             elevator1.pidCommand(3),
             wrist.pidCommand(180), // hold wrist position
-            arm.pidCommand(55)).until(() -> Math.abs(arm.getPosition() - 55) < 5), // arm goes up to intake from human
+            arm.pidCommand(55)
+        ).until(() -> Math.abs(arm.getPosition() - 55) < 5), // arm goes up to intake from human
                                                                                    // player position
         new ParallelCommandGroup(
             elevator1.pidCommand(3),
@@ -1146,10 +1148,11 @@ public class RobotContainer {
                     new SequentialCommandGroup(
                         coral.runMotorBackwardsSpeedCommand(4.5)).until(coral::haveCoral),
                     new StartEndCommand(() -> controller.getHID().setRumble(RumbleType.kBothRumble, 1),
-                        () -> controller.getHID().setRumble(RumbleType.kBothRumble, 0.0)).withTimeout(0.2))
+                        () -> controller.getHID().setRumble(RumbleType.kBothRumble, 0.0)).withTimeout(0.2)
+                )
 
-            )))
-        .withName("Human Player Intake Command");
+            )
+        )).withName("Human Player Intake Command");
   }
 
   private Command FirstEnableHumanPlayerIntakeCommand() {
