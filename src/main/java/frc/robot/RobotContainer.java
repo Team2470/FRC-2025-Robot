@@ -1159,7 +1159,7 @@ public class RobotContainer {
     superstructure.setRobotState(m_State.HpIntake);
     return new SequentialCommandGroup(
         new ParallelCommandGroup(
-            arm.pidCommand(45), // arm goes down for the wrist rotate
+            arm.pidCommand(42), // arm goes down for the wrist rotate
             elevator1.pidCommand(1.5),
             wrist.pidCommand(180)).until(() -> Math.abs(wrist.getPosition() - 180) < 5), // wrist rotates towards the
                                                                                          // human
@@ -1167,12 +1167,12 @@ public class RobotContainer {
         new ParallelCommandGroup(
             elevator1.pidCommand(1.5),
             wrist.pidCommand(180), // hold wrist position
-            arm.pidCommand(55)).until(() -> Math.abs(arm.getPosition() - 55) < 5), // arm goes up to intake from human
+            arm.pidCommand(50)).until(() -> Math.abs(arm.getPosition() - 50) < 5), // arm goes up to intake from human
                                                                                    // player position
         new ParallelCommandGroup(
             elevator1.pidCommand(1.5),
             wrist.pidCommand(180), // hold wrist position
-            arm.pidCommand(55), // hold arm position
+            arm.pidCommand(50), // hold arm position
             new SequentialCommandGroup(// runs the human player intake and then slows down after beam break sensor is
                                        // triggered
                 intake.runMotorForwardsSpeedCommand(8).until(intake::haveCoral),

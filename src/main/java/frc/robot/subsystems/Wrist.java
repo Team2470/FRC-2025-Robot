@@ -30,7 +30,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.ArmConstants;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Timer; 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -65,7 +65,7 @@ public class Wrist extends SubsystemBase {
         CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
         encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
         encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-        encoderConfig.MagnetSensor.MagnetOffset = Units.degreesToRotations(113.9735063-9.31640625);
+        encoderConfig.MagnetSensor.MagnetOffset = Units.degreesToRotations(113.9735063-9.31640625+2.98828125);
 
         m_encoder = new CANcoder(WristConstants.kEncoderID, "rio");
         m_encoder.getConfigurator().apply(encoderConfig);

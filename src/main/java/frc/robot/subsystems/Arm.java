@@ -49,8 +49,10 @@ public class Arm extends SubsystemBase {
     //
     private final TalonFX m_motor;
     private final CANdi m_candi;
+    private final CANcoder m_encoder;
     private final MedianFilter m_absoluteEncoderFilter = new MedianFilter(5);
     private final CoastOut m_CoastOut = new CoastOut();
+
     //
     // State
     //
@@ -66,7 +68,16 @@ public class Arm extends SubsystemBase {
       ArmConstants.kA);
 
     public Arm (CANdi candi) {
-       m_candi = candi;
+        m_candi = candi;
+
+        CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
+        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.9;
+        encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        encoderConfig.MagnetSensor.MagnetOffset = -0.7277832031255;
+
+        m_encoder = new CANcoder(ArmConstants.kEncoderID, "rio");
+        m_encoder.getConfigurator().apply(encoderConfig);
+ 
     
         TalonFXConfiguration motorConfig = new TalonFXConfiguration();
         motorConfig.Feedback.FeedbackRemoteSensorID = m_candi.getDeviceID();
@@ -114,8 +125,12 @@ public class Arm extends SubsystemBase {
         return Units.rotationsToDegrees(m_motor.getPosition().getValueAsDouble()/ArmConstants.kRotorToSensorRatio);
     }
 
-    public double getAbsolutePosition() {
+    public double getAbsolutePositionLamprey() {
         return Units.rotationsToDegrees(Math.IEEEremainder(m_candi.getPWM2Position().getValueAsDouble(),1));
+    }
+
+    public double getAbsolutePosition() {
+        return Units.rotationsToDegrees(m_encoder.getAbsolutePosition().getValueAsDouble() * 18.0/50.0); 
     }
 
     public double getVelocity() {
@@ -126,10 +141,10 @@ public class Arm extends SubsystemBase {
     public void periodic () {
         
         // Calculates the next value of the output
-        var absolutePositionFiltered = (m_absoluteEncoderFilter.calculate(getAbsolutePosition()));
+        var absolutePositionFiltered = (m_absoluteEncoderFilter.calculate(getAbsolutePositionLamprey()));
         
         if (DriverStation.isDisabled()) {
-            m_motor.setPosition(absolutePositionFiltered/360.0 * ArmConstants.kRotorToSensorRatio);
+            m_motor.setPosition(getAbsolutePosition()/360.0 * ArmConstants.kRotorToSensorRatio);
         }
 
         double outputVoltage = 0;
@@ -183,7 +198,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putString("Arm Controlmode", m_controlMode.toString());
         SmartDashboard.putNumber("Arm Demand", m_demand);
         SmartDashboard.putNumber("Arm Absolute Position", getAbsolutePosition());
-        SmartDashboard.putNumber("Arm Absolute Position Filtered", absolutePositionFiltered);
+        SmartDashboard.putNumber("Arm Absolute Position Lamprey Filtered", absolutePositionFiltered);
         SmartDashboard.putNumber("Arm Absolute Position Raw", m_candi.getPWM2Position().getValueAsDouble());
 
         if (m_controlMode != ControlMode.kCoast) {
