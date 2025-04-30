@@ -68,6 +68,7 @@ import frc.robot.commands.AddVisionMeasurement;
 import frc.robot.commands.Aligntoreef;
 import frc.robot.commands.DriveStraight;
 import frc.robot.commands.DriveStraightBack;
+import frc.robot.commands.Aligntoreef.Score;
 
 public class RobotContainer {
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -99,6 +100,7 @@ public class RobotContainer {
   // private final Climber m_climber = new Climber(, 9);
 
   private final Vision vision = new Vision();
+  private final ScorePosition score = new ScorePosition();
 
   // Autos
   private final RevDigit m_revDigit;
@@ -546,8 +548,10 @@ public class RobotContainer {
     buttonPad.button(1).whileTrue(HumanPlayerIntakeCommand());
     // buttonPad.button(1).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL1Command());
     buttonPad.button(10).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL2Command());
-    buttonPad.button(11).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL3Command());
-    buttonPad.button(12).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL4Command());
+    // buttonPad.button(11).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL3Command());
+    // buttonPad.button(12).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL4Command());
+    buttonPad.button(11).whileTrue(score.MinusPosistion());
+    buttonPad.button(12).whileTrue(score.AddPosistion());
     buttonPad.button(3).whileTrue(netCommand());
 
     controller.povUp().whileTrue(m_Climber.extendFastCommand());
@@ -648,7 +652,7 @@ public class RobotContainer {
                         Map.entry(3, L3wDriveBack()),
                         Map.entry(4, L4wDriveBack())),
                     () -> {
-                      if (buttonPad.getHID().getRawButton(9)) {
+                      if (score.getScorePosition() == 1) {
                         return 1;
                       } else if (buttonPad.getHID().getRawButton(10)) {
                         return 2;

@@ -63,6 +63,8 @@ public class Elevator extends SubsystemBase {
   private boolean m_isHomed;
   private final CANdi m_candi;
 
+  private double Position = 4;
+
 
   public Elevator(CANdi candi) {
     m_candi = candi;
@@ -221,6 +223,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putBoolean("Elevator is Homed", m_isHomed);
     SmartDashboard.putString("Elevator Controlmode", m_controlMode.toString());
     SmartDashboard.putNumber("Elevator Demand", m_demand);
+    SmartDashboard.putString("Score Position", "L" +Position);
 
     m_motor.setVoltage(outputVoltage);
 
@@ -327,4 +330,22 @@ public class Elevator extends SubsystemBase {
     return pidCommand(() -> inches);
   }
 
+  // private void AddPosition(){
+  //   Position = Position++;
+  // }
+
+  // public Command AddPosistion(){
+  //   return Commands.runOnce(()->AddPosition() , this);
+  // }
+
+  // private void MinusPosition(){
+  //   Position = Position--; 
+  // }
+  // public Command MinusPosistion(){
+  //   return Commands.runOnce(()->MinusPosition() , this);
+  // }
+
+  // public double getScorePosition(){
+  //   return Position;
+  // }
 }
