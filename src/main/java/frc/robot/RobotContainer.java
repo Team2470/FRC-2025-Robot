@@ -100,12 +100,12 @@ public class RobotContainer {
   // private final Climber m_climber = new Climber(, 9);
 
   private final Vision vision = new Vision();
-  private final ScorePosition score = new ScorePosition();
 
   // Autos
   private final RevDigit m_revDigit;
   private final AutoSelector m_autoSelector;
   private final SwerveRequest m_idleRequest = new SwerveRequest.Idle();
+  private int scorePosistion = 4;
 
   public RobotContainer() {
 
@@ -223,6 +223,7 @@ public class RobotContainer {
     SmartDashboard.putData("Limelights", m_limelights);
     SmartDashboard.putData("Vision", vision);
     SmartDashboard.putNumber("MaxAngularRate", MaxAngularRate);
+    SmartDashboard.putNumber("score pos", scorePosistion);
 
   }
 
@@ -547,11 +548,54 @@ public class RobotContainer {
     // buttonPad.button(12).whileTrue(reefL4TeleOpCommand());
     buttonPad.button(1).whileTrue(HumanPlayerIntakeCommand());
     // buttonPad.button(1).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL1Command());
-    buttonPad.button(10).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL2Command());
+    buttonPad.button(10).whileTrue(                new SelectCommand<>(
+      Map.ofEntries(
+          Map.entry(0, new InstantCommand()),
+          Map.entry(1, reefL1Command()),
+          Map.entry(2, reefL2Command()),
+          Map.entry(3, reefL3Command()),
+          Map.entry(4, reefL4Command())),
+      () -> {
+        if (scorePosistion == 1) {
+          return 1;
+        } else if (scorePosistion == 2) {
+          return 2;
+        } else if (scorePosistion == 3) {
+          return 3;
+        } else if (scorePosistion == 4) {
+          return 4;
+        }
+
+        return 0;
+      }));
     // buttonPad.button(11).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL3Command());
     // buttonPad.button(12).and(controller.x().negate()).and(controller.b().negate()).whileTrue(reefL4Command());
-    buttonPad.button(11).whileTrue(score.MinusPosistion());
-    buttonPad.button(12).whileTrue(score.AddPosistion());
+    buttonPad.button(11).whileTrue(
+      new InstantCommand(()-> {
+        if(scorePosistion <= 4) {
+          scorePosistion--;
+        }
+
+        if (scorePosistion == 0) {
+          scorePosistion = 4;
+        }
+        SmartDashboard.putNumber("score pos", scorePosistion);
+      }
+      )
+    );
+    buttonPad.button(12).whileTrue(
+      new InstantCommand(()-> {
+        if(scorePosistion >= 1) {
+          scorePosistion++;
+        }
+
+        if (scorePosistion == 5) {
+          scorePosistion = 1;
+        }
+        SmartDashboard.putNumber("score pos", scorePosistion);
+      }
+      )
+    );
     buttonPad.button(3).whileTrue(netCommand());
 
     controller.povUp().whileTrue(m_Climber.extendFastCommand());
@@ -609,13 +653,13 @@ public class RobotContainer {
                         Map.entry(3, L3wDriveBack()),
                         Map.entry(4, L4wDriveBack())),
                     () -> {
-                      if (buttonPad.getHID().getRawButton(9)) {
+                      if (scorePosistion == 1) {
                         return 1;
-                      } else if (buttonPad.getHID().getRawButton(10)) {
+                      } else if (scorePosistion == 2) {
                         return 2;
-                      } else if (buttonPad.getHID().getRawButton(11)) {
+                      } else if (scorePosistion == 3) {
                         return 3;
-                      } else if (buttonPad.getHID().getRawButton(12)) {
+                      } else if (scorePosistion == 4) {
                         return 4;
                       }
 
@@ -652,13 +696,13 @@ public class RobotContainer {
                         Map.entry(3, L3wDriveBack()),
                         Map.entry(4, L4wDriveBack())),
                     () -> {
-                      if (score.getScorePosition() == 1) {
+                      if (scorePosistion == 1) {
                         return 1;
-                      } else if (buttonPad.getHID().getRawButton(10)) {
+                      } else if (scorePosistion == 2) {
                         return 2;
-                      } else if (buttonPad.getHID().getRawButton(11)) {
+                      } else if (scorePosistion == 3) {
                         return 3;
-                      } else if (buttonPad.getHID().getRawButton(12)) {
+                      } else if (scorePosistion == 4) {
                         return 4;
                       }
 
@@ -687,13 +731,13 @@ public class RobotContainer {
                           Map.entry(3, L3wDriveBack()),
                           Map.entry(4, L4wDriveBack())),
                       () -> {
-                        if (buttonPad.getHID().getRawButton(9)) {
+                        if (scorePosistion == 1) {
                           return 1;
-                        } else if (buttonPad.getHID().getRawButton(10)) {
+                        } else if (scorePosistion == 2) {
                           return 2;
-                        } else if (buttonPad.getHID().getRawButton(11)) {
+                        } else if (scorePosistion == 3) {
                           return 3;
-                        } else if (buttonPad.getHID().getRawButton(12)) {
+                        } else if (scorePosistion == 4) {
                           return 4;
                         }
   
@@ -729,13 +773,13 @@ public class RobotContainer {
                           Map.entry(3, L3wDriveBack()),
                           Map.entry(4, L4wDriveBack())),
                       () -> {
-                        if (buttonPad.getHID().getRawButton(9)) {
+                        if (scorePosistion == 1) {
                           return 1;
-                        } else if (buttonPad.getHID().getRawButton(10)) {
+                        } else if (scorePosistion == 2) {
                           return 2;
-                        } else if (buttonPad.getHID().getRawButton(11)) {
+                        } else if (scorePosistion == 3) {
                           return 3;
-                        } else if (buttonPad.getHID().getRawButton(12)) {
+                        } else if (scorePosistion == 4) {
                           return 4;
                         }
   
@@ -995,7 +1039,7 @@ public class RobotContainer {
             wrist.pidCommand(0),
             arm.coastCommand(),
             new ParallelCommandGroup(
-                algea.runMotorBackwardsSpeedCommand(4),
+                algea.runMotorBackwardsSpeedCommand(12),
                 coral.runMotorBackwardsSpeedCommand(4)).until(coral::haveCoral)));
   }
 
@@ -1010,14 +1054,14 @@ public class RobotContainer {
     superstructure.setRobotState(m_State.L2);
     return new SequentialCommandGroup(
         new WaitUntilCommand(() -> wrist.getPosition() < 90),
-        arm.pidCommand(60).until(() -> Math.abs(arm.getErrorAngle()) < 3),
+        arm.pidCommand(50).until(() -> Math.abs(arm.getErrorAngle()) < 3),
 
         new ParallelCommandGroup(
             elevator1.pidCommand(14),
-            arm.pidCommand(60)).until(() -> Math.abs(elevator1.getPosition() - 14) < 3),
+            arm.pidCommand(50)).until(() -> Math.abs(elevator1.getPosition() - 14) < 3),
         new ParallelCommandGroup(
             elevator1.pidCommand(14),
-            arm.pidCommand(60),
+            arm.pidCommand(50),
             wrist.pidCommand(131)))
         .withName("L2 Reef Command");
   }
