@@ -62,13 +62,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "DSBack3"
+                  "name": "0.5W-DrivePos"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "L4"
+                  "name": "DSBack2"
                 }
               }
             ]
@@ -81,13 +81,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "DRight"
+                  "name": "Align Middle"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "L2Algae"
+                  "name": "DrivePos"
                 }
               }
             ]
@@ -170,12 +170,6 @@
                 "type": "named",
                 "data": {
                   "name": "DSBack2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "HoldAlgea"
                 }
               }
             ]

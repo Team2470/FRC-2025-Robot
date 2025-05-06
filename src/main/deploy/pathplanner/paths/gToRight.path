@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 5.933096590909091,
-        "y": 1.9309659090909077
+        "y": 1.9309659090909075
       },
       "isLocked": false,
       "linkedName": "postG"
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 320.0,
     "maxAngularAcceleration": 640.0,
     "nominalVoltage": 12.0,

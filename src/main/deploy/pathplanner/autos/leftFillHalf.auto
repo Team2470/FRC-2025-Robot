@@ -271,7 +271,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToH"
+            "pathName": null
           }
         },
         {
@@ -415,7 +415,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToH"
+            "pathName": null
           }
         },
         {
@@ -559,7 +559,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToH"
+            "pathName": null
           }
         },
         {
