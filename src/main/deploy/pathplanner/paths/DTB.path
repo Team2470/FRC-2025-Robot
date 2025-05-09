@@ -3,42 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.98,
-        "y": 3.85
+        "x": 6.574720982142857,
+        "y": 3.8813616071428565
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.139332434973586,
-        "y": 3.348201385533201
+        "x": 7.031752232142857,
+        "y": 4.351450892857143
       },
       "isLocked": false,
-      "linkedName": "postB"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.75,
-        "y": 1.32
+        "x": 8.572600446428572,
+        "y": 4.860714285714286
       },
       "prevControl": {
-        "x": 1.2849427313764545,
-        "y": 2.0339672709110044
+        "x": 7.501841517857142,
+        "y": 4.697488839285714
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "rightStation"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "intake",
-      "waypointRelativePos": 0.7522624434389146,
-      "endWaypointRelativePos": 1.0,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 3.0,
@@ -49,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 54.0
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "postToRightIntake",
+  "folder": "Ray stuff",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

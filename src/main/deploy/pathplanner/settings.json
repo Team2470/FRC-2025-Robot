@@ -26,7 +26,7 @@
     "vJoshHavingFun"
   ],
   "defaultMaxVel": 4.0,
-  "defaultMaxAccel": 4.0,
+  "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 320.0,
   "defaultMaxAngAccel": 640.0,
   "defaultNominalVoltage": 12.0,

@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
-public class DriveStraight extends SequentialCommandGroup {
+public class DriveStraightFast extends SequentialCommandGroup {
     private final SwerveRequest.RobotCentric request = new SwerveRequest.RobotCentric()
-            .withVelocityX(0.45)
+            .withVelocityX(0.6)
             .withVelocityY(0)
             .withRotationalRate(0)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
@@ -20,7 +20,7 @@ public class DriveStraight extends SequentialCommandGroup {
     private Pose2d startPose;
     private final SwerveRequest.Idle idleRequest = new SwerveRequest.Idle();
 
-    public DriveStraight(CommandSwerveDrivetrain drivetrain, double distanceMeters) {
+    public DriveStraightFast(CommandSwerveDrivetrain drivetrain, double distanceMeters) {
         addCommands(
             new InstantCommand(() -> startPose = drivetrain.getState().Pose),
             drivetrain.applyRequest(()-> {

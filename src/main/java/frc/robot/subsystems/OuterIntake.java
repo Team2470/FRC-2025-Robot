@@ -98,6 +98,12 @@ public class OuterIntake  extends SubsystemBase {
     public double getVelo() {
         return algaeTalonFXS1.getVelocity().getValueAsDouble();
     }
+    public boolean isStalled() {
+        return Math.abs(algaeTalonFXS1.getVelocity().getValueAsDouble()) < 1;
+    }
+    public boolean isOutTaked() {
+        return Math.abs(algaeTalonFXS1.getVelocity().getValueAsDouble()) > 10;
+    }
 
     @Override
     public void periodic() {
