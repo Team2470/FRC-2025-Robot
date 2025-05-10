@@ -167,7 +167,9 @@ public class RobotContainer {
         put("DSLR2", new SequentialCommandGroup(new WaitUntilCommand(() -> elevator1.getPosition() > 30),
             new DriveStraight(drivetrain, 0.35).withName("Drive straigt left reef")));
 
-        put("DSLR", autoL4wNoDriveBack());
+        put("DSLR3", autoL4wNoDriveBack());
+        put("DSLR", autoL4wDriveBack());
+
         put("DSRR", autoL4wDriveBack());
         put("DSBack", new DriveStraightBack(drivetrain, 0.35).withName("Drive straight backwards"));
         put("FastDSBack", new DriveStraightBackFast(drivetrain, 0.14).withName("Drive straight backwards"));
@@ -587,7 +589,7 @@ public class RobotContainer {
             Map.entry(1, reefL1Command()),
             Map.entry(2, reefL2Command()),
             Map.entry(3, reefL3Command()),
-            Map.entry(4, reefL4Command())),
+            Map.entry(4, reefL4TeleOpCommand())),
         () -> {
           if (scorePosistion == 1) {
             return 1;
