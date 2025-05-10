@@ -65,7 +65,7 @@ public class Wrist extends SubsystemBase {
         CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
         encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
         encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-        encoderConfig.MagnetSensor.MagnetOffset = Units.degreesToRotations(113.9735063-9.31640625+2.98828125);
+        encoderConfig.MagnetSensor.MagnetOffset = Units.degreesToRotations(113.9735063-9.31640625+2.98828125+30.5859375);
 
         m_encoder = new CANcoder(WristConstants.kEncoderID, "rio");
         m_encoder.getConfigurator().apply(encoderConfig);
