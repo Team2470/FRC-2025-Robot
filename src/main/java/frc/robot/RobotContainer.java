@@ -1283,10 +1283,10 @@ public class RobotContainer {
         arm.pidCommand(40).until(() -> Math.abs(arm.getPosition() - 40) < 3),
 
         new ParallelCommandGroup(
-            elevator1.pidCommand(51),
-            arm.pidCommand(40)).until(() -> Math.abs(elevator1.getPosition() - 47) < 3),
+            elevator1.pidCommand(49),
+            arm.pidCommand(40)).until(() -> Math.abs(elevator1.getPosition() - 49) < 3),
         new ParallelCommandGroup(
-            elevator1.pidCommand(51),
+            elevator1.pidCommand(49),
             arm.pidCommand(40),
             wrist.pidCommand(-23)));
 
@@ -1364,9 +1364,9 @@ public class RobotContainer {
 
   private Command autoClimbCommand() {
     return new SequentialCommandGroup(
-        m_Climber.extendCommand().until(() -> m_Climber.getPosition() < 0.22),
+        m_Climber.extendCommand().until(() -> m_Climber.getPosition() < 0.48217),
         testUndropIntake().withTimeout(1.5),
-        m_Climber.extendCommand().until(() -> m_Climber.getPosition() < 0.178));
+        m_Climber.extendCommand());
   }
 
   private Command visionLeftL4() {

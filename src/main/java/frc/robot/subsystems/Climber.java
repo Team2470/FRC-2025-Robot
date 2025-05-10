@@ -51,9 +51,9 @@ public class Climber extends SubsystemBase {
 		config.Feedback.RotorToSensorRatio = 100;
 
 		config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-		config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.81;
+		config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.986328;
 		config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-		config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.178 ;
+		config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.358887 ;
 
 		config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 		config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
@@ -65,7 +65,7 @@ public class Climber extends SubsystemBase {
 		CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
 		encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
 		encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-		encoderConfig.MagnetSensor.MagnetOffset = Units.degreesToRotations(-0.12866);
+		encoderConfig.MagnetSensor.MagnetOffset = 0.4;
 
 		m_motor.getConfigurator().apply(config);
 		m_encoder.getConfigurator().apply(encoderConfig);
