@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 6.2,
+        "y": 4.025
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.338392779415236,
+        "y": 4.23320047695845
+      },
+      "isLocked": false,
+      "linkedName": "ghBack"
+    },
+    {
+      "anchor": {
+        "x": 6.0,
+        "y": 4.15
+      },
+      "prevControl": {
+        "x": 5.810591097880129,
+        "y": 3.9454757385198307
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "postH"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 320.0,
+    "maxAngularAcceleration": 640.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "backToPost",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

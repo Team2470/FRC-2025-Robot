@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LIAutoStart"
+                  "pathName": "leftAutoStart"
                 }
               },
               {
@@ -106,7 +106,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "iToFarLeft"
+                  "pathName": "ijToLeftHP"
                 }
               },
               {
@@ -138,7 +138,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "farLeftToK"
+                  "pathName": "leftHPtoKL"
                 }
               },
               {
@@ -189,7 +189,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "kToFarLeft"
+                  "pathName": "klToLeftHP"
                 }
               },
               {
@@ -221,7 +221,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "farLeftToL"
+                  "pathName": null
                 }
               },
               {

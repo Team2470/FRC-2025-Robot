@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "hToFarLeft"
+            "pathName": null
           }
         },
         {
@@ -31,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToI"
+            "pathName": "leftHPtoIJ"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "iToFarLeft"
+            "pathName": "ijToLeftHP"
           }
         },
         {
@@ -55,7 +55,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToJ"
+            "pathName": null
           }
         },
         {
@@ -67,7 +67,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "jToFarLeft"
+            "pathName": null
           }
         },
         {
@@ -79,7 +79,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToK"
+            "pathName": "leftHPtoKL"
           }
         },
         {
@@ -91,7 +91,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "kToFarLeft"
+            "pathName": "klToLeftHP"
           }
         },
         {
@@ -103,7 +103,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToL"
+            "pathName": null
           }
         },
         {
@@ -115,7 +115,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "lToFarLeft"
+            "pathName": null
           }
         },
         {
@@ -127,7 +127,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToA"
+            "pathName": "leftHPtoAB"
           }
         },
         {
@@ -139,7 +139,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "aToFarLeft"
+            "pathName": "abToLeftHP"
           }
         },
         {
@@ -151,7 +151,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToB"
+            "pathName": null
           }
         },
         {
@@ -163,7 +163,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "bToFarRight"
+            "pathName": null
           }
         },
         {
@@ -175,7 +175,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farRightToC"
+            "pathName": null
           }
         },
         {
@@ -187,7 +187,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "cToFarRight"
+            "pathName": null
           }
         },
         {
@@ -199,7 +199,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farRightToD"
+            "pathName": null
           }
         },
         {
@@ -211,7 +211,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "dToFarRight"
+            "pathName": null
           }
         },
         {
@@ -223,7 +223,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farRightToE"
+            "pathName": null
           }
         },
         {
@@ -235,7 +235,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "eToFarRight"
+            "pathName": null
           }
         },
         {
@@ -247,7 +247,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farRightToF"
+            "pathName": null
           }
         },
         {
@@ -259,7 +259,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "fToFarRight"
+            "pathName": null
           }
         },
         {
@@ -271,7 +271,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farRightToG"
+            "pathName": null
           }
         },
         {
@@ -283,7 +283,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "gToFarRight"
+            "pathName": null
           }
         },
         {

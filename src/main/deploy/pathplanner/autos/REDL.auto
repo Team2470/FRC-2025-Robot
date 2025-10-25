@@ -36,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "eToFarRight"
+                  "pathName": null
                 }
               },
               {
@@ -61,7 +61,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "farRightToD"
+                  "pathName": null
                 }
               },
               {
@@ -86,7 +86,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "dToFarRight"
+                  "pathName": null
                 }
               },
               {
@@ -111,7 +111,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "farRightToC"
+                  "pathName": null
                 }
               },
               {
@@ -136,7 +136,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "cToFarRight"
+                  "pathName": null
                 }
               },
               {
@@ -161,7 +161,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "farRightToB"
+                  "pathName": null
                 }
               },
               {
@@ -186,7 +186,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "bToFarRight"
+                  "pathName": null
                 }
               },
               {
@@ -211,7 +211,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "farRightToA"
+                  "pathName": null
                 }
               },
               {
@@ -236,7 +236,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "aToFarLeft"
+                  "pathName": "abToLeftHP"
                 }
               },
               {
@@ -261,7 +261,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "farLeftToL"
+                  "pathName": null
                 }
               },
               {
@@ -286,7 +286,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "lToFarLeft"
+                  "pathName": null
                 }
               },
               {

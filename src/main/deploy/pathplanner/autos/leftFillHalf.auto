@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "hToFarLeft"
+            "pathName": null
           }
         },
         {
@@ -31,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToI"
+            "pathName": "leftHPtoIJ"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "iToFarLeft"
+            "pathName": "ijToLeftHP"
           }
         },
         {
@@ -55,7 +55,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToJ"
+            "pathName": null
           }
         },
         {
@@ -67,7 +67,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "jToFarLeft"
+            "pathName": null
           }
         },
         {
@@ -79,7 +79,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToK"
+            "pathName": "leftHPtoKL"
           }
         },
         {
@@ -91,7 +91,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "kToFarLeft"
+            "pathName": "klToLeftHP"
           }
         },
         {
@@ -103,7 +103,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToL"
+            "pathName": null
           }
         },
         {
@@ -115,7 +115,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "lToFarLeft"
+            "pathName": null
           }
         },
         {
@@ -127,7 +127,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToA"
+            "pathName": "leftHPtoAB"
           }
         },
         {
@@ -139,7 +139,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "aToFarLeft"
+            "pathName": "abToLeftHP"
           }
         },
         {
@@ -151,7 +151,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToA"
+            "pathName": "leftHPtoAB"
           }
         },
         {
@@ -163,103 +163,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "aToFarLeft"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "farLeftToL"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "lToFarLeft"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "farLeftToK"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "kToFarLeft"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "farLeftToJ"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "jToFarLeft"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "farLeftToI"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "iToFarLeft"
+            "pathName": "abToLeftHP"
           }
         },
         {
@@ -283,7 +187,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "hToFarLeft"
+            "pathName": null
           }
         },
         {
@@ -295,43 +199,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToA"
+            "pathName": "leftHPtoKL"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L2"
+            "name": "L3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "aToFarLeft"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "farLeftToL"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "lToFarLeft"
+            "pathName": "klToLeftHP"
           }
         },
         {
@@ -343,43 +223,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToK"
+            "pathName": null
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L2"
+            "name": "L3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "kToFarLeft"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "farLeftToJ"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "jToFarLeft"
+            "pathName": null
           }
         },
         {
@@ -391,7 +247,55 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToI"
+            "pathName": "leftHPtoIJ"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ijToLeftHP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": null
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": null
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "leftHPtoAB"
           }
         },
         {
@@ -403,7 +307,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "iToFarLeft"
+            "pathName": "abToLeftHP"
           }
         },
         {
@@ -427,7 +331,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "hToFarLeft"
+            "pathName": null
           }
         },
         {
@@ -439,43 +343,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToA"
+            "pathName": "leftHPtoKL"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L1"
+            "name": "L2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "aToFarLeft"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "farLeftToL"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "lToFarLeft"
+            "pathName": "klToLeftHP"
           }
         },
         {
@@ -487,43 +367,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToK"
+            "pathName": null
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L1"
+            "name": "L2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "kToFarLeft"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "farLeftToJ"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "jToFarLeft"
+            "pathName": null
           }
         },
         {
@@ -535,7 +391,55 @@
         {
           "type": "path",
           "data": {
-            "pathName": "farLeftToI"
+            "pathName": "leftHPtoIJ"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ijToLeftHP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": null
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": null
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "leftHPtoAB"
           }
         },
         {
@@ -547,7 +451,103 @@
         {
           "type": "path",
           "data": {
-            "pathName": "iToFarLeft"
+            "pathName": "abToLeftHP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": null
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": null
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "leftHPtoKL"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "klToLeftHP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": null
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": null
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "leftHPtoIJ"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ijToLeftHP"
           }
         },
         {

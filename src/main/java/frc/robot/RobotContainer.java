@@ -123,15 +123,12 @@ public class RobotContainer {
 
     NamedCommands.registerCommands(new HashMap<String, Command>() {
       {
-        // put("speaker-shoot", speakerShoot());
         put("L2", autoReefCommand());
         put("HoldL2", reefL2Command());
         put("OuttakeCoral", new SequentialCommandGroup(runInTakeCommand(-12).until(() -> !coral.haveCoral()),
             runInTakeCommand(-12).withTimeout(0.4)).withName("Auto Run Outtake"));
         put("OuttakeAlgea", new SequentialCommandGroup(
             runInTakeCommand(12).withTimeout(0.8)).withName("Auto Run Outtake"));
-        // put("OuttakeCoral", runInTakeCommand(8).withTimeout(1).withName("Auto Run
-        // Intkae"));
         put("DrivePos", drivePositiCommand());
         put("L1", reefL1Command());
         put("L2", reefL2Command());
@@ -182,9 +179,6 @@ public class RobotContainer {
         put("DS", new SequentialCommandGroup(new WaitCommand(3), new DriveStraight(drivetrain, 0.45).withName("Drive straight backwards")));
         put("DSFast", new SequentialCommandGroup(new WaitCommand(2), new DriveStraightFast(drivetrain, 0.23).withName("Drive straight backwards")));
 
-        // put("ResVis", setVisionPose());
-        // put("drive straight right reef", new DriveStraight(drivetrain, 0.218));
-        // put("drive straight right reef", new DriveStraightBack(drivetrain, 0.2));
 
         put("stop", drivetrain.applyRequest(() -> m_idleRequest).withName("stop"));
         put("debug-false", Commands.runOnce(() -> SmartDashboard.putBoolean("Auto debug flag", false)));
@@ -200,48 +194,12 @@ public class RobotContainer {
         put("NET", netCommand());
         put("E-NET", netCommand().until(()-> wrist.getPosition() > 120));
 
-
-        // put("scoreL4LeftCoral", new ParallelDeadlineGroup(
-        // new SequentialCommandGroup(
-        // new WaitUntilCommand(() -> {
-        // return Math.abs(elevator1.getPosition() - 54.77 ) < 1 &&
-        // Math.abs(arm.getPosition() - 60) < 2 && Math.abs(wrist.getPosition() - 125) <
-        // 2;
-        // },
-        // new DriveStraight(drivetrain, 0.24),
-        // runInTakeCommand(-8).until(()-> !coral.haveCoral()).withName("Auto Run
-        // Outtake"),
-
-        // ),
-        // reefL4Command()
-        // ));
       }
     });
 
-    // registerAutos(new HashMap<String, String>() {
-    // {
 
-    // put("Foo", "foo");
-    // }
-    // });
-    // m_autoSelector.registerCommand("FOO", "FOO", AutoBuilder.buildAuto("Foo"));
-    // m_autoSelector.registerCommand("STRT", "STRT",
-    // AutoBuilder.buildAuto("STRT"));
-    // m_autoSelector.registerCommand("NOBK", "NOBK",
-    // AutoBuilder.buildAuto("NOBK"));
-    // m_autoSelector.registerCommand("R1", "R1", AutoBuilder.buildAuto("R1"));
-    // m_autoSelector.registerCommand("R2", "R2", AutoBuilder.buildAuto("R2"));
-    // m_autoSelector.registerCommand("Trsh", "Trsh",
-    // AutoBuilder.buildAuto("Trsh"));
-    // m_autoSelector.registerCommand("TRH2", "TRH2",
-    // AutoBuilder.buildAuto("TRH2"));
-    // m_autoSelector.registerCommand("MG", "MGMG", AutoBuilder.buildAuto("MG"));
     m_autoSelector.registerCommand("LIKL", "LIKL", AutoBuilder.buildAuto("LIKL"));
-    // m_autoSelector.registerCommand("032025 push", "PUSH",
-    // AutoBuilder.buildAuto("032025 push"));
     m_autoSelector.registerCommand("Vision Mg", "vMG", AutoBuilder.buildAuto("Vision Mg"));
-    // m_autoSelector.registerCommand("LIKLpush", "PSH2",
-    // AutoBuilder.buildAuto("LIKLpush"));
 
     configureBindings();
     m_autoSelector.initialize();
