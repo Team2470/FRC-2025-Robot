@@ -174,7 +174,7 @@ public class Arm extends SubsystemBase {
                 m_pidController.setI(SmartDashboard.getNumber("Arm kI", ArmConstants.kI));
                 m_pidController.setD(SmartDashboard.getNumber("Arm kD", ArmConstants.kD));
                 
-                double PIDoutPutVoltage = m_pidController.calculate(Units.degreesToRadians(getPosition()), Units.degreesToRadians(m_demand));
+                double PIDoutPutVoltage = m_pidController.calculate(      Units.degreesToRadians(getPosition()), Units.degreesToRadians(m_demand));
 
                 double feedforwardVoltage = m_feedforward.calculate(m_pidController.getSetpoint().position,
                     m_pidController.getSetpoint().velocity);
