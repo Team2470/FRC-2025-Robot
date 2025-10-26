@@ -21,7 +21,7 @@
       },
       "prevControl": {
         "x": 4.423112824675325,
-        "y": 1.1973417207792205
+        "y": 1.1973417207792207
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 119.99999999999999
   },
   "reversed": false,
-  "folder": "leftHPtoPost",
+  "folder": "leftHPToPost",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -54.0

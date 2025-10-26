@@ -3,24 +3,15 @@
   "robotLength": 0.93,
   "holonomicMode": true,
   "pathFolders": [
-    "backToPost",
-    "Ray stuff",
-    "Trash",
+    "rightHPToPost",
     "autoStart",
+    "backToPost",
+    "leftHPToPost",
     "postToBack",
-    "leftHPtoPost",
     "postToLeftHP",
-    "postToRightHP",
-    "rightHPtoPost"
+    "postToRightHP"
   ],
-  "autoFolders": [
-    "Trash",
-    "cirAutos",
-    "leftAuto",
-    "midAuto",
-    "rightAuto",
-    "vJoshHavingFun"
-  ],
+  "autoFolders": [],
   "defaultMaxVel": 4.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 320.0,

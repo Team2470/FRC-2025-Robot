@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package com.AutoCommon;
+package Autos.AutoCommon;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
@@ -13,6 +13,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -21,7 +22,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -33,6 +36,7 @@ import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Superstructure.*;
 import frc.robot.subsystems.Superstructure.Superstructure.m_State;
 import frc.robot.subsystems.Superstructure.SuperstructurePosition.TargetAction;
+import frc.robot.RobotContainer;
 
 import java.util.List;
 import java.util.Optional;
@@ -102,9 +106,6 @@ public abstract class AutoBase extends SequentialCommandGroup {
     public static Optional<Pose2d> getStartPoseFromAutoFile(String autoName) {
     }
 
-    protected Command getBumpCommand() {
-    }
-
     protected Command delaySelectedTime() {
     }
 
@@ -112,13 +113,29 @@ public abstract class AutoBase extends SequentialCommandGroup {
         return new InstantCommand( () -> superstructure.setCurrentAction(position));
     }
 
-    protected Command score(TargetAction position) {
-    }
-
     protected BooleanSupplier haveCoral() {
     }
 
     protected Command toPosAndScore(TargetAction position) {
+        if(position.ActionType == TargetAction.type.CORAL ) {
+            return new SequentialCommandGroup(
+                new InstantCommand(() -> superstructure.setCurrentAction(position)),
+                Commands.waitUntil(() -> superstructure.atPosition(position))
+                        .andThen(
+                            new SequentialCommandGroup(
+                                runInTakeCommand(-12).until(() -> !coral.haveCoral()),
+                                runInTakeCommand(-12).withTimeout(0.4))));
+        } else if(position.ActionType == TargetAction.type.ALGAE ) {
+            return new SequentialCommandGroup(
+                new InstantCommand(() -> superstructure.setCurrentAction(position)),
+                Commands.waitUntil(() -> superstructure.atPosition(position))
+                        .andThen(
+                            new SequentialCommandGroup(
+                                runInTakeCommand(12).until(() -> !algea.haveAlgae()),
+                                runInTakeCommand(12).withTimeout(0.4))));
+        } else {
+            return new InstantCommand(() -> superstructure.setCurrentAction(position));
+        }
     }
 
     protected Command pickup(Path path) {
@@ -127,6 +144,52 @@ public abstract class AutoBase extends SequentialCommandGroup {
     protected Command toPosition(m_State pos) {
         superstructure.setRobotState(pos);
 
+    }
+
+    protected Command reefL2Command() {
+        superstructure.setRobotState(m_State.L2);
+        
+        return new SequentialCommandGroup(
+            new WaitUntilCommand(() -> wrist.getPosition() < 90),
+                arm.pidCommand(50).until(() -> Math.abs(arm.getErrorAngle()) < 3),
+            new ParallelCommandGroup(
+                elevator1.pidCommand(14),
+                arm.pidCommand(50)).until(() -> Math.abs(elevator1.getPosition() - 14) < 3),
+            new ParallelCommandGroup(
+                elevator1.pidCommand(14),
+                arm.pidCommand(50),
+                wrist.pidCommand(131)));
+    }
+
+    protected Command reefL3Command() {
+        superstructure.setRobotState(m_State.L3);
+        
+        return new SequentialCommandGroup(
+            new WaitUntilCommand(() -> wrist.getPosition() < 90),
+                arm.pidCommand(60).until(() -> Math.abs(arm.getErrorAngle()) < 3),
+            new ParallelCommandGroup(
+                elevator1.pidCommand(30),
+                arm.pidCommand(60)).until(() -> Math.abs(elevator1.getPosition() - 30) < 1),
+            new ParallelCommandGroup(
+                elevator1.pidCommand(30),
+                arm.pidCommand(60),
+                wrist.pidCommand(125)));
+    }
+
+    protected Command reefL4Command() {
+        superstructure.setRobotState(m_State.L4);
+    
+        return new SequentialCommandGroup(
+            new WaitUntilCommand(() -> superstructure.getRobotState() == m_State.Drive),
+                arm.pidCommand(60).until(() -> Math.abs(arm.getErrorAngle()) < 3),
+            new ParallelCommandGroup(
+                elevator1.pidCommand(54.77),
+                wrist.pidCommand(125),
+                arm.pidCommand(60)).until(() -> Math.abs(elevator1.getPosition() - 54.77) < 1),
+            new ParallelCommandGroup(
+                elevator1.pidCommand(54.77),
+                arm.pidCommand(60),
+                wrist.pidCommand(125)));
     }
 
     protected Command autoDrivePositiCommand() {
@@ -149,6 +212,43 @@ public abstract class AutoBase extends SequentialCommandGroup {
     
             )).withName("Auto Drive Position");
       }
+
+    protected Command runInTakeCommand(int voltage) {
+        return new ParallelCommandGroup(
+            algea.runMotorForwardsSpeedCommand(2 * voltage), coral.runMotorForwardsSpeedCommand(voltage * 2.5 / 4),
+            intake.runMotorForwardsSpeedCommand(-voltage));
+    
+      }
+
+    protected Command HumanPlayerIntakeCommand() {
+        superstructure.setRobotState(m_State.HpIntake);
+        return new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                arm.pidCommand(45), // arm goes down for the wrist rotate
+                elevator1.pidCommand(3),
+                wrist.pidCommand(180)).until(() -> Math.abs(wrist.getPosition() - 180) < 5), // wrist rotates towards the
+                                                                                         // human
+            // player intake
+            new ParallelCommandGroup(
+                elevator1.pidCommand(3),
+                wrist.pidCommand(180), // hold wrist position
+                arm.pidCommand(55)).until(() -> Math.abs(arm.getPosition() - 55) < 5), // arm goes up to intake from human
+                                                                                   // player position
+            new ParallelCommandGroup(
+                elevator1.pidCommand(3),
+                wrist.pidCommand(180), // hold wrist position
+                arm.pidCommand(55), // hold arm position
+                new SequentialCommandGroup(// runs the human player intake and then slows down after beam break sensor is
+                                       // triggered
+                    intake.runMotorForwardsSpeedCommand(8).until(intake::haveCoral),
+                    new ParallelCommandGroup(
+                        intake.runMotorForwardsSpeedCommand(6),
+                        new SequentialCommandGroup(
+                            coral.runMotorBackwardsSpeedCommand(4.5)).until(coral::haveCoral),
+                        new StartEndCommand(() -> controller.getHID().setRumble(RumbleType.kBothRumble, 1),
+                            () -> controller.getHID().setRumble(RumbleType.kBothRumble, 0.0)).withTimeout(0.2))
+            )));
+  }
 
     public static class Path { // combines access to pathplanner and choreo
         private String pathPlannerPathName;
@@ -219,7 +319,7 @@ public abstract class AutoBase extends SequentialCommandGroup {
         public static final Path ijToRightHP        = new Path("ijToRightHP");
         public static final Path klToRightHP        = new Path("klToRightHP");
 
-        // Paths from Left HP Station to backed up position
+        // Paths that go from Left HP Station to backed up position
         public static final Path leftHPToAB         = new Path("leftHPToAB");
         public static final Path leftHPToCD         = new Path("leftHPToCD");
         public static final Path leftHPToEF         = new Path("leftHPToEF");
@@ -227,7 +327,7 @@ public abstract class AutoBase extends SequentialCommandGroup {
         public static final Path leftHPToIJ         = new Path("leftHPToIJ");
         public static final Path leftHPToKL         = new Path("leftHPToKL");
 
-        // Paths from Right HP Station to backed up position
+        // Paths that go from Right HP Station to backed up position
         public static final Path rightHPToAB        = new Path("rightHPToAB");
         public static final Path rightHPToCD        = new Path("rightHPToCD");
         public static final Path rightHPToEF        = new Path("rightHPToEF");

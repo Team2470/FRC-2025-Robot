@@ -861,59 +861,59 @@ public class RobotContainer {
                 coral.runMotorBackwardsSpeedCommand(4)).until(coral::haveCoral)));
   }
 
-  private Command runInTakeCommand(int voltage) {
-    return new ParallelCommandGroup(
-        algea.runMotorForwardsSpeedCommand(2 * voltage), coral.runMotorForwardsSpeedCommand(voltage * 2.5 / 4),
-        intake.runMotorForwardsSpeedCommand(-voltage));
+//   protected Command runInTakeCommand(int voltage) {
+//     return new ParallelCommandGroup(
+//         algea.runMotorForwardsSpeedCommand(2 * voltage), coral.runMotorForwardsSpeedCommand(voltage * 2.5 / 4),
+//         intake.runMotorForwardsSpeedCommand(-voltage));
 
-  }
+//   }
 
-  private Command reefL2Command() {
-    superstructure.setRobotState(m_State.L2);
-    return new SequentialCommandGroup(
-        new WaitUntilCommand(() -> wrist.getPosition() < 90),
-        arm.pidCommand(50).until(() -> Math.abs(arm.getErrorAngle()) < 3),
+//   private Command reefL2Command() {
+//     superstructure.setRobotState(m_State.L2);
+//     return new SequentialCommandGroup(
+//         new WaitUntilCommand(() -> wrist.getPosition() < 90),
+//         arm.pidCommand(50).until(() -> Math.abs(arm.getErrorAngle()) < 3),
 
-        new ParallelCommandGroup(
-            elevator1.pidCommand(14),
-            arm.pidCommand(50)).until(() -> Math.abs(elevator1.getPosition() - 14) < 3),
-        new ParallelCommandGroup(
-            elevator1.pidCommand(14),
-            arm.pidCommand(50),
-            wrist.pidCommand(131)))
-        .withName("L2 Reef Command");
-  }
+//         new ParallelCommandGroup(
+//             elevator1.pidCommand(14),
+//             arm.pidCommand(50)).until(() -> Math.abs(elevator1.getPosition() - 14) < 3),
+//         new ParallelCommandGroup(
+//             elevator1.pidCommand(14),
+//             arm.pidCommand(50),
+//             wrist.pidCommand(131)))
+//         .withName("L2 Reef Command");
+//   }
 
-  private Command reefL3Command() {
-    superstructure.setRobotState(m_State.L3);
-    return new SequentialCommandGroup(
-        new WaitUntilCommand(() -> wrist.getPosition() < 90),
-        arm.pidCommand(60).until(() -> Math.abs(arm.getErrorAngle()) < 3),
+//   private Command reefL3Command() {
+//     superstructure.setRobotState(m_State.L3);
+//     return new SequentialCommandGroup(
+//         new WaitUntilCommand(() -> wrist.getPosition() < 90),
+//         arm.pidCommand(60).until(() -> Math.abs(arm.getErrorAngle()) < 3),
 
-        new ParallelCommandGroup(
-            elevator1.pidCommand(30),
-            arm.pidCommand(60)).until(() -> Math.abs(elevator1.getPosition() - 30) < 1),
-        new ParallelCommandGroup(
-            elevator1.pidCommand(30),
-            arm.pidCommand(60),
-            wrist.pidCommand(125)));
-  }
+//         new ParallelCommandGroup(
+//             elevator1.pidCommand(30),
+//             arm.pidCommand(60)).until(() -> Math.abs(elevator1.getPosition() - 30) < 1),
+//         new ParallelCommandGroup(
+//             elevator1.pidCommand(30),
+//             arm.pidCommand(60),
+//             wrist.pidCommand(125)));
+//   }
 
-  private Command reefL4Command() {
-    superstructure.setRobotState(m_State.L4);
-    return new SequentialCommandGroup(
-        new WaitUntilCommand(() -> superstructure.getRobotState() == m_State.Drive),
-        arm.pidCommand(60).until(() -> Math.abs(arm.getErrorAngle()) < 3),
+//   private Command reefL4Command() {
+//     superstructure.setRobotState(m_State.L4);
+//     return new SequentialCommandGroup(
+//         new WaitUntilCommand(() -> superstructure.getRobotState() == m_State.Drive),
+//         arm.pidCommand(60).until(() -> Math.abs(arm.getErrorAngle()) < 3),
 
-        new ParallelCommandGroup(
-            elevator1.pidCommand(54.77),
-            wrist.pidCommand(125),
-            arm.pidCommand(60)).until(() -> Math.abs(elevator1.getPosition() - 54.77) < 1),
-        new ParallelCommandGroup(
-            elevator1.pidCommand(54.77),
-            arm.pidCommand(60),
-            wrist.pidCommand(125)));
-  }
+//         new ParallelCommandGroup(
+//             elevator1.pidCommand(54.77),
+//             wrist.pidCommand(125),
+//             arm.pidCommand(60)).until(() -> Math.abs(elevator1.getPosition() - 54.77) < 1),
+//         new ParallelCommandGroup(
+//             elevator1.pidCommand(54.77),
+//             arm.pidCommand(60),
+//             wrist.pidCommand(125)));
+//   }
 
   private Command reefL4TeleOpCommand() {
     superstructure.setRobotState(m_State.L4);
@@ -967,36 +967,36 @@ public class RobotContainer {
         .withName("L1 Reef Command");
   }
 
-  private Command HumanPlayerIntakeCommand() {
-    superstructure.setRobotState(m_State.HpIntake);
-    return new SequentialCommandGroup(
-        new ParallelCommandGroup(
-            arm.pidCommand(45), // arm goes down for the wrist rotate
-            elevator1.pidCommand(3),
-            wrist.pidCommand(180)).until(() -> Math.abs(wrist.getPosition() - 180) < 5), // wrist rotates towards the
-                                                                                         // human
-        // player intake
-        new ParallelCommandGroup(
-            elevator1.pidCommand(3),
-            wrist.pidCommand(180), // hold wrist position
-            arm.pidCommand(55)).until(() -> Math.abs(arm.getPosition() - 55) < 5), // arm goes up to intake from human
-                                                                                   // player position
-        new ParallelCommandGroup(
-            elevator1.pidCommand(3),
-            wrist.pidCommand(180), // hold wrist position
-            arm.pidCommand(55), // hold arm position
-            new SequentialCommandGroup(// runs the human player intake and then slows down after beam break sensor is
-                                       // triggered
-                intake.runMotorForwardsSpeedCommand(8).until(intake::haveCoral),
-                new ParallelCommandGroup(
-                    intake.runMotorForwardsSpeedCommand(6),
-                    new SequentialCommandGroup(
-                        coral.runMotorBackwardsSpeedCommand(4.5)).until(coral::haveCoral),
-                    new StartEndCommand(() -> controller.getHID().setRumble(RumbleType.kBothRumble, 1),
-                        () -> controller.getHID().setRumble(RumbleType.kBothRumble, 0.0)).withTimeout(0.2))
+//   private Command HumanPlayerIntakeCommand() {
+//     superstructure.setRobotState(m_State.HpIntake);
+//     return new SequentialCommandGroup(
+//         new ParallelCommandGroup(
+//             arm.pidCommand(45), // arm goes down for the wrist rotate
+//             elevator1.pidCommand(3),
+//             wrist.pidCommand(180)).until(() -> Math.abs(wrist.getPosition() - 180) < 5), // wrist rotates towards the
+//                                                                                          // human
+//         // player intake
+//         new ParallelCommandGroup(
+//             elevator1.pidCommand(3),
+//             wrist.pidCommand(180), // hold wrist position
+//             arm.pidCommand(55)).until(() -> Math.abs(arm.getPosition() - 55) < 5), // arm goes up to intake from human
+//                                                                                    // player position
+//         new ParallelCommandGroup(
+//             elevator1.pidCommand(3),
+//             wrist.pidCommand(180), // hold wrist position
+//             arm.pidCommand(55), // hold arm position
+//             new SequentialCommandGroup(// runs the human player intake and then slows down after beam break sensor is
+//                                        // triggered
+//                 intake.runMotorForwardsSpeedCommand(8).until(intake::haveCoral),
+//                 new ParallelCommandGroup(
+//                     intake.runMotorForwardsSpeedCommand(6),
+//                     new SequentialCommandGroup(
+//                         coral.runMotorBackwardsSpeedCommand(4.5)).until(coral::haveCoral),
+//                     new StartEndCommand(() -> controller.getHID().setRumble(RumbleType.kBothRumble, 1),
+//                         () -> controller.getHID().setRumble(RumbleType.kBothRumble, 0.0)).withTimeout(0.2))
 
-            ))).withName("Human Player Intake Command");
-  }
+//             ))).withName("Human Player Intake Command");
+//   }
 
   private Command FirstEnableHumanPlayerIntakeCommand() {
     superstructure.setRobotState(m_State.HpIntake);
